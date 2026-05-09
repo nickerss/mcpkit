@@ -5,7 +5,7 @@ category: deployment
 tags: [workflow, automation, open-source]
 price: freemium
 website: https://n8n.io
-logo: 
+logo: ""
 description: Open-source workflow automation platform with 400+ integrations, AI Agent support, and LangChain. Drag-and-drop interface for complex business processes.
 scenarios: ["Cross-system sync", "Business automation", "AI Agent workflows"]
 featured: false

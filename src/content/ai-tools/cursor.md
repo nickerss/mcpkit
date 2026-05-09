@@ -5,7 +5,7 @@ category: ai-tools
 tags: [editor, ide, ai-coding, copilot-alternative]
 price: freemium
 website: https://cursor.com
-logo: 
+logo: ""
 description: AI-first code editor built on VS Code with multi-line editing and Composer for whole-codebase modifications. Exceptional conversational programming experience.
 scenarios: ["Daily development", "Code refactoring", "Feature implementation"]
 featured: false

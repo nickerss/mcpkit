@@ -5,7 +5,7 @@ category: ai-tools
 tags: [code-search, refactoring, legacy-code, understanding]
 price: freemium
 website: https://buildt.ai
-logo: 
+logo: ""
 description: AI code search and generation tool understanding code intent, not just keywords. Perfect for legacy code maintenance.
 scenarios: ["Legacy code understanding", "Code reuse", "Large codebase navigation"]
 featured: false

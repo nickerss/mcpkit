@@ -5,7 +5,7 @@ category: deployment
 tags: [database, postgresql, serverless, branching]
 price: freemium
 website: https://neon.tech
-logo: 
+logo: ""
 description: Serverless PostgreSQL with database branching and instant rollback. Auto-scales based on usage.
 scenarios: ["Serverless architecture", "Branch development", "PostgreSQL projects"]
 featured: false

@@ -5,7 +5,7 @@ category: ai-tools
 tags: [web-scraping, ai, data, automation]
 price: freemium
 website: https://kadoa.com
-logo: 
+logo: ""
 description: AI-powered web data scraping tool that automatically identifies page structure without writing scraping rules.
 scenarios: ["Data collection", "Competitive monitoring", "Web data extraction"]
 featured: false

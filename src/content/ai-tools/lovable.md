@@ -5,7 +5,7 @@ category: ai-tools
 tags: [no-code, prototyping, full-stack, builder]
 price: freemium
 website: https://lovable.dev
-logo: 
+logo: ""
 description: AI product building platform. Describe an app and get a complete full-stack application without engineering skills.
 scenarios: ["Indie developer validation", "Founder MVPs", "Non-engineer product building"]
 featured: false

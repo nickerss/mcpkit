@@ -5,7 +5,7 @@ category: ai-tools
 tags: [cli, anthropic, claude, refactoring]
 price: paid
 website: https://claude.ai/claude-code
-logo: 
+logo: ""
 description: Anthropic official CLI coding tool with deep codebase understanding, supporting complex multi-file refactoring and autonomous execution.
 scenarios: ["Complex bug fixes", "System refactoring", "Code review"]
 featured: false

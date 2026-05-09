@@ -5,7 +5,7 @@ category: deployment
 tags: [database, baas, backend, auth]
 price: freemium
 website: https://supabase.com
-logo: 
+logo: ""
 description: Open-source Firebase alternative with PostgreSQL + Auth + Storage + Edge Functions for complete BaaS backend.
 scenarios: ["SaaS backend", "Mobile app BaaS", "Rapid backend development"]
 featured: false

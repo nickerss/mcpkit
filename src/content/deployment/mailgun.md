@@ -5,7 +5,7 @@ category: deployment
 tags: [email, api, transactional, bulk]
 price: freemium
 website: https://mailgun.com
-logo: 
+logo: ""
 description: Mature email sending API with high deliverability supporting bulk email sending for marketing.
 scenarios: ["Bulk emails", "Transactional emails", "Email marketing"]
 featured: false

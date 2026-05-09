@@ -5,7 +5,7 @@ category: ai-tools
 tags: [editor, open-source, vscode, jetbrains, self-hosted]
 price: free
 website: https://continue.dev
-logo: 
+logo: ""
 description: Open-source AI coding assistant for VS Code and JetBrains with custom LLM and private model support. Ideal for enterprise internal networks.
 scenarios: ["Custom LLM", "Self-hosted AI", "Data security environments"]
 featured: false

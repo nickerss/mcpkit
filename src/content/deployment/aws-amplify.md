@@ -5,7 +5,7 @@ category: deployment
 tags: [aws, deployment, backend, fullstack]
 price: freemium
 website: https://aws.amazon.com/amplify
-logo: 
+logo: ""
 description: AWS full-stack application deployment platform with frontend hosting and backend一体化 for Next.js and other frameworks.
 scenarios: ["Full-stack apps", "AWS integration", "Enterprise deployment"]
 featured: false

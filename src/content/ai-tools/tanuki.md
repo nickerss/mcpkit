@@ -5,7 +5,7 @@ category: ai-tools
 tags: [code-review, ai, security, quality]
 price: freemium
 website: https://tanuki.ai
-logo: 
+logo: ""
 description: AI code review tool focused on security vulnerability detection and code quality improvement suggestions.
 scenarios: ["Security review", "Code quality", "Compliance checking"]
 featured: false

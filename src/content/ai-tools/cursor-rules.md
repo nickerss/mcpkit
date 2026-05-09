@@ -5,7 +5,7 @@ category: ai-tools
 tags: [cursor, rules, configuration, team]
 price: free
 website: https://docs.cursor.com/rules
-logo: 
+logo: ""
 description: Cursor custom rule engine controlling AI code generation behavior and style through YAML configuration.
 scenarios: ["Team code standards", "Tech stack customization", "Consistent code style"]
 featured: false

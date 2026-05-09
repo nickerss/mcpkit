@@ -5,7 +5,7 @@ category: ai-tools
 tags: [jetbrains, java, kotlin, python, ide]
 price: paid
 website: https://www.jetbrains.com/ai
-logo: 
+logo: ""
 description: AI assistant built into JetBrains IDE family, deeply integrated with IntelliJ IDEA and PyCharm. Top choice for JVM and Python developers.
 scenarios: ["Java/Kotlin development", "Python projects", "JVM ecosystem"]
 featured: false

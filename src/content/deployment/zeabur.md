@@ -5,7 +5,7 @@ category: deployment
 tags: [hosting, deployment, backend, asian-friendly]
 price: freemium
 website: https://zeabur.com
-logo: 
+logo: ""
 description: Deployment platform created by Taiwanese developers with Chinese-friendly interface and multi-framework support.
 scenarios: ["Asian users", "Indie developers", "Quick deployment"]
 featured: false

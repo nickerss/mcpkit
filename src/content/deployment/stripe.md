@@ -5,7 +5,7 @@ category: deployment
 tags: [payments, subscription, saas, api]
 price: paid
 website: https://stripe.com
-logo: 
+logo: ""
 description: World most popular online payment platform with elegant API design. Top choice for SaaS subscriptions and Marketplaces.
 scenarios: ["SaaS subscriptions", "Online payments", "Invoice management"]
 featured: false

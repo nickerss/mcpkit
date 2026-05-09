@@ -5,7 +5,7 @@ category: deployment
 tags: [edge, serverless, javascript, workers]
 price: freemium
 website: https://workers.cloudflare.com
-logo: 
+logo: ""
 description: Cloudflare edge computing platform running JavaScript/TypeScript serverless functions globally with low latency.
 scenarios: ["Edge computing", "API Gateway", "SSR"]
 featured: false

@@ -5,7 +5,7 @@ category: ai-tools
 tags: [documentation, ai, docs, developer]
 price: freemium
 website: https://mintlify.com
-logo: 
+logo: ""
 description: AI documentation generator automatically creating beautiful docs from code comments and API specifications.
 scenarios: ["API documentation", "Code doc maintenance", "Developer docs"]
 featured: false

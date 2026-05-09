@@ -5,7 +5,7 @@ category: ai-tools
 tags: [agent, workspace, github, project-level]
 price: free
 website: https://githubnext.com/projects/copilot-workspace
-logo: 
+logo: ""
 description: GitHub AI development space driven by natural language for end-to-end development and project-level task decomposition.
 scenarios: ["Project-level tasks", "End-to-end development", "Microsoft AI ecosystem"]
 featured: false

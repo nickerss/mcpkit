@@ -5,7 +5,7 @@ category: ai-tools
 tags: [editor, autocomplete, fast, context]
 price: paid
 website: https://supermaven.com
-logo: 
+logo: ""
 description: Ultra-fast AI code completion with 1M token context window. Extremely low latency, perfect for large codebases.
 scenarios: ["Large codebases", "Low-latency completion", "Smooth coding experience"]
 featured: false

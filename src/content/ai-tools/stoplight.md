@@ -5,7 +5,7 @@ category: ai-tools
 tags: [api, documentation, openapi, design]
 price: freemium
 website: https://stoplight.io
-logo: 
+logo: ""
 description: API design and management platform with AI-assisted OpenAPI specification and documentation generation.
 scenarios: ["API design", "OpenAPI docs", "API lifecycle management"]
 featured: false

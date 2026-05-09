@@ -5,7 +5,7 @@ category: ai-tools
 tags: [cloud-ide, browser, prototyping, stackblitz]
 price: freemium
 website: https://bolt.new
-logo: 
+logo: ""
 description: AI cloud development environment with one-click browser-based IDE and instant sharing. AI-assisted coding and preview.
 scenarios: ["Rapid prototyping", "Instant sharing", "Interview coding"]
 featured: false

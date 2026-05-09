@@ -5,7 +5,7 @@ category: ai-tools
 tags: [editor, ide, codeium, conversational]
 price: freemium
 website: https://codeium.com/windsurf
-logo: 
+logo: ""
 description: Codeium AI IDE with conversational interactions and full codebase context. More affordable than Cursor with intuitive natural language drive.
 scenarios: ["Full-stack development", "Long context projects", "Cost-conscious indie devs"]
 featured: false

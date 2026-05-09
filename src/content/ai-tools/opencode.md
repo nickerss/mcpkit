@@ -5,7 +5,7 @@ category: ai-tools
 tags: [cli, open-source, local, self-hosted]
 price: free
 website: https://github.com/glama-community/opencode
-logo: 
+logo: ""
 description: Open-source AI CLI programming tool supporting multiple models including Ollama local models.
 scenarios: ["Local development", "Self-hosted AI", "Privacy-first workflows"]
 featured: false

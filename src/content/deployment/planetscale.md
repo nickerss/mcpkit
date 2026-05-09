@@ -5,7 +5,7 @@ category: deployment
 tags: [database, mysql, serverless, branching]
 price: freemium
 website: https://planetscale.com
-logo: 
+logo: ""
 description: MySQL-compatible serverless database with GitHub-style branching workflow and non-blocking schema changes.
 scenarios: ["Large-scale MySQL", "Branch dev environments", "Database branching"]
 featured: false

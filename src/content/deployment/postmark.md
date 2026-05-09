@@ -5,7 +5,7 @@ category: deployment
 tags: [email, transactional, saas, reliability]
 price: paid
 website: https://postmarkapp.com
-logo: 
+logo: ""
 description: Email delivery platform focused on transactional emails with extremely high deliverability and reliability.
 scenarios: ["SaaS transactional emails", "App notifications", "High-reliability email"]
 featured: false

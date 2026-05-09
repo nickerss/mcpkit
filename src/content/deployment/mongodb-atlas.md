@@ -5,7 +5,7 @@ category: deployment
 tags: [database, mongodb, nosql, multi-cloud]
 price: freemium
 website: https://mongodb.com/atlas
-logo: 
+logo: ""
 description: MongoDB official cloud service with multi-cloud deployment support, automatic backup and scaling.
 scenarios: ["Document database", "Flexible schema", "Multi-cloud deployment"]
 featured: false

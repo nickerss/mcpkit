@@ -5,7 +5,7 @@ category: deployment
 tags: [deno, edge, serverless, typescript]
 price: freemium
 website: https://deno.com/deploy
-logo: 
+logo: ""
 description: Deno/Node.js edge deployment platform with native TypeScript support and good Workers compatibility.
 scenarios: ["TypeScript backend", "Edge Functions", "Serverless API"]
 featured: false

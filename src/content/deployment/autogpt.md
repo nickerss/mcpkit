@@ -5,7 +5,7 @@ category: deployment
 tags: [agent, autonomous, ai]
 price: free
 website: https://autogpt.net
-logo: 
+logo: ""
 description: Autonomous AI Agent framework driven by goals, capable of decomposing and executing tasks independently.
 scenarios: ["Task automation", "Research agents", "Autonomous planning"]
 featured: false

@@ -5,7 +5,7 @@ category: ai-tools
 tags: [agent, autonomous, full-stack, cognition]
 price: paid
 website: https://cognition.ai/devin
-logo: 
+logo: ""
 description: AI software engineer from Cognition that independently completes end-to-end development tasks from requirements to code to testing.
 scenarios: ["Complex task decomposition", "Large project automation", "Autonomous development"]
 featured: false

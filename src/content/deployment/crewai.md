@@ -5,7 +5,7 @@ category: deployment
 tags: [multi-agent, framework, ai]
 price: free
 website: https://crewai.com
-logo: 
+logo: ""
 description: Multi-Agent collaboration framework where multiple AI Agents work together on complex tasks through role definitions.
 scenarios: ["Multi-Agent collaboration", "Complex task decomposition", "Research assistants"]
 featured: false

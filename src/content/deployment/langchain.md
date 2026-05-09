@@ -5,7 +5,7 @@ category: deployment
 tags: [llm, framework, rag, agent]
 price: free
 website: https://langchain.com
-logo: 
+logo: ""
 description: LLM application development framework with Chain, Agent, and RAG support. Most mature open-source framework for AI app development.
 scenarios: ["RAG knowledge base", "AI Agent development", "LLM app backend"]
 featured: false

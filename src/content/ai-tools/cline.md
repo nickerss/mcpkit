@@ -5,7 +5,7 @@ category: ai-tools
 tags: [cli, terminal, mcp, vscode]
 price: free
 website: https://github.com/cline/cline
-logo: 
+logo: ""
 description: Terminal AI coding assistant with MCP tool calling and autonomous decision-making. Ideal for VS Code Remote SSH remote development.
 scenarios: ["CLI development", "Remote server coding", "Keyboard-driven workflows"]
 featured: false

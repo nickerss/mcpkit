@@ -5,7 +5,7 @@ category: deployment
 tags: [frontend, deployment, hosting, serverless]
 price: freemium
 website: https://vercel.com
-logo: 
+logo: ""
 description: Frontend and full-stack deployment platform with official Next.js support and global edge CDN.
 scenarios: ["Frontend apps", "SSR applications", "Edge Functions"]
 featured: false

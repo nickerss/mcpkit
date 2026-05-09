@@ -5,7 +5,7 @@ category: deployment
 tags: [frontend, cli, deployment, static]
 price: free
 website: https://surge.sh
-logo: 
+logo: ""
 description: CLI-driven static site deployment. Publish with one command, supports custom domains.
 scenarios: ["Frontend preview", "Quick publishing", "CI/CD integration"]
 featured: false

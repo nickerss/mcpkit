@@ -5,7 +5,7 @@ category: deployment
 tags: [backend, hosting, database, redis]
 price: freemium
 website: https://render.com
-logo: 
+logo: ""
 description: Fully managed cloud platform for web services, databases, Redis with auto HTTPS and free SSL.
 scenarios: ["Web services", "WordPress", "Medium-scale apps"]
 featured: false

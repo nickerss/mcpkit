@@ -5,7 +5,7 @@ category: deployment
 tags: [rag, llm, framework, data]
 price: free
 website: https://llamaindex.ai
-logo: 
+logo: ""
 description: LLM data framework focused on connecting private data to LLMs with rich indexing structures and data ingestion interfaces.
 scenarios: ["Knowledge base Q&A", "Private data to LLM", "Document retrieval augmentation"]
 featured: false

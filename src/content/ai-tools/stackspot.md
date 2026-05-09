@@ -5,7 +5,7 @@ category: ai-tools
 tags: [coding-assistant, enterprise, kb, knowledge-base]
 price: paid
 website: https://stackspot.com
-logo: 
+logo: ""
 description: Enterprise AI coding assistant integrating internal knowledge bases to maintain code standard consistency.
 scenarios: ["Enterprise AI", "Internal knowledge integration", "Code standard unification"]
 featured: false

@@ -5,7 +5,7 @@ category: ai-tools
 tags: [figma, design, ui, prototyping]
 price: freemium
 website: https://figma.com
-logo: 
+logo: ""
 description: AI capabilities built into Figma supporting design description generation, rapid layout, and component recommendations.
 scenarios: ["UI design", "Design generation", "Component recommendations"]
 featured: false

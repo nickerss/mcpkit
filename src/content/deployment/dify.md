@@ -5,7 +5,7 @@ category: deployment
 tags: [llm-app, agent, workflow, open-source]
 price: free
 website: https://dify.ai
-logo: 
+logo: ""
 description: Open-source LLM application platform supporting Agent, workflows, and plugins with built-in knowledge base and API management.
 scenarios: ["Rapid AI app deployment", "Enterprise internal AI tools", "SaaS AI features"]
 featured: false

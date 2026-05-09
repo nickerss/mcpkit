@@ -5,7 +5,7 @@ category: ai-tools
 tags: [cloud-ide, agent, prototyping, replit]
 price: freemium
 website: https://replit.com
-logo: 
+logo: ""
 description: Replit AI agent that builds complete applications from natural language descriptions in the cloud IDE.
 scenarios: ["Rapid idea validation", "Cloud development", "Educational coding"]
 featured: false

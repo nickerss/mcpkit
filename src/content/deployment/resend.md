@@ -5,7 +5,7 @@ category: deployment
 tags: [email, api, transactional, developer-friendly]
 price: freemium
 website: https://resend.com
-logo: 
+logo: ""
 description: Developer-friendly email API with React Email component support. 100 emails/day free, high deliverability.
 scenarios: ["Transactional emails", "Marketing emails", "App notifications"]
 featured: false

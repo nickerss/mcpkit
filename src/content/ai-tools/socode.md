@@ -5,7 +5,7 @@ category: ai-tools
 tags: [code-search, understanding, codebase, navigation]
 price: freemium
 website: https://socode.ai
-logo: 
+logo: ""
 description: Semantic code search and navigation tool understanding code intent rather than just keywords.
 scenarios: ["Legacy code understanding", "Code reuse", "Large codebase navigation"]
 featured: false

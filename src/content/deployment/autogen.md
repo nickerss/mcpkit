@@ -5,7 +5,7 @@ category: deployment
 tags: [multi-agent, microsoft, framework]
 price: free
 website: https://microsoft.github.io/autogen
-logo: 
+logo: ""
 description: Microsoft open-source multi-Agent conversation framework with flexible Agent definitions and human-in-the-loop support.
 scenarios: ["Enterprise AI workflows", "Multi-model collaboration", "Human-AI collaboration"]
 featured: false

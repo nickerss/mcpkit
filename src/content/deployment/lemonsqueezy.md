@@ -5,7 +5,7 @@ category: deployment
 tags: [payments, subscription, indie-dev, digital-products]
 price: paid
 website: https://lemonsqueezy.com
-logo: 
+logo: ""
 description: Indie developer-friendly payment platform with 5% + $0.25 fee and one-stop global VAT compliance.
 scenarios: ["Digital product sales", "Indie developer payments", "SaaS subscriptions"]
 featured: false

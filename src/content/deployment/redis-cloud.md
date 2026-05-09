@@ -5,7 +5,7 @@ category: deployment
 tags: [database, redis, cache, realtime]
 price: freemium
 website: https://redis.com/cloud
-logo: 
+logo: ""
 description: Managed Redis service supporting all data structures including Strings, Hashes, Lists, Sets, Sorted Sets, Streams.
 scenarios: ["Caching layer", "Session storage", "Real-time data"]
 featured: false

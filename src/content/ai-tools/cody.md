@@ -5,7 +5,7 @@ category: ai-tools
 tags: [editor, sourcegraph, code-understanding, enterprise]
 price: freemium
 website: https://sourcegraph.com/cody
-logo: 
+logo: ""
 description: Sourcegraph AI coding assistant with deep codebase awareness and cross-repository search capabilities. Excels at large-scale codebases.
 scenarios: ["Large codebases", "Cross-repo search", "Technical debt analysis"]
 featured: false

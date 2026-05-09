@@ -5,7 +5,7 @@ category: ai-tools
 tags: [cli, terminal, git, pair-programming]
 price: free
 website: https://aider.chat
-logo: 
+logo: ""
 description: Terminal AI pair programming tool with multi-file editing and git integration. Pure keyboard operation, top choice for power users.
 scenarios: ["Vim/Neovim users", "Remote development", "Git workflows"]
 featured: false

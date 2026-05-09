@@ -5,7 +5,7 @@ category: deployment
 tags: [frontend, edge, hosting, cdn]
 price: free
 website: https://pages.cloudflare.com
-logo: 
+logo: ""
 description: Cloudflare edge deployment platform with global CDN acceleration, generous free tier, seamless Workers integration.
 scenarios: ["Static sites", "Edge computing", "Global distribution"]
 featured: false

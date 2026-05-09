@@ -5,7 +5,7 @@ category: deployment
 tags: [hosting, deployment, quick, sharing]
 price: freemium
 website: https://replit.com
-logo: 
+logo: ""
 description: Replit cloud deployment capability, one-click project deployment with built-in domain and HTTPS.
 scenarios: ["Rapid validation", "Instant sharing", "Cloud development"]
 featured: false

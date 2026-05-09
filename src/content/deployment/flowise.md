@@ -5,7 +5,7 @@ category: deployment
 tags: [rag, langchain, drag-drop, no-code]
 price: free
 website: https://flowiseai.com
-logo: 
+logo: ""
 description: Drag-and-drop LangChain UI for building LLM applications without code. Perfect for non-engineers to rapidly prototype.
 scenarios: ["Rapid LLM prototyping", "No-code RAG", "Internal AI tools"]
 featured: false

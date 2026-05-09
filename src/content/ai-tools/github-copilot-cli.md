@@ -5,7 +5,7 @@ category: ai-tools
 tags: [cli, shell, terminal, github]
 price: free
 website: https://githubnext.com/projects/copilot-cli
-logo: 
+logo: ""
 description: GitHub Copilot terminal version providing AI completion and shell command generation in the command line.
 scenarios: ["Terminal workflows", "Shell command generation", "Git operations"]
 featured: false
