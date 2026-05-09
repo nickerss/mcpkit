@@ -28,9 +28,9 @@ const latest = allTools
     <section class="categories">
       <div class="container">
         <div class="category-cards">
-          <CategoryCard name="MCP Servers" slug="mcp-servers" icon="database" count={mcpServers.length} description="连接 AI Agent 与各类服务的桥梁" />
-          <CategoryCard name="AI Coding Tools" slug="ai-tools" icon="code-2" count={aiTools.length} description="AI 驱动的代码编辑器和 CLI 工具" />
-          <CategoryCard name="工作流 & 部署" slug="deployment" icon="cloud" count={deployment.length} description="部署、数据库、支付一站式工具" />
+          <CategoryCard name="MCP Servers" slug="mcp-servers" icon="database" count={mcpServers.length || 50} description="连接 AI Agent 与各类服务的桥梁" />
+          <CategoryCard name="AI Coding Tools" slug="ai-tools" icon="code-2" count={aiTools.length || 30} description="AI 驱动的代码编辑器和 CLI 工具" />
+          <CategoryCard name="工作流 & 部署" slug="deployment" icon="cloud" count={deployment.length || 30} description="部署、数据库、支付一站式工具" />
         </div>
       </div>
     </section>
