@@ -8,8 +8,8 @@ const locale = getLocaleFromUrl(Astro.url);
   <div class="footer-inner">
     <p class="copyright">
       {locale === 'zh'
-        ? '© 2026 mcpkit.run — 独立开发者的 AI Agent 工具箱'
-        : '© 2026 mcpkit.run — AI Agent Tools for Independent Developers'}
+        ? `© ${new Date().getFullYear()} mcpkit.run — 独立开发者的 AI Agent 工具箱`
+        : `© ${new Date().getFullYear()} mcpkit.run — AI Agent Tools for Independent Developers`}
     </p>
     <div class="links">
       <a href={`/submit/?lang=${locale}`} class="link">

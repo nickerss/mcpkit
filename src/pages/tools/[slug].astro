@@ -5,6 +5,11 @@ import PriceBadge from '../../components/PriceBadge.astro';
 import InstallCommand from '../../components/InstallCommand.astro';
 import TagList from '../../components/TagList.astro';
 import { getCollection } from 'astro:content';
+import { getLocaleFromUrl, t } from '../../i18n/index';
+
+const locale = getLocaleFromUrl(Astro.url);
+const i18n = t(locale);
+const isZh = locale === 'zh';
 
 export async function getStaticPaths() {
   const mcpServers = await getCollection('mcp-servers');
@@ -19,20 +24,31 @@ export async function getStaticPaths() {
 }
 
 const { entry, allTools } = Astro.props;
-const { Content } = await entry.render();
 
 const related = allTools
   .filter(t => t.slug !== entry.slug && t.data.category === entry.data.category)
   .slice(0, 2);
+
+const categoryMap: Record<string, string> = {
+  'mcp-server': isZh ? 'MCP Servers' : 'MCP Servers',
+  'ai-tool': isZh ? 'AI 工具' : 'AI Tools',
+  'deployment': isZh ? '部署' : 'Deployment',
+};
+const categorySlug: Record<string, string> = {
+  'mcp-server': 'mcp-servers',
+  'ai-tool': 'ai-tools',
+  'deployment': 'deployment',
+};
+const category = entry.data.category || 'mcp-server';
 ---
 
 <BaseLayout title={`${entry.data.title} - mcpkit.run`} description={entry.data.description}>
   <main class="container">
     <nav class="breadcrumb">
-      <a href="/">首页</a>
+      <a href={`/?lang=${locale}`}>{i18n.detail.breadcrumbHome}</a>
       <span class="sep">›</span>
-      <a href={`/${entry.data.category === 'mcp-server' ? 'mcp-servers' : entry.data.category === 'ai-tool' ? 'ai-tools' : 'deployment'}/`}>
-        {entry.data.category === 'mcp-server' ? 'MCP Servers' : entry.data.category === 'ai-tool' ? 'AI 工具' : '部署'}
+      <a href={`/${categorySlug[category]}/?lang=${locale}`}>
+        {categoryMap[category] || category}
       </a>
       <span class="sep">›</span>
       <span>{entry.data.title}</span>
@@ -65,16 +81,16 @@ const related = allTools
       <div class="left-col">
         {entry.data.scenarios?.length && (
           <div class="section">
-            <h3>使用场景</h3>
+            <h3>{i18n.detail.useCases}</h3>
             <ul class="scenario-list">
-              {entry.data.scenarios.map(s => <li>{s}</li>)}
+              {entry.data.scenarios.map((s: string) => <li>{s}</li>)}
             </ul>
           </div>
         )}
 
         {entry.data.config && (
           <div class="section">
-            <h3>配置示例</h3>
+            <h3>{i18n.detail.installConfig}</h3>
             <InstallCommand command={entry.data.config} />
           </div>
         )}
@@ -82,7 +98,7 @@ const related = allTools
 
       {related.length > 0 && (
         <div class="right-col">
-          <h3>相关工具</h3>
+          <h3>{i18n.detail.relatedTools}</h3>
           <div class="related-grid">
             {related.map(t => (
               <ToolCard {...t.data} slug={t.slug} />
@@ -93,7 +109,9 @@ const related = allTools
     </div>
 
     <div class="tool-actions">
-      <a href={entry.data.website} target="_blank" rel="noopener" class="btn-primary">访问官网 →</a>
+      <a href={entry.data.website} target="_blank" rel="noopener" class="btn-primary">
+        {i18n.detail.visitSite}
+      </a>
     </div>
   </main>
 </BaseLayout>
@@ -118,12 +136,8 @@ const related = allTools
     text-decoration: none;
     transition: color 150ms ease;
   }
-  .breadcrumb a:hover {
-    color: var(--text-secondary);
-  }
-  .sep {
-    color: var(--text-muted);
-  }
+  .breadcrumb a:hover { color: var(--text-secondary); }
+  .sep { color: var(--text-muted); }
   .tool-header {
     display: flex;
     align-items: flex-start;
@@ -141,77 +155,20 @@ const related = allTools
     align-items: center;
     justify-content: center;
   }
-  .tool-logo {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-  .logo-placeholder {
-    color: var(--text-muted);
-  }
-  .header-info {
-    flex: 1;
-    min-width: 0;
-  }
-  .tool-title {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 12px;
-  }
-  .meta-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .tool-desc {
-    font-size: 16px;
-    color: var(--text-secondary);
-    line-height: 1.7;
-    margin-bottom: 40px;
-  }
-  .two-col {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 40px;
-    margin-bottom: 40px;
-  }
-  @media (min-width: 768px) {
-    .two-col {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-  .section {
-    margin-bottom: 32px;
-  }
-  .section h3 {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 12px;
-  }
-  .scenario-list {
-    list-style: disc;
-    list-style-position: inside;
-    color: var(--text-secondary);
-    font-size: 14px;
-    line-height: 2;
-  }
-  .right-col h3 {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 16px;
-  }
-  .related-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .tool-actions {
-    margin-top: 40px;
-  }
+  .tool-logo { width: 100%; height: 100%; object-fit: contain; }
+  .logo-placeholder { color: var(--text-muted); }
+  .header-info { flex: 1; min-width: 0; }
+  .tool-title { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px; }
+  .meta-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .tool-desc { font-size: 16px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 40px; }
+  .two-col { display: grid; grid-template-columns: 1fr; gap: 40px; margin-bottom: 40px; }
+  @media (min-width: 768px) { .two-col { grid-template-columns: 1fr 1fr; } }
+  .section { margin-bottom: 32px; }
+  .section h3 { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; }
+  .scenario-list { list-style: disc; list-style-position: inside; color: var(--text-secondary); font-size: 14px; line-height: 2; }
+  .right-col h3 { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; }
+  .related-grid { display: flex; flex-direction: column; gap: 12px; }
+  .tool-actions { margin-top: 40px; }
   .btn-primary {
     display: inline-block;
     padding: 14px 24px;
@@ -223,7 +180,5 @@ const related = allTools
     text-decoration: none;
     transition: background-color 150ms ease;
   }
-  .btn-primary:hover {
-    background: var(--accent-hover);
-  }
+  .btn-primary:hover { background: var(--accent-hover); }
 </style>
