@@ -1,17 +1,19 @@
 ---
 import '../styles/global.css';
+import { getLocaleFromUrl } from '../i18n/index';
 
 interface Props {
   title: string;
   description?: string;
 }
 
+const locale = getLocaleFromUrl(Astro.url);
 const { title, description = '独立开发者的 AI Agent 工具箱' } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
-<html lang="zh">
+<html lang={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
