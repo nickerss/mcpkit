@@ -13,7 +13,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
-<html lang={locale}>
+<html lang={locale} data-lang={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,5 +28,105 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   </head>
   <body>
     <slot />
+    <script is:inline>
+      (function() {
+        var urlLang = new URLSearchParams(window.location.search).get('lang');
+        var storedLang = localStorage.getItem('mcpkit-lang');
+        var lang = urlLang || storedLang || 'en';
+        if (lang !== 'en' && lang !== 'zh') lang = 'en';
+
+        var texts = {
+          en: {
+            nav: ['Home', 'MCP Servers', 'AI Tools', 'Deployment', 'Search', 'Submit Tool'],
+            navHrefs: ['/', '/mcp-servers/', '/ai-tools/', '/deployment/', '/search/', '/submit/'],
+            heroTitle: 'AI Agent Tools for',
+            heroAccent: 'Independent Developers',
+            heroDesc: 'Curated MCP Servers, AI coding tools, and workflow components — find the right tool for your use case',
+            heroPlaceholder: 'Search tools...',
+            langLabel: 'EN',
+            langTitle: 'Switch to Chinese',
+            sectionFeatured: 'Featured',
+            sectionLatest: 'Latest Added',
+            footerCopy: '© 2026 MCPKIT — AI Agent Tools for Independent Developers',
+            footerLinks: ['Search', 'Submit Tool']
+          },
+          zh: {
+            nav: ['首页', 'MCP 服务器', 'AI 工具', '部署工具', '搜索', '提交工具'],
+            navHrefs: ['/?lang=zh', '/mcp-servers/?lang=zh', '/ai-tools/?lang=zh', '/deployment/?lang=zh', '/search/?lang=zh', '/submit/?lang=zh'],
+            heroTitle: '独立开发者的',
+            heroAccent: 'AI Agent 工具箱',
+            heroDesc: '精选 MCP Servers、AI 编码工具、工作流组件，帮你快速找到「这个场景用什么工具」',
+            heroPlaceholder: '搜索工具...',
+            langLabel: '中',
+            langTitle: '切换到英文',
+            sectionFeatured: '编辑精选',
+            sectionLatest: '最新收录',
+            footerCopy: '© 2026 MCPKIT — 独立开发者的 AI Agent 工具箱',
+            footerLinks: ['搜索', '提交工具']
+          }
+        };
+
+        var t = texts[lang] || texts.en;
+
+        // Nav links
+        var navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(function(el, i) {
+          if (t.nav[i]) {
+            el.textContent = t.nav[i];
+            el.setAttribute('href', t.navHrefs[i]);
+          }
+        });
+
+        // Logo href
+        var logoLink = document.querySelector('.logo');
+        if (logoLink) logoLink.setAttribute('href', '/?lang=' + lang);
+
+        // Hero title (h1)
+        var heroTitle = document.querySelector('.hero-title');
+        if (heroTitle) {
+          var parts = heroTitle.innerHTML.split('<br');
+          heroTitle.innerHTML = t.heroTitle + '<br/><span class="gradient-text">' + t.heroAccent + '</span>';
+        }
+        var heroDesc = document.querySelector('.hero-desc');
+        if (heroDesc) heroDesc.textContent = t.heroDesc;
+        var searchInput = document.querySelector('.search-input');
+        if (searchInput) searchInput.setAttribute('placeholder', t.heroPlaceholder);
+
+        // Section titles
+        var sectionTitles = document.querySelectorAll('.section-title');
+        if (sectionTitles[0]) sectionTitles[0].textContent = t.sectionFeatured;
+        if (sectionTitles[1]) sectionTitles[1].textContent = t.sectionLatest;
+
+        // Lang toggle
+        var langBtn = document.getElementById('lang-toggle');
+        if (langBtn) {
+          var langLabel = langBtn.querySelector('.lang-label');
+          if (langLabel) langLabel.textContent = t.langLabel;
+          langBtn.setAttribute('title', t.langTitle);
+          langBtn.setAttribute('aria-label', t.langTitle);
+        }
+
+        // Footer
+        var copyright = document.querySelector('.copyright');
+        if (copyright) copyright.textContent = t.footerCopy;
+        var footerLinks = document.querySelectorAll('.footer .link');
+        if (footerLinks[0]) footerLinks[0].textContent = t.footerLinks[0];
+        if (footerLinks[1]) footerLinks[1].textContent = t.footerLinks[1];
+
+        // Update HTML lang
+        document.documentElement.lang = lang;
+
+        // Update all href/src with ?lang=
+        if (lang !== 'en') {
+          var allLinks = document.querySelectorAll('a[href]');
+          allLinks.forEach(function(link) {
+            var href = link.getAttribute('href');
+            if (href && !href.startsWith('http') && !href.includes('?')) {
+              link.setAttribute('href', href + '?lang=' + lang);
+            }
+          });
+        }
+      })();
+    </script>
   </body>
 </html>
