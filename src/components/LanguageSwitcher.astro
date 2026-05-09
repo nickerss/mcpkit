@@ -1,125 +1,62 @@
 ---
-import { getLocaleFromUrl, localePath } from '../i18n/index';
+import { getLocaleFromUrl } from '../i18n/index';
 
 const locale = getLocaleFromUrl(Astro.url);
-const isZh = locale === 'zh';
+
+const labels = { en: 'Switch to Chinese', zh: '切换到英文' };
+const title = labels[locale] || labels.en;
 ---
 
-<div class="lang-switcher" id="lang-switcher">
-  <button class="lang-trigger" id="lang-trigger" aria-haspopup="true" aria-expanded="false">
-    {isZh ? '中文' : 'EN'}
-    <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="m6 9 6 6 6-6"/>
-    </svg>
-  </button>
-  <div class="lang-dropdown" id="lang-dropdown" role="menu">
-    <button class="lang-option" data-lang="en" role="menuitem">
-      {isZh ? '✓ English' : '✓ English'}
-    </button>
-    <button class="lang-option" data-lang="zh" role="menuitem">
-      {isZh ? '中文' : '中文'}
-    </button>
-  </div>
-</div>
+<button
+  class="lang-toggle"
+  id="lang-toggle"
+  aria-label={title}
+  title={title}
+>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+    <path d="M2 12h20"/>
+    <path d="M12 2a10 10 0 0 1 4 8 10 10 0 0 1-4 8"/>
+  </svg>
+  <span class="lang-label">{locale === 'zh' ? '中' : 'EN'}</span>
+</button>
 
 <script>
-  const switcher = document.getElementById('lang-switcher');
-  const trigger = document.getElementById('lang-trigger');
-  const dropdown = document.getElementById('lang-dropdown');
-  const options = dropdown?.querySelectorAll('.lang-option');
-
-  // Restore from localStorage
-  const saved = localStorage.getItem('mcpkit-lang') || 'en';
-  if (saved === 'zh' && !window.location.search.includes('lang=')) {
+  const btn = document.getElementById('lang-toggle');
+  btn?.addEventListener('click', () => {
     const url = new URL(window.location.href);
-    url.searchParams.set('lang', 'zh');
+    const currentLang = url.searchParams.get('lang') || 'en';
+    const nextLang = currentLang === 'en' ? 'zh' : 'en';
+    url.searchParams.set('lang', nextLang);
+    localStorage.setItem('mcpkit-lang', nextLang);
     window.location.replace(url.toString());
-  }
-
-  trigger?.addEventListener('click', () => {
-    const expanded = trigger.getAttribute('aria-expanded') === 'true';
-    trigger.setAttribute('aria-expanded', String(!expanded));
-    dropdown?.classList.toggle('open');
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!switcher?.contains(e.target as Node)) {
-      trigger?.setAttribute('aria-expanded', 'false');
-      dropdown?.classList.remove('open');
-    }
-  });
-
-  options?.forEach(opt => {
-    opt.addEventListener('click', () => {
-      const lang = opt.getAttribute('data-lang') || 'en';
-      localStorage.setItem('mcpkit-lang', lang);
-      const url = new URL(window.location.href);
-      url.searchParams.set('lang', lang);
-      window.location.replace(url.toString());
-    });
   });
 </script>
 
 <style>
-  .lang-switcher {
-    position: relative;
-  }
-  .lang-trigger {
+  .lang-toggle {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
     padding: 6px 10px;
     font-size: 13px;
     font-weight: 600;
     color: var(--text-secondary);
     background: var(--bg-tertiary);
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: color 150ms ease, background-color 150ms ease;
-  }
-  .lang-trigger:hover {
-    color: var(--text-primary);
-    background: var(--bg-secondary);
-  }
-  .chevron {
-    transition: transform 200ms ease;
-  }
-  .lang-dropdown {
-    position: absolute;
-    top: calc(100% + 4px);
-    right: 0;
-    min-width: 120px;
-    background: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    padding: 4px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-4px);
-    transition: opacity 150ms ease, transform 150ms ease, visibility 150ms ease;
-    z-index: 200;
-  }
-  .lang-dropdown.open {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-  }
-  .lang-option {
-    width: 100%;
-    display: block;
-    padding: 8px 12px;
-    font-size: 14px;
-    color: var(--text-secondary);
-    background: transparent;
-    border: none;
-    border-radius: 6px;
     cursor: pointer;
-    text-align: left;
-    transition: color 150ms ease, background-color 150ms ease;
+    transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
   }
-  .lang-option:hover {
-    color: var(--text-primary);
-    background: var(--bg-tertiary);
+  .lang-toggle:hover {
+    color: var(--accent);
+    background: var(--bg-secondary);
+    border-color: var(--accent);
+  }
+  .lang-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.05em;
   }
 </style>
