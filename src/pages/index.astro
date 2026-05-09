@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroSection from '../components/HeroSection.astro';
+import ToolCard from '../components/ToolCard.astro';
+import { getCollection } from 'astro:content';
+
+const mcpServers = await getCollection('mcp-servers');
+const aiTools = await getCollection('ai-tools');
+const deployment = await getCollection('deployment');
+
+const allTools = [...mcpServers, ...aiTools, ...deployment];
+const featured = allTools.filter(t => t.data.featured).slice(0, 5);
+const latest = allTools
+  .sort((a, b) => new Date(b.data.submittedAt) - new Date(a.data.submittedAt))
+  .slice(0, 10);
+---
+
+<BaseLayout title="mcpkit.run - AI Agent 开发者工具目录">
+  <header class="site-header">
+    <div class="container">
+      <a href="/" class="logo">mcpkit.run</a>
+      <nav class="nav">
+        <a href="/mcp-servers/">MCP Servers</a>
+        <a href="/ai-tools/">AI 工具</a>
+        <a href="/deployment/">部署</a>
+        <a href="/submit/" class="nav-cta">提交工具</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <HeroSection />
+
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">编辑精选</h2>
+        <div class="grid">
+          {featured.map(tool => (
+            <ToolCard {...tool.data} slug={tool.slug} />
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">最新收录</h2>
+        <div class="grid">
+          {latest.map(tool => (
+            <ToolCard {...tool.data} slug={tool.slug} />
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2026 mcpkit.run — 独立开发者的 AI Agent 工具箱</p>
+  </footer>
+</BaseLayout>
+
+<style>
+  .site-header {
+    @apply border-b border-gray-800;
+  }
+  .container {
+    @apply max-w-6xl mx-auto px-4;
+  }
+  .site-header .container {
+    @apply flex items-center justify-between py-4;
+  }
+  .logo {
+    @apply text-xl font-bold text-primary;
+  }
+  .nav {
+    @apply flex items-center gap-6;
+  }
+  .nav a {
+    @apply text-sm text-gray-400 hover:text-gray-100 transition;
+  }
+  .nav-cta {
+    @apply bg-primary/20 text-primary px-4 py-2 rounded-lg !important;
+  }
+  .section {
+    @apply py-12;
+  }
+  .section-title {
+    @apply text-2xl font-bold mb-6;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1rem;
+  }
+  @media (min-width: 768px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1024px) {
+    .grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  .site-footer {
+    @apply text-center text-sm text-gray-500 py-8 border-t border-gray-800;
+  }
+</style>

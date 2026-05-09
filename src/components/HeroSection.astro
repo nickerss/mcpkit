@@ -1,0 +1,52 @@
+---
+---
+
+<section class="hero">
+  <div class="hero-content">
+    <h1 class="hero-title">
+      独立开发者的<br/>
+      <span class="gradient-text">AI Agent 工具箱</span>
+    </h1>
+    <p class="hero-desc">
+      精选 MCP Servers、AI 编码工具、工作流组件<br/>
+      帮你快速找到「这个场景用什么工具」
+    </p>
+    <form class="search-form" action="/search" method="get">
+      <input
+        type="text"
+        name="q"
+        class="search-input"
+        placeholder="搜索工具..."
+        autocomplete="off"
+      />
+      <button type="submit" class="search-btn">搜索</button>
+    </form>
+  </div>
+</section>
+
+<style>
+  .hero {
+    @apply py-20 text-center;
+  }
+  .hero-content {
+    @apply max-w-2xl mx-auto px-4;
+  }
+  .hero-title {
+    @apply text-4xl md:text-5xl font-bold mb-6 leading-tight;
+  }
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent;
+  }
+  .hero-desc {
+    @apply text-lg text-gray-400 mb-8 leading-relaxed;
+  }
+  .search-form {
+    @apply flex gap-2 max-w-lg mx-auto;
+  }
+  .search-input {
+    @apply flex-1 px-4 py-3 bg-gray-900 border border-gray-700 rounded-xl text-gray-100 placeholder-gray-500 focus:outline-none focus:border-primary transition;
+  }
+  .search-btn {
+    @apply px-6 py-3 bg-primary hover:bg-primary/80 text-white rounded-xl font-medium transition;
+  }
+</style>

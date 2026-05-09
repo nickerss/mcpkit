@@ -1,0 +1,49 @@
+---
+---
+
+<form class="submit-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+  <div class="field">
+    <label class="label">工具名称</label>
+    <input type="text" name="title" class="input" required />
+  </div>
+  <div class="field">
+    <label class="label">官网链接</label>
+    <input type="url" name="website" class="input" required />
+  </div>
+  <div class="field">
+    <label class="label">分类</label>
+    <select name="category" class="input" required>
+      <option value="">选择分类</option>
+      <option value="mcp-server">MCP Server</option>
+      <option value="ai-tool">AI Coding Tool</option>
+      <option value="deployment">工作流 & 部署</option>
+    </select>
+  </div>
+  <div class="field">
+    <label class="label">简短描述</label>
+    <textarea name="description" class="input" rows="3" required></textarea>
+  </div>
+  <div class="field">
+    <label class="label">你的邮箱（用于通知审核结果）</label>
+    <input type="email" name="email" class="input" />
+  </div>
+  <button type="submit" class="submit-btn">提交工具</button>
+</form>
+
+<style>
+  .submit-form {
+    @apply max-w-xl mx-auto space-y-4;
+  }
+  .field {
+    @apply flex flex-col gap-1;
+  }
+  .label {
+    @apply text-sm font-medium text-gray-300;
+  }
+  .input {
+    @apply px-4 py-3 bg-gray-900 border border-gray-700 rounded-xl text-gray-100 placeholder-gray-500 focus:outline-none focus:border-primary transition;
+  }
+  .submit-btn {
+    @apply w-full py-3 bg-primary hover:bg-primary/80 text-white rounded-xl font-medium transition;
+  }
+</style>

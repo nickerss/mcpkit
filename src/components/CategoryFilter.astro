@@ -1,0 +1,45 @@
+---
+interface Props {
+  categories: Array<{ id: string; name: string; slug: string; icon: string }>;
+  activeCategory?: string;
+}
+
+const { categories, activeCategory } = Astro.props;
+---
+
+<aside class="filter-sidebar">
+  <h3 class="filter-title">分类</h3>
+  <ul class="filter-list">
+    <li>
+      <a href="/" class:list={["filter-link", { active: !activeCategory }]}>全部</a>
+    </li>
+    {categories.map(cat => (
+      <li>
+        <a
+          href={`/${cat.slug}/`}
+          class:list={["filter-link", { active: activeCategory === cat.id }]}
+        >
+          {cat.name}
+        </a>
+      </li>
+    ))}
+  </ul>
+</aside>
+
+<style>
+  .filter-sidebar {
+    @apply w-48 shrink-0;
+  }
+  .filter-title {
+    @apply text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3;
+  }
+  .filter-list {
+    @apply space-y-1;
+  }
+  .filter-link {
+    @apply block px-3 py-2 text-sm text-gray-400 rounded-lg hover:bg-gray-800 hover:text-gray-100 transition;
+  }
+  .filter-link.active {
+    @apply bg-primary/20 text-primary;
+  }
+</style>

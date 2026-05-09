@@ -1,0 +1,66 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  category: string;
+  tags: string[];
+  price: string;
+  website: string;
+  logo?: string;
+  slug: string;
+  featured?: boolean;
+}
+
+const { title, description, category, tags, price, website, logo, slug, featured = false } = Astro.props;
+---
+
+<article class:list={["card", { "card--featured": featured }]}>
+  {logo && <img src={logo} alt={title} class="card-logo" />}
+  <div class="card-body">
+    <div class="card-header">
+      <h3 class="card-title">{title}</h3>
+      <span class="card-price">{price}</span>
+    </div>
+    <p class="card-desc">{description}</p>
+    <div class="card-tags">
+      {tags.map(tag => <span class="tag">{tag}</span>)}
+    </div>
+    <a href={website} target="_blank" rel="noopener" class="card-link">官网 →</a>
+  </div>
+</article>
+
+<style>
+  .card {
+    @apply bg-gray-900 border border-gray-800 rounded-xl p-4 flex gap-4;
+  }
+  .card--featured {
+    @apply border-primary shadow-lg;
+  }
+  .card-logo {
+    @apply w-12 h-12 rounded-lg object-contain;
+  }
+  .card-body {
+    @apply flex-1 min-w-0;
+  }
+  .card-header {
+    @apply flex items-center justify-between mb-2;
+  }
+  .card-title {
+    @apply font-semibold text-gray-100;
+  }
+  .card-price {
+    @apply text-xs text-green-400 bg-green-900/30 px-2 py-0.5 rounded;
+  }
+  .card-desc {
+    @apply text-sm text-gray-400 line-clamp-2 mb-3;
+  }
+  .card-tags {
+    @apply flex flex-wrap gap-1 mb-3;
+  }
+  .tag {
+    @apply text-xs bg-gray-800 text-gray-300 px-2 py-0.5 rounded;
+  }
+  .card-link {
+    @apply text-sm text-primary hover:text-primary/80 transition;
+  }
+</style>

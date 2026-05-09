@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SubmitForm from '../components/SubmitForm.astro';
+---
+
+<BaseLayout title="提交工具 - mcpkit.run" description="提交你发现的优秀 AI Agent 开发工具">
+  <main class="container py-12">
+    <div class="text-center mb-10">
+      <h1 class="title">提交工具</h1>
+      <p class="desc">发现了好工具？告诉我们，它就有机会被收录到目录中！</p>
+    </div>
+    <SubmitForm />
+  </main>
+</BaseLayout>
+
+<style>
+  .container {
+    @apply max-w-6xl mx-auto px-4;
+  }
+  .title {
+    @apply text-3xl font-bold mb-4;
+  }
+  .desc {
+    @apply text-gray-400;
+  }
+</style>

@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CategoryFilter from '../../components/CategoryFilter.astro';
+import ToolCard from '../../components/ToolCard.astro';
+import { getCollection } from 'astro:content';
+
+const tools = await getCollection('deployment');
+---
+
+<BaseLayout title="工作流 & 部署 - mcpkit.run">
+  <main class="container py-12">
+    <h1 class="title">工作流 & 部署</h1>
+    <p class="desc">部署、数据库、支付、邮件一站式工具清单</p>
+    <div class="layout">
+      <CategoryFilter categories={[{ id: 'deployment', name: '工作流 & 部署', slug: 'deployment', icon: 'cloud' }]} activeCategory="deployment" />
+      <div class="grid">
+        {tools.map(tool => (
+          <ToolCard {...tool.data} slug={tool.slug} />
+        ))}
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .container { @apply max-w-6xl mx-auto px-4; }
+  .title { @apply text-3xl font-bold mb-2; }
+  .desc { @apply text-gray-400 mb-8; }
+  .layout { @apply flex gap-8; }
+  .grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 1rem; flex: 1; }
+  @media (min-width: 768px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+</style>

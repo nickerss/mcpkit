@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ToolCard from '../../components/ToolCard.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const mcpServers = await getCollection('mcp-servers');
+  return mcpServers.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<BaseLayout title={`${entry.data.title} - mcpkit.run`} description={entry.data.description}>
+  <main class="container py-12">
+    <div class="tool-header">
+      {entry.data.logo && <img src={entry.data.logo} alt={entry.data.title} class="tool-logo" />}
+      <div>
+        <h1 class="tool-title">{entry.data.title}</h1>
+        <div class="tool-meta">
+          <span class="tag">{entry.data.category}</span>
+          <span class="tag">{entry.data.price}</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="tool-desc">{entry.data.description}</p>
+
+    <div class="tool-section">
+      <h3>使用场景</h3>
+      <ul>
+        {entry.data.scenarios?.map(s => <li>{s}</li>)}
+      </ul>
+    </div>
+
+    {entry.data.config && (
+      <div class="tool-section">
+        <h3>配置示例</h3>
+        <pre class="code-block"><code>{entry.data.config}</code></pre>
+      </div>
+    )}
+
+    <div class="tool-actions">
+      <a href={entry.data.website} target="_blank" rel="noopener" class="btn-primary">访问官网</a>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .container { @apply max-w-3xl mx-auto px-4; }
+  .tool-header { @apply flex items-center gap-4 mb-6; }
+  .tool-logo { @apply w-16 h-16 rounded-xl object-contain; }
+  .tool-title { @apply text-3xl font-bold mb-2; }
+  .tool-meta { @apply flex gap-2; }
+  .tag { @apply text-xs bg-gray-800 text-gray-300 px-2 py-1 rounded; }
+  .tool-desc { @apply text-gray-300 text-lg mb-8; }
+  .tool-section { @apply mb-6; }
+  .tool-section h3 { @apply text-lg font-semibold mb-2; }
+  .tool-section ul { @apply list-disc list-inside text-gray-400 space-y-1; }
+  .code-block { @apply bg-gray-900 border border-gray-700 rounded-xl p-4 overflow-x-auto; }
+  .tool-actions { @apply mt-8; }
+  .btn-primary { @apply inline-block px-6 py-3 bg-primary hover:bg-primary/80 text-white rounded-xl font-medium transition; }
+</style>

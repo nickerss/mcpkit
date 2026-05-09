@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CategoryFilter from '../../components/CategoryFilter.astro';
+import ToolCard from '../../components/ToolCard.astro';
+import { getCollection } from 'astro:content';
+
+const servers = await getCollection('mcp-servers');
+---
+
+<BaseLayout title="MCP Servers - mcpkit.run">
+  <main class="container py-12">
+    <h1 class="title">MCP Servers</h1>
+    <p class="desc">连接 AI Agent 与各类服务的桥梁</p>
+    <div class="layout">
+      <CategoryFilter categories={[{ id: 'mcp-server', name: 'MCP Servers', slug: 'mcp-servers', icon: 'database' }]} activeCategory="mcp-server" />
+      <div class="grid">
+        {servers.map(server => (
+          <ToolCard {...server.data} slug={server.slug} />
+        ))}
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .container { @apply max-w-6xl mx-auto px-4; }
+  .title { @apply text-3xl font-bold mb-2; }
+  .desc { @apply text-gray-400 mb-8; }
+  .layout { @apply flex gap-8; }
+  .grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 1rem; flex: 1; }
+  @media (min-width: 768px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+</style>

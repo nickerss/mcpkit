@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="搜索 - mcpkit.run">
+  <main class="container py-12">
+    <h1 class="title">搜索工具</h1>
+    <div id="search-box" data-pagefind-search></div>
+    <div id="search-results" class="results"></div>
+  </main>
+</BaseLayout>
+
+<script>
+  // Pagefind search will be initialized after build
+  // For now this is a placeholder — full Pagefind integration requires a production build
+</script>
+
+<style>
+  .container { @apply max-w-4xl mx-auto px-4; }
+  .title { @apply text-3xl font-bold mb-6; }
+  .results { @apply mt-6 space-y-4; }
+</style>
