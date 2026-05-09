@@ -1,27 +1,22 @@
 ---
-title: "opencode"
+title: "OpenCode"
 name: opencode
 category: ai-tools
-tags: [ai, tools]
+tags: [cli, open-source, local, self-hosted]
 price: free
-website: ""
-logo: ""
-description: OpenCode
+website: https://github.com/glama-community/opencode
+logo: 
+description: Open-source AI CLI programming tool supporting multiple models including Ollama local models.
+scenarios: ["Local development", "Self-hosted AI", "Privacy-first workflows"]
 featured: false
 submittedAt: "2026-05-09T00:00:00.000Z"
 ---
 
----
-name: OpenCode
-description: 开源 AI 编程 CLI，支持多种模型，本地开发首选
-category: ai-tools
-tags: [cli, open-source, local, self-hosted]
-pricing: free
-url: https://github.com/glama-community/opencode
-logo: ""
----
-
 # OpenCode
 
-OpenCode 是开源 AI 命令行编程工具，支持连接多种 LLM API（包括 Ollama 本地模型）。适合希望完全控制数据和模型的开发者，本地运行不依赖云服务，隐私安全。
+Open-source AI CLI programming tool supporting multiple models including Ollama local models.
 
+**Use Cases:**
+- Local development
+- Self-hosted AI
+- Privacy-first workflows

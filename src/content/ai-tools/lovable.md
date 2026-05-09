@@ -1,27 +1,22 @@
 ---
-title: "lovable"
+title: "Lovable"
 name: lovable
 category: ai-tools
-tags: [ai, tools]
-price: free
-website: ""
-logo: ""
-description: Lovable
+tags: [no-code, prototyping, full-stack, builder]
+price: freemium
+website: https://lovable.dev
+logo: 
+description: AI product building platform. Describe an app and get a complete full-stack application without engineering skills.
+scenarios: ["Indie developer validation", "Founder MVPs", "Non-engineer product building"]
 featured: false
 submittedAt: "2026-05-09T00:00:00.000Z"
 ---
 
----
-name: Lovable
-description: AI 产品构建平台，输入描述生成完整 App，非工程师也能快速做产品
-category: ai-tools
-tags: [no-code, prototyping, full-stack, builder]
-pricing: freemium
-url: https://lovable.dev
-logo: ""
----
-
 # Lovable
 
-Lovable 让非工程师也能通过自然语言描述构建完整应用。前端+后端+部署一站式搞定，适合独立开发者验证想法、创业者和产品经理快速做 MVP。
+AI product building platform. Describe an app and get a complete full-stack application without engineering skills.
 
+**Use Cases:**
+- Indie developer validation
+- Founder MVPs
+- Non-engineer product building

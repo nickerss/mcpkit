@@ -1,27 +1,22 @@
 ---
-title: "windsurf"
+title: "Windsurf (Codeium)"
 name: windsurf
 category: ai-tools
-tags: [ai, tools]
-price: free
-website: ""
-logo: ""
-description: Windsurf
+tags: [editor, ide, codeium, conversational]
+price: freemium
+website: https://codeium.com/windsurf
+logo: 
+description: Codeium AI IDE with conversational interactions and full codebase context. More affordable than Cursor with intuitive natural language drive.
+scenarios: ["Full-stack development", "Long context projects", "Cost-conscious indie devs"]
 featured: false
 submittedAt: "2026-05-09T00:00:00.000Z"
 ---
 
----
-name: Windsurf (Codeium)
-description: Codeium 推出的 AI IDE，对话式交互 + 全代码库上下文，价格比 Cursor 更亲民
-category: ai-tools
-tags: [editor, ide, codeium, conversational]
-pricing: freemium
-url: https://codeium.com/windsurf
-logo: ""
----
+# Windsurf (Codeium)
 
-# Windsurf
+Codeium AI IDE with conversational interactions and full codebase context. More affordable than Cursor with intuitive natural language drive.
 
-Windsurf 是 Codeium 推出的 AI 代码编辑器，主打对话式交互和全代码库理解。Cascade 模式让开发者用自然语言驱动代码修改，上手门槛低，价格相对 Cursor 更友好，适合对成本敏感的独立开发者。
-
+**Use Cases:**
+- Full-stack development
+- Long context projects
+- Cost-conscious indie devs

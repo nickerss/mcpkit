@@ -1,27 +1,22 @@
 ---
-title: "devin"
+title: "Devin (Cognition)"
 name: devin
 category: ai-tools
-tags: [ai, tools]
-price: free
-website: ""
-logo: ""
-description: Devin
+tags: [agent, autonomous, full-stack, cognition]
+price: paid
+website: https://cognition.ai/devin
+logo: 
+description: AI software engineer from Cognition that independently completes end-to-end development tasks from requirements to code to testing.
+scenarios: ["Complex task decomposition", "Large project automation", "Autonomous development"]
 featured: false
 submittedAt: "2026-05-09T00:00:00.000Z"
 ---
 
----
-name: Devin (Cognition)
-description: AI 软件工程师，可独立完成端到端开发任务，从需求到代码到测试全自动执行
-category: ai-tools
-tags: [agent, autonomous, full-stack, cognition]
-pricing: paid
-url: https://cognition.ai/devin
-logo: ""
----
+# Devin (Cognition)
 
-# Devin
+AI software engineer from Cognition that independently completes end-to-end development tasks from requirements to code to testing.
 
-Devin 是 Cognition 推出的自主 AI 软件工程师，能够独立完成从需求理解到代码编写再到测试验收的完整开发流程。适合复杂任务分解、大型项目自动化开发，目前处于付费早期访问阶段。
-
+**Use Cases:**
+- Complex task decomposition
+- Large project automation
+- Autonomous development

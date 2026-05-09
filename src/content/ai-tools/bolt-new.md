@@ -1,27 +1,22 @@
 ---
-title: "bolt-new"
+title: "Bolt.new (StackBlitz)"
 name: bolt-new
 category: ai-tools
-tags: [ai, tools]
-price: free
-website: ""
-logo: ""
-description: Bolt.new
+tags: [cloud-ide, browser, prototyping, stackblitz]
+price: freemium
+website: https://bolt.new
+logo: 
+description: AI cloud development environment with one-click browser-based IDE and instant sharing. AI-assisted coding and preview.
+scenarios: ["Rapid prototyping", "Instant sharing", "Interview coding"]
 featured: false
 submittedAt: "2026-05-09T00:00:00.000Z"
 ---
 
----
-name: Bolt.new (StackBlitz)
-description: AI 云端开发环境，一键启动浏览器内的开发环境，支持即时分享和 AI 辅助开发
-category: ai-tools
-tags: [cloud-ide, browser, prototyping, stackblitz]
-pricing: freemium
-url: https://bolt.new
-logo: ""
----
+# Bolt.new (StackBlitz)
 
-# Bolt.new
+AI cloud development environment with one-click browser-based IDE and instant sharing. AI-assisted coding and preview.
 
-Bolt.new 是 StackBlitz 推出的 AI 云开发环境，浏览器内即可完成全栈开发。支持一键分享 URL让他人即时预览，AI 辅助代码生成和修改。适合快速原型、面试造轮子、即时协作等场景。
-
+**Use Cases:**
+- Rapid prototyping
+- Instant sharing
+- Interview coding

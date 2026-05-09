@@ -1,27 +1,22 @@
 ---
-title: "replit-agent"
+title: "Replit Agent"
 name: replit-agent
 category: ai-tools
-tags: [ai, tools]
-price: free
-website: ""
-logo: ""
-description: Replit Agent
+tags: [cloud-ide, agent, prototyping, replit]
+price: freemium
+website: https://replit.com
+logo: 
+description: Replit AI agent that builds complete applications from natural language descriptions in the cloud IDE.
+scenarios: ["Rapid idea validation", "Cloud development", "Educational coding"]
 featured: false
 submittedAt: "2026-05-09T00:00:00.000Z"
 ---
 
----
-name: Replit Agent
-description: Replit AI 代理，输入需求即可构建应用，云端即开即用
-category: ai-tools
-tags: [cloud-ide, agent, prototyping, replit]
-pricing: freemium
-url: https://replit.com
-logo: ""
----
-
 # Replit Agent
 
-Replit Agent 集成在云端 IDE Replit 中，用自然语言描述需求即可生成完整项目代码。即开即用无需本地环境，适合快速验证想法和教育场景。
+Replit AI agent that builds complete applications from natural language descriptions in the cloud IDE.
 
+**Use Cases:**
+- Rapid idea validation
+- Cloud development
+- Educational coding
