@@ -30,16 +30,16 @@ const related = allTools
   .slice(0, 2);
 
 const categoryMap: Record<string, string> = {
-  'mcp-server': isZh ? 'MCP Servers' : 'MCP Servers',
-  'ai-tool': isZh ? 'AI 工具' : 'AI Tools',
+  'mcp-servers': isZh ? 'MCP 服务器' : 'MCP Servers',
+  'ai-tools': isZh ? 'AI 工具' : 'AI Tools',
   'deployment': isZh ? '部署' : 'Deployment',
 };
 const categorySlug: Record<string, string> = {
-  'mcp-server': 'mcp-servers',
-  'ai-tool': 'ai-tools',
+  'mcp-servers': 'mcp-servers',
+  'ai-tools': 'ai-tools',
   'deployment': 'deployment',
 };
-const category = entry.data.category || 'mcp-server';
+const category = entry.data.category || 'mcp-servers';
 ---
 
 <BaseLayout title={`${entry.data.title} - mcpkit.run`} description={entry.data.description}>
