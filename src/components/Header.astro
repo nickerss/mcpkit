@@ -1,15 +1,24 @@
 ---
+import { getLocaleFromUrl } from '../i18n/index';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+const locale = getLocaleFromUrl(Astro.url);
 const navLinks = [
-  { href: '/mcp-servers/', label: 'MCP Servers' },
-  { href: '/ai-tools/', label: 'AI 工具' },
-  { href: '/deployment/', label: '部署' },
-  { href: '/search/', label: '搜索' },
+  { href: `/${locale === 'zh' ? '?lang=zh' : ''}`, label: 'Home', zhLabel: '首页' },
+  { href: `/mcp-servers/${locale === 'zh' ? '?lang=zh' : ''}`, label: 'MCP Servers', zhLabel: 'MCP 服务器' },
+  { href: `/ai-tools/${locale === 'zh' ? '?lang=zh' : ''}`, label: 'AI Tools', zhLabel: 'AI 工具' },
+  { href: `/deployment/${locale === 'zh' ? '?lang=zh' : ''}`, label: 'Deployment', zhLabel: '部署工具' },
+  { href: `/search/${locale === 'zh' ? '?lang=zh' : ''}`, label: 'Search', zhLabel: '搜索' },
 ];
+
+const currentLang = locale === 'zh' ? '中文' : 'EN';
+const switchLang = locale === 'zh' ? 'EN' : '中文';
+const switchHref = locale === 'zh' ? '/?lang=en' : '/?lang=zh';
 ---
 
 <header class="header">
   <div class="header-inner">
-    <a href="/" class="logo">
+    <a href={`/?lang=${locale}`} class="logo">
       <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="logo-g" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -25,11 +34,14 @@ const navLinks = [
 
     <nav class="nav">
       {navLinks.map(link => (
-        <a href={link.href} class="nav-link">{link.label}</a>
+        <a href={link.href} class="nav-link">{locale === 'zh' ? link.zhLabel : link.label}</a>
       ))}
     </nav>
 
-    <a href="/submit/" class="cta-btn">提交工具</a>
+    <div class="right-area">
+      <LanguageSwitcher />
+      <a href={`/submit/?lang=${locale}`} class="cta-btn">{locale === 'zh' ? '提交工具' : 'Submit Tool'}</a>
+    </div>
   </div>
 </header>
 
@@ -51,7 +63,7 @@ const navLinks = [
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 32px;
+    gap: 24px;
   }
   .logo {
     display: flex;
@@ -61,31 +73,51 @@ const navLinks = [
     font-weight: 700;
     color: var(--text-primary);
     text-decoration: none;
-  }
-  .logo svg {
     flex-shrink: 0;
   }
+  .logo svg { flex-shrink: 0; }
   .nav {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
     flex: 1;
+    overflow-x: auto;
   }
   .nav-link {
-    padding: 6px 12px;
+    padding: 6px 10px;
     font-size: 14px;
     font-weight: 500;
     color: var(--text-secondary);
     border-radius: 8px;
     text-decoration: none;
     transition: color 150ms ease, background-color 150ms ease;
+    white-space: nowrap;
   }
   .nav-link:hover {
     color: var(--text-primary);
     background: var(--bg-tertiary);
   }
-  .cta-btn {
+  .right-area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     flex-shrink: 0;
+  }
+  .lang-switch {
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg-tertiary);
+    border-radius: 6px;
+    text-decoration: none;
+    transition: color 150ms ease, background-color 150ms ease;
+  }
+  .lang-switch:hover {
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+  }
+  .cta-btn {
     padding: 8px 16px;
     font-size: 14px;
     font-weight: 600;
@@ -94,8 +126,7 @@ const navLinks = [
     border-radius: 8px;
     text-decoration: none;
     transition: background-color 150ms ease;
+    white-space: nowrap;
   }
-  .cta-btn:hover {
-    background: var(--accent-hover);
-  }
+  .cta-btn:hover { background: var(--accent-hover); }
 </style>

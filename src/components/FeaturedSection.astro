@@ -1,18 +1,22 @@
 ---
 import ToolCard from './ToolCard.astro';
+import { getLocaleFromUrl } from '../i18n/index';
 
 interface Props {
   tools: any[];
   title?: string;
 }
 
-const { tools, title = '编辑精选' } = Astro.props;
+const { tools, title } = Astro.props;
+const locale = getLocaleFromUrl(Astro.url);
+const isZh = locale === 'zh';
+const defaultTitle = isZh ? '编辑精选' : 'Featured';
 ---
 
 <section class="featured">
   <div class="section-header">
-    <h2 class="section-title">{title}</h2>
-    <a href="/search/" class="view-all">查看全部 →</a>
+    <h2 class="section-title">{title || defaultTitle}</h2>
+    <a href={`/search/?lang=${locale}`} class="view-all">{isZh ? '查看全部 →' : 'View all →'}</a>
   </div>
   <div class="scroll-container">
     <div class="cards-scroll">
@@ -26,9 +30,7 @@ const { tools, title = '编辑精选' } = Astro.props;
 </section>
 
 <style>
-  .featured {
-    padding: 0 24px;
-  }
+  .featured { padding: 0 24px; }
   .section-header {
     max-width: 1280px;
     margin: 0 auto 20px;
@@ -36,32 +38,10 @@ const { tools, title = '编辑精选' } = Astro.props;
     align-items: center;
     justify-content: space-between;
   }
-  .section-title {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text-primary);
-  }
-  .view-all {
-    font-size: 14px;
-    color: var(--accent);
-    text-decoration: none;
-    transition: color 150ms ease;
-  }
-  .view-all:hover {
-    color: var(--accent-hover);
-  }
-  .scroll-container {
-    overflow-x: auto;
-    scrollbar-width: thin;
-  }
-  .cards-scroll {
-    display: flex;
-    gap: 16px;
-    padding-bottom: 12px;
-    width: max-content;
-  }
-  .card-item {
-    width: 300px;
-    flex-shrink: 0;
-  }
+  .section-title { font-size: 20px; font-weight: 700; color: var(--text-primary); }
+  .view-all { font-size: 14px; color: var(--accent); text-decoration: none; transition: color 150ms ease; }
+  .view-all:hover { color: var(--accent-hover); }
+  .scroll-container { overflow-x: auto; scrollbar-width: thin; }
+  .cards-scroll { display: flex; gap: 16px; padding-bottom: 12px; width: max-content; }
+  .card-item { width: 300px; flex-shrink: 0; }
 </style>

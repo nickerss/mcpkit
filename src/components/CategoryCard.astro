@@ -1,4 +1,7 @@
 ---
+import ToolCard from './ToolCard.astro';
+import { getLocaleFromUrl } from '../i18n/index';
+
 interface Props {
   name: string;
   slug: string;
@@ -8,9 +11,12 @@ interface Props {
 }
 
 const { name, slug, icon, count, description } = Astro.props;
+const locale = getLocaleFromUrl(Astro.url);
+const isZh = locale === 'zh';
+const countLabel = isZh ? `${count}+ 工具` : `${count}+ tools`;
 ---
 
-<a href={`/${slug}/`} class="category-card card-hover">
+<a href={`/${slug}/?lang=${locale}`} class="category-card card-hover">
   <div class="icon-wrap">
     {icon === 'database' && (
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -35,7 +41,7 @@ const { name, slug, icon, count, description } = Astro.props;
   <div class="info">
     <h3 class="card-title">{name}</h3>
     {description && <p class="card-desc">{description}</p>}
-    <span class="count">{count}+ 工具</span>
+    <span class="count">{countLabel}</span>
   </div>
 </a>
 
@@ -52,26 +58,9 @@ const { name, slug, icon, count, description } = Astro.props;
     min-width: 240px;
     min-height: 140px;
   }
-  .icon-wrap {
-    color: var(--accent);
-  }
-  .info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .card-title {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text-primary);
-  }
-  .card-desc {
-    font-size: 14px;
-    color: var(--text-secondary);
-  }
-  .count {
-    font-size: 14px;
-    color: var(--text-muted);
-    margin-top: 4px;
-  }
+  .icon-wrap { color: var(--accent); }
+  .info { display: flex; flex-direction: column; gap: 4px; }
+  .card-title { font-size: 20px; font-weight: 700; color: var(--text-primary); }
+  .card-desc { font-size: 14px; color: var(--text-secondary); }
+  .count { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
 </style>

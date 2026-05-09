@@ -1,4 +1,6 @@
 ---
+import { getLocaleFromUrl } from '../i18n/index';
+
 interface Props {
   title: string;
   description: string;
@@ -12,8 +14,8 @@ interface Props {
 }
 
 const { title, description, category, tags, price, website, logo, slug, featured = false } = Astro.props;
-const priceLabel = price === 'free' ? '免费' : price === 'paid' ? '付费' : price;
-const priceColor = price === 'free' ? 'free' : price === 'paid' ? 'paid' : 'muted';
+const locale = getLocaleFromUrl(Astro.url);
+const isZh = locale === 'zh';
 ---
 
 <article class:list={["tool-card card-hover", { featured }]}>
@@ -31,7 +33,9 @@ const priceColor = price === 'free' ? 'free' : price === 'paid' ? 'paid' : 'mute
     </div>
     <div class="top-info">
       <h3 class="card-title">{title}</h3>
-      <span class:list={["price-badge", priceColor]}>{priceLabel}</span>
+      <span class:list={["price-badge", price === 'free' ? 'free' : price === 'paid' ? 'paid' : 'muted']}>
+        {price === 'free' ? (isZh ? '免费' : 'Free') : price === 'paid' ? (isZh ? '付费' : 'Paid') : (isZh ? 'Freemium' : 'Freemium')}
+      </span>
     </div>
   </div>
 
@@ -44,9 +48,13 @@ const priceColor = price === 'free' ? 'free' : price === 'paid' ? 'paid' : 'mute
   </div>
 
   <div class="card-footer">
-    <a href={`/tools/${slug}/`} class="card-link">查看详情 →</a>
+    <a href={`/tools/${slug}/?lang=${locale}`} class="card-link">
+      {isZh ? '查看详情 →' : 'View details →'}
+    </a>
     {website && (
-      <a href={website} target="_blank" rel="noopener" class="website-link">官网 →</a>
+      <a href={website} target="_blank" rel="noopener" class="website-link">
+        {isZh ? '官网 →' : 'Official site →'}
+      </a>
     )}
   </div>
 </article>
@@ -61,14 +69,8 @@ const priceColor = price === 'free' ? 'free' : price === 'paid' ? 'paid' : 'mute
     flex-direction: column;
     gap: 12px;
   }
-  .tool-card.featured {
-    border-color: rgba(99, 102, 241, 0.4);
-  }
-  .card-top {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-  }
+  .tool-card.featured { border-color: rgba(99, 102, 241, 0.4); }
+  .card-top { display: flex; align-items: flex-start; gap: 12px; }
   .logo-wrap {
     flex-shrink: 0;
     width: 40px;
@@ -80,21 +82,9 @@ const priceColor = price === 'free' ? 'free' : price === 'paid' ? 'paid' : 'mute
     align-items: center;
     justify-content: center;
   }
-  .logo {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-  .logo-placeholder {
-    color: var(--text-muted);
-  }
-  .top-info {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
+  .logo { width: 100%; height: 100%; object-fit: contain; }
+  .logo-placeholder { color: var(--text-muted); }
+  .top-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
   .card-title {
     font-size: 16px;
     font-weight: 600;
@@ -109,18 +99,9 @@ const priceColor = price === 'free' ? 'free' : price === 'paid' ? 'paid' : 'mute
     border-radius: 6px;
     width: fit-content;
   }
-  .price-badge.free {
-    background: rgba(34, 197, 94, 0.1);
-    color: var(--free);
-  }
-  .price-badge.paid {
-    background: rgba(245, 158, 11, 0.1);
-    color: var(--paid);
-  }
-  .price-badge.muted {
-    background: var(--bg-tertiary);
-    color: var(--text-secondary);
-  }
+  .price-badge.free { background: rgba(34, 197, 94, 0.1); color: var(--free); }
+  .price-badge.paid { background: rgba(245, 158, 11, 0.1); color: var(--paid); }
+  .price-badge.muted { background: var(--bg-tertiary); color: var(--text-secondary); }
   .card-desc {
     font-size: 14px;
     color: var(--text-secondary);
@@ -130,39 +111,11 @@ const priceColor = price === 'free' ? 'free' : price === 'paid' ? 'paid' : 'mute
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .tag {
-    font-size: 12px;
-    padding: 2px 8px;
-    border-radius: 6px;
-    background: var(--tag-bg);
-    color: var(--text-secondary);
-  }
-  .card-footer {
-    margin-top: auto;
-    display: flex;
-    gap: 12px;
-  }
-  .card-link {
-    font-size: 14px;
-    color: var(--accent);
-    text-decoration: none;
-    transition: color 150ms ease;
-  }
-  .card-link:hover {
-    color: var(--accent-hover);
-  }
-  .website-link {
-    font-size: 14px;
-    color: var(--text-muted);
-    text-decoration: none;
-    transition: color 150ms ease;
-  }
-  .website-link:hover {
-    color: var(--text-secondary);
-  }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag { font-size: 12px; padding: 2px 8px; border-radius: 6px; background: var(--tag-bg); color: var(--text-secondary); }
+  .card-footer { margin-top: auto; display: flex; gap: 12px; }
+  .card-link { font-size: 14px; color: var(--accent); text-decoration: none; transition: color 150ms ease; }
+  .card-link:hover { color: var(--accent-hover); }
+  .website-link { font-size: 14px; color: var(--text-muted); text-decoration: none; transition: color 150ms ease; }
+  .website-link:hover { color: var(--text-secondary); }
 </style>

@@ -1,82 +1,70 @@
 ---
+import { getLocaleFromUrl } from '../i18n/index';
+
+const locale = getLocaleFromUrl(Astro.url);
+const isZh = locale === 'zh';
 ---
 
 <form class="submit-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
   <div class="field">
-    <label class="label" for="title">工具名称</label>
-    <input type="text" id="title" name="title" class="input" placeholder="例如：mcp-sqlite" required />
+    <label class="label" for="title">{isZh ? '工具名称' : 'Tool Name'}</label>
+    <input type="text" id="title" name="title" class="input" placeholder={isZh ? '例如：mcp-sqlite' : 'e.g. mcp-sqlite'} required />
   </div>
 
   <div class="field">
-    <label class="label" for="website">官网链接</label>
+    <label class="label" for="website">{isZh ? '官网链接' : 'Website URL'}</label>
     <input type="url" id="website" name="website" class="input" placeholder="https://github.com/..." required />
   </div>
 
   <div class="row">
     <div class="field">
-      <label class="label" for="category">分类</label>
+      <label class="label" for="category">{isZh ? '分类' : 'Category'}</label>
       <select id="category" name="category" class="input" required>
-        <option value="">选择分类</option>
+        <option value="">{isZh ? '选择分类' : 'Select category'}</option>
         <option value="mcp-server">MCP Server</option>
         <option value="ai-tool">AI Coding Tool</option>
-        <option value="deployment">工作流 & 部署</option>
+        <option value="deployment">Deployment & Workflow</option>
       </select>
     </div>
 
     <div class="field">
-      <label class="label" for="price">价格</label>
+      <label class="label" for="price">{isZh ? '价格' : 'Price'}</label>
       <select id="price" name="price" class="input" required>
-        <option value="">选择价格</option>
-        <option value="free">免费</option>
+        <option value="">{isZh ? '选择价格' : 'Select price'}</option>
+        <option value="free">{isZh ? '免费' : 'Free'}</option>
         <option value="freemium">Freemium</option>
-        <option value="paid">付费</option>
+        <option value="paid">{isZh ? '付费' : 'Paid'}</option>
       </select>
     </div>
   </div>
 
   <div class="field">
-    <label class="label" for="description">简短描述</label>
-    <textarea id="description" name="description" class="input" rows="3" placeholder="一两句话介绍这个工具..." required></textarea>
+    <label class="label" for="description">{isZh ? '简短描述' : 'Short Description'}</label>
+    <textarea id="description" name="description" class="input" rows="3" placeholder={isZh ? '一两句话介绍这个工具...' : 'Describe the tool in a sentence or two...'} required></textarea>
   </div>
 
   <div class="field">
-    <label class="label" for="tags">标签（逗号分隔）</label>
-    <input type="text" id="tags" name="tags" class="input" placeholder="例如：sqlite, database, local" />
+    <label class="label" for="tags">{isZh ? '标签（逗号分隔）' : 'Tags (comma separated)'}</label>
+    <input type="text" id="tags" name="tags" class="input" placeholder={isZh ? '例如：sqlite, database, local' : 'e.g. sqlite, database, local'} />
   </div>
 
   <div class="field">
-    <label class="label" for="email">邮箱（用于接收审核结果通知）</label>
-    <input type="email" id="email" name="email" class="input" placeholder="you@example.com" />
+    <label class="label" for="email">{isZh ? '邮箱（用于接收审核结果通知）' : 'Email (for review notification)'}</label>
+    <input type="email" id="email" name="email" class="input" placeholder={isZh ? 'you@example.com' : 'you@example.com'} />
   </div>
 
-  <button type="submit" class="submit-btn">提交工具</button>
+  <button type="submit" class="submit-btn">{isZh ? '提交工具' : 'Submit Tool'}</button>
 
-  <p class="form-note">提交后由管理员审核，通过后将在目录中展示</p>
+  <p class="form-note">
+    {isZh ? '提交后由管理员审核，通过后将在目录中展示' : 'Submissions are reviewed by admins and will be listed once approved'}
+  </p>
 </form>
 
 <style>
-  .submit-form {
-    max-width: 640px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  .field {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    flex: 1;
-  }
-  .row {
-    display: flex;
-    gap: 16px;
-  }
-  .label {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-secondary);
-  }
+  .submit-form { max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+  .field { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .row { display: flex; gap: 16px; }
+  .label { font-size: 14px; font-weight: 500; color: var(--text-secondary); }
   .input {
     width: 100%;
     padding: 12px 16px;
@@ -89,16 +77,9 @@
     transition: border-color 200ms ease;
     font-family: inherit;
   }
-  .input::placeholder {
-    color: var(--text-muted);
-  }
-  .input:focus {
-    border-color: var(--accent);
-  }
-  textarea.input {
-    resize: vertical;
-    min-height: 80px;
-  }
+  .input::placeholder { color: var(--text-muted); }
+  .input:focus { border-color: var(--accent); }
+  textarea.input { resize: vertical; min-height: 80px; }
   select.input {
     cursor: pointer;
     appearance: none;
@@ -119,12 +100,6 @@
     cursor: pointer;
     transition: background-color 150ms ease;
   }
-  .submit-btn:hover {
-    background: var(--accent-hover);
-  }
-  .form-note {
-    font-size: 13px;
-    color: var(--text-muted);
-    text-align: center;
-  }
+  .submit-btn:hover { background: var(--accent-hover); }
+  .form-note { font-size: 13px; color: var(--text-muted); text-align: center; }
 </style>

@@ -1,10 +1,20 @@
 ---
+import { getLocaleFromUrl } from '../i18n/index';
+
 interface Props {
   price: string;
 }
 
 const { price } = Astro.props;
-const label = price === 'free' ? '免费' : price === 'paid' ? '付费' : price;
+const locale = getLocaleFromUrl(Astro.url);
+const isZh = locale === 'zh';
+
+const label = price === 'free'
+  ? (isZh ? '免费' : 'Free')
+  : price === 'paid'
+  ? (isZh ? '付费' : 'Paid')
+  : (isZh ? 'Freemium' : 'Freemium');
+
 const color = price === 'free' ? 'free' : price === 'paid' ? 'paid' : 'muted';
 ---
 
@@ -17,16 +27,7 @@ const color = price === 'free' ? 'free' : price === 'paid' ? 'paid' : 'muted';
     padding: 2px 8px;
     border-radius: 6px;
   }
-  .free {
-    background: rgba(34, 197, 94, 0.1);
-    color: var(--free);
-  }
-  .paid {
-    background: rgba(245, 158, 11, 0.1);
-    color: var(--paid);
-  }
-  .muted {
-    background: var(--bg-tertiary);
-    color: var(--text-secondary);
-  }
+  .free { background: rgba(34, 197, 94, 0.1); color: var(--free); }
+  .paid { background: rgba(245, 158, 11, 0.1); color: var(--paid); }
+  .muted { background: var(--bg-tertiary); color: var(--text-secondary); }
 </style>

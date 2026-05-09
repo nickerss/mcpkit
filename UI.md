@@ -1,11 +1,12 @@
-# UI/UX 设计文档 — mcpkit.run
+# UI/UX 设计文档 — MCPKIT
 
 ## 1. 文档信息
 
-- 版本：v1.0
+- 版本：v1.1
 - 作者：UID
 - 对应 PRD 版本：v1.0（_ARCH.md_ 已确认）
 - 日期：2026-05-09
+- 更新：v1.1 新增国际化（i18n）支持，项目名变更为 MCPKIT
 
 ---
 
@@ -77,9 +78,9 @@
 ```
 
 **Header：**
-- 左：Logo（mcpkit.run 字样 + 简洁图标）
-- 中：导航（首页 / MCP Servers / AI Tools / Deployment / 搜索）
-- 右：提交工具按钮（CTA）
+- 左：Logo（MCPKIT 字样 + 简洁图标）
+- 中：导航（Home / MCP Servers / AI Tools / Deployment / Search）
+- 右：语言切换 + 提交工具按钮（CTA）
 
 ### 4.2 响应式断点
 
@@ -99,15 +100,15 @@
 ├──────────────────────────────────────────────────────────┤
 │  Hero（居中，垂直居中于首屏）                              │
 │  ┌──────────────────────────────────────────────────┐   │
-│  │  Slogan: "独立开发者的 AI Agent 工具箱"             │   │
-│  │  搜索框（带 icon，placeholder="搜索工具..."）        │   │
+│  │  Slogan: "AI Agent Tools for Indie Developers"    │   │
+│  │  搜索框（带 icon，placeholder="Search tools..."） │   │
 │  └──────────────────────────────────────────────────┘   │
 ├──────────────────────────────────────────────────────────┤
 │  三大分类入口（横向卡片）                                  │
 │  ┌───────────┐ ┌───────────┐ ┌───────────┐             │
 │  │ MCP       │ │ AI Tools  │ │ Deployment│             │
 │  │ Servers   │ │           │ │           │             │
-│  │ 50+ 工具   │ │ 30+ 工具   │ │ 30+ 工具   │             │
+│  │ 50+ tools │ │ 30+ tools │ │ 30+ tools │             │
 │  └───────────┘ └───────────┘ └───────────┘             │
 ├──────────────────────────────────────────────────────────┤
 │  编辑精选（Section Title + 横向滚动卡片）                   │
@@ -124,8 +125,8 @@
 
 **Hero 区域：**
 - 背景：渐变暗色（`--bg-primary` → `#0f0f18`），上方有微妙的网格纹理
-- Slogan：32px，字重 700，白色
-- 搜索框：宽度 560px，24px 圆角，内置搜索图标，placeholder "搜索 MCP Servers、AI 工具..."
+- Slogan：32px，字重 700，白色 — "AI Agent Tools for Indie Developers"
+- 搜索框：宽度 560px，24px 圆角，内置搜索图标，placeholder "Search tools..."
 - 搜索框 focus 时边框变为 `--accent`
 
 **分类入口卡片：**
@@ -135,8 +136,7 @@
 - 包含：分类 icon（32px）、分类名称（20px bold）、工具数量（14px muted）
 
 **编辑精选区：**
-- Section Title："编辑精选" + 右侧"查看全部 →"链接
-- 横向卡片（可不完整显示，hover 显示滚动提示）
+- Section Title："Featured" + 右侧"View all →"链接
 
 ---
 
@@ -147,12 +147,12 @@
 ```
 ┌─────────────────────────────────────────┐
 │  ┌────┐                                │
-│  │Logo│  工具名称              [免费]   │  ← 顶栏：Logo 40px + 名称 + 价格badge
+│  │Logo│  工具名称              [Free]   │
 │  └────┘  简短描述（1行，截断）           │
 │                                         │
-│  [数据库] [本地]                        │  ← Tags（最多3个）
+│  [database] [local]                    │
 │                                         │
-│  查看详情 →                            │  ← 底部操作链接
+│  View details →                       │
 └─────────────────────────────────────────┘
 ```
 
@@ -163,10 +163,10 @@
 | 容器 | `bg-[--bg-secondary]` `border border-[--border]` `rounded-xl` `p-4` |
 | Logo | 40×40px，`object-contain`，圆角 8px |
 | 工具名称 | 16px，字重 600，`--text-primary` |
-| 价格 Badge | 12px，圆角 6px，padding 4px 8px；免费=`bg-green/10 text-green`，付费=`bg-amber/10 text-amber` |
+| 价格 Badge | 12px，圆角 6px，padding 4px 8px；Free=`bg-green/10 text-green`，Paid=`bg-amber/10 text-amber` |
 | 描述 | 14px，`--text-secondary`，单行截断 |
 | Tags | 12px，`bg-[--tag-bg]` `text-[--text-secondary]`，圆角 6px，gap 6px |
-| 底部链接 | 14px，`--accent`，hover 变色 |
+| 底部链接 | 14px，`--accent`，hover 变色，文本 "View details →" |
 
 **Hover 效果：**
 - 整体：`translateY(-2px)` + `box-shadow: 0 8px 24px rgba(99,102,241,0.15)`
@@ -185,19 +185,19 @@
 │  筛选侧边栏 │  工具网格（3列）                            │
 │            │  ┌────┐ ┌────┐ ┌────┐                       │
 │  分类        │  │Card│ │Card│ │Card│                      │
-│  ○ 全部      │  └────┘ └────┘ └────┘                      │
-│  ○ 数据库    │  ┌────┐ ┌────┐ ┌────┐                       │
-│  ○ GitHub    │  │Card│ │Card│ │Card│                      │
-│  ...        │  └────┘ └────┘ └────┘                       │
+│  ○ All      │  └────┘ └────┘ └────┘                      │
+│  ○ Database │  ┌────┐ ┌────┐ ┌────┐                       │
+│  ○ GitHub   │  │Card│ │Card│ │Card│                      │
+│  ...        │  └────┘ └────┘ └────┘                      │
 │            │                                            │
 │  价格        │  ────── 分页 ──────                        │
-│  ○ 全部      │                                            │
-│  ○ 免费      │                                            │
-│  ○ 付费      │                                            │
+│  ○ All      │                                            │
+│  ○ Free     │                                            │
+│  ○ Paid     │                                            │
 │            │                                            │
 │  标签（热门） │                                            │
-│  [数据库]    │                                            │
-│  [API]      │                                            │
+│  [database] │                                            │
+│  [api]      │                                            │
 └────────────┴────────────────────────────────────────────┘
 ```
 
@@ -206,14 +206,19 @@
 - 筛选区块之间有分割线
 - 选项：14px，当前选中项 `text-[--accent]` + 左边竖线
 
+**筛选选项文案（英文默认）：**
+- 分类：Category / All / Database / GitHub / API / ...
+- 价格：Price / All / Free / Freemium / Paid
+- 标签：Tags / Popular
+
 **工具网格：**
 - 桌面：3 列，gap 20px
 - 平板：2 列
 - 移动：1 列
 
 **分页：**
-- 简单样式：页码 + 上/下一页
-- 每页 24 条（ARCH 中未指定，可调整）
+- 简单样式：页码 + Prev / Next
+- 每页 24 条
 
 ---
 
@@ -223,24 +228,24 @@
 ┌──────────────────────────────────────────────────────────┐
 │  Header                                                  │
 ├──────────────────────────────────────────────────────────┤
-│  Breadcrumb：首页 > MCP Servers > mcp-sqlite             │
+│  Breadcrumb：Home > MCP Servers > mcp-sqlite             │
 ├──────────────────────────────────────────────────────────┤
 │  ┌────────────────────────────────────────────────────┐ │
-│  │  ┌────┐  工具名称           [免费]  [官网 →]      │ │
-│  │  │Logo│  @mcp-sqlite · 数据库                        │ │
+│  │  ┌────┐  工具名称           [Free]  [Website →]   │ │
+│  │  │Logo│  @mcp-sqlite · Database                    │ │
 │  │  └────┘                                            │ │
 │  │                                                    │ │
-│  │  描述：轻量本地 SQLite 的 MCP Server...             │ │
+│  │  描述：A lightweight local SQLite MCP Server...    │ │
 │  │                                                    │ │
-│  │  使用场景：                                         │ │
-│  │  • 本地数据库调试                                    │ │
-│  │  • 离线数据查询                                     │ │
+│  │  Scenarios:                                       │ │
+│  │  • Local database debugging                       │ │
+│  │  • Offline data querying                          │ │
 │  └────────────────────────────────────────────────────┘ │
 ├──────────────────────────────────────────────────────────┤
 │  ┌──────────────────┐  ┌──────────────────────────────┐ │
-│  │  安装命令         │  │  相关工具                    │ │
+│  │  Install Command  │  │  Related Tools              │ │
 │  │  npm install...  │  │  ┌────┐ ┌────┐             │ │
-│  │  [复制]          │  │  │Card│ │Card│             │ │
+│  │  [Copy]          │  │  │Card│ │Card│             │ │
 │  └──────────────────┘  │  └────┘ └────┘             │ │
 │                       └──────────────────────────────┘ │
 └──────────────────────────────────────────────────────────┘
@@ -254,18 +259,22 @@
 | 名称 | 28px，字重 700 |
 | 价格 Badge | 16px |
 | 描述 | 16px，`--text-secondary`，可多行 |
-| 使用场景 | 无序列表，16px |
+| 使用场景（Scenarios） | 无序列表，16px |
 | 安装命令区 | 深色背景 `#0d0d14`，16px JetBrains Mono，右侧复制按钮 |
-| 相关工具 | 2 列 ToolCard 网格 |
+| 相关工具（Related Tools） | 2 列 ToolCard 网格 |
 
 ---
 
 ## 9. 搜索页（`/search`）
 
 - 搜索框居中（与首页 Hero 一致）
-- 结果：无结果时显示插画 + 提示文字
+- 结果：无结果时显示插画 + 提示文字 "No results found. Try a different keyword."
 - 有结果时：输入框下方直接显示匹配列表（单列，间距宽松）
 - 结果项包含：Logo + 名称 + 简短描述 + 分类标签
+
+**搜索页表单文案（英文默认）：**
+- Placeholder: "Search tools..."
+- 无结果提示："No results for '[keyword]'. Check spelling or try a broader term."
 
 ---
 
@@ -275,21 +284,21 @@
 ┌──────────────────────────────────────────────────────────┐
 │  Header                                                  │
 ├──────────────────────────────────────────────────────────┤
-│  Title："提交工具" + 副标题说明                           │
+│  Title: "Submit a Tool" + subtitle                      │
 ├──────────────────────────────────────────────────────────┤
 │  表单（居中，最大宽度 640px）                              │
 │  ┌────────────────────────────────────────────────────┐ │
-│  │ 工具名称：____________                              │ │
-│  │ 官网地址：____________                              │ │
-│  │ 分类：______（下拉）                                │ │
-│  │ 价格：______（下拉：免费/Freemium/付费）              │ │
-│  │ 描述：____________（textarea）                       │ │
-│  │ 标签：____________（多选或逗号分隔）                  │ │
+│  │ Tool Name: ________________________                │ │
+│  │ Website URL: ________________________              │ │
+│  │ Category: _________ (dropdown)                    │ │
+│  │ Price: _________ (Free / Freemium / Paid)         │ │
+│  │ Description: ____________________ (textarea)       │ │
+│  │ Tags: _________ (comma separated)                  │ │
 │  │                                                    │ │
-│  │ [提交]                                             │ │
+│  │ [Submit]                                           │ │
 │  └────────────────────────────────────────────────────┘ │
 │                                                      │
-│  底部说明：提交后由管理员审核，审核通过后将在目录中展示。   │
+│  底部说明：Submitted tools are reviewed by admins.   │
 └──────────────────────────────────────────────────────────┘
 ```
 
@@ -317,6 +326,7 @@
 | `InstallCommand.astro` | `src/components/` | 安装命令展示 + 复制按钮 |
 | `SubmitForm.astro` | `src/components/` | 工具提交表单 |
 | `Footer.astro` | `src/components/` | 页面底部 |
+| `LanguageSwitcher.astro` | `src/components/` | 语言切换下拉组件 |
 
 ---
 
@@ -357,15 +367,107 @@ module.exports = {
 
 ---
 
-## 13. 实现注意事项
+## 13. 国际化（i18n）架构
+
+### 13.1 核心策略
+
+| 维度 | 决策 |
+|------|------|
+| 默认语言 | English |
+| 语言切换 | Header 右上角下拉组件，无刷新切换 |
+| URL 模式 | 不分路径（保持单一路由） |
+| 持久化 | localStorage 存储语言偏好 |
+| 首次渲染 | 检测 `Accept-Language` header，无则默认 EN |
+
+### 13.2 语言切换器设计规格
+
+**UI 位置**：Header 右侧，与提交按钮并排或左侧
+
+**触发按钮样式：**
+```
+┌────────────┐
+│  EN ▼     │  ← 32px 高，右侧 chevron-down icon
+└────────────┘
+```
+
+**下拉菜单样式：**
+```
+┌─────────────────┐
+│ ✓ English       │
+│   中文          │
+└─────────────────┘
+```
+- 下拉菜单：`bg-[--bg-secondary]` border，`rounded-lg` shadow，`min-width: 120px`
+- 选中项：`text-[--accent]` + 左侧 checkmark icon
+- Hover：`bg-[--bg-tertiary]`
+
+**交互逻辑：**
+- 点击按钮展开下拉，再次点击或选完后收起
+- 选中后页面所有文本即时切换，无刷新
+- 语言偏好存入 `localStorage`（key: `mcpkit-lang`）
+
+### 13.3 翻译内容范围
+
+所有用户可见文本均需中英文版本：
+
+| 文本类型 | 英文 | 中文 |
+|----------|------|------|
+| 导航 | Home, MCP Servers, AI Tools, Deployment, Search, Submit | 首页, MCP Servers, AI 工具, 部署工具, 搜索, 提交 |
+| 页面标题 | Featured, Latest, All Tools, Submit a Tool | 精选, 最新收录, 全部工具, 提交工具 |
+| 按钮 | View details, Submit, Copy, Prev, Next, View all | 查看详情, 提交, 复制, 上一页, 下一页, 查看全部 |
+| 表单 Label | Tool Name, Website URL, Category, Price, Description, Tags | 工具名称, 官网地址, 分类, 价格, 描述, 标签 |
+| 提示语 | No results found, Submit successful, Copied! | 未找到结果, 提交成功, 已复制！ |
+| 筛选选项 | All, Free, Freemium, Paid, Popular Tags | 全部, 免费, Freemium, 付费, 热门标签 |
+| 空状态 | No tools in this category yet. | 该分类下暂无工具。 |
+| 价格 | Free, Freemium, Paid | 免费, Freemium, 付费 |
+
+### 13.4 翻译文件结构（供 DEV 参考）
+
+```
+src/
+  i18n/
+    en.json    # 英文翻译
+    zh.json     # 中文翻译
+  components/
+    LanguageSwitcher.astro
+```
+
+**en.json 示例：**
+```json
+{
+  "nav": {
+    "home": "Home",
+    "mcpServers": "MCP Servers",
+    "aiTools": "AI Tools",
+    "deployment": "Deployment",
+    "search": "Search",
+    "submit": "Submit"
+  },
+  "home": {
+    "heroSlogan": "AI Agent Tools for Indie Developers",
+    "searchPlaceholder": "Search tools..."
+  },
+  "common": {
+    "viewDetails": "View details →",
+    "submit": "Submit",
+    "copy": "Copy",
+    "copied": "Copied!"
+  }
+}
+```
+
+---
+
+## 14. 实现注意事项
 
 1. **图片处理**：ToolCard 的 Logo 使用 `object-contain`，不裁剪；如果工具无 Logo，用分类 icon 占位
-2. **SEO**：每个页面 `<head>` 含独立 title/description；详情页 JSON-LD
+2. **SEO**：每个页面 `<head>` 含独立 title/description；详情页 JSON-LD；`lang="en"` 属性默认
 3. **性能**：首屏图片需 LCP 优化；ToolCard 懒加载
 4. **无障碍**：所有交互元素有 `:focus-visible` 样式，图标按钮带 `aria-label`
 5. **移动端**：筛选侧边栏在移动端变为顶部 Select 下拉；卡片单列
 6. **Pagefind 集成**：搜索框 `data-pagefind-search` 属性，搜索结果页用 Pagefind JS 渲染
+7. **i18n**：翻译 JSON 文件统一存放于 `src/i18n/`；语言偏好用 `localStorage` 键 `mcpkit-lang`
 
 ---
 
-*文档版本：v1.0 | 下一步：PM / Arch 审核 UI.md → 确认后 Dev 开始实现*
+*文档版本：v1.1 | 更新内容：项目名变更为 MCPKIT，新增国际化（i18n）支持*

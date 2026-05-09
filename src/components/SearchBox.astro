@@ -1,13 +1,12 @@
 ---
-interface Props {
-  placeholder?: string;
-}
+import { getLocaleFromUrl } from '../i18n/index';
 
-const { placeholder = "搜索工具..." } = Astro.props;
+const locale = getLocaleFromUrl(Astro.url);
+const isZh = locale === 'zh';
 ---
 
 <div class="search-box">
-  <form action="/search" method="get" class="search-form">
+  <form action={`/search/?lang=${locale}`} method="get" class="search-form">
     <div class="search-wrap">
       <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="11" cy="11" r="8"/>
@@ -17,7 +16,7 @@ const { placeholder = "搜索工具..." } = Astro.props;
         type="text"
         name="q"
         class="search-input"
-        placeholder={placeholder}
+        placeholder={isZh ? '搜索工具...' : 'Search tools...'}
         autocomplete="off"
       />
     </div>
@@ -25,20 +24,9 @@ const { placeholder = "搜索工具..." } = Astro.props;
 </div>
 
 <style>
-  .search-form {
-    width: 100%;
-  }
-  .search-wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-  .search-icon {
-    position: absolute;
-    left: 14px;
-    color: var(--text-muted);
-    pointer-events: none;
-  }
+  .search-form { width: 100%; }
+  .search-wrap { position: relative; display: flex; align-items: center; }
+  .search-icon { position: absolute; left: 14px; color: var(--text-muted); pointer-events: none; }
   .search-input {
     width: 100%;
     padding: 12px 14px 12px 42px;
@@ -50,10 +38,6 @@ const { placeholder = "搜索工具..." } = Astro.props;
     outline: none;
     transition: border-color 200ms ease;
   }
-  .search-input::placeholder {
-    color: var(--text-muted);
-  }
-  .search-input:focus {
-    border-color: var(--accent);
-  }
+  .search-input::placeholder { color: var(--text-muted); }
+  .search-input:focus { border-color: var(--accent); }
 </style>

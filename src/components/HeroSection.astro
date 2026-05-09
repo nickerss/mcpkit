@@ -1,18 +1,25 @@
 ---
+import { getLocaleFromUrl } from '../i18n/index';
+
+const locale = getLocaleFromUrl(Astro.url);
+const isZh = locale === 'zh';
 ---
 
 <section class="hero">
   <div class="hero-bg"></div>
   <div class="hero-content">
     <h1 class="hero-title">
-      独立开发者的<br/>
-      <span class="gradient-text">AI Agent 工具箱</span>
+      {isZh ? '独立开发者的' : 'AI Agent Tools for'}<br/>
+      <span class="gradient-text">
+        {isZh ? 'AI Agent 工具箱' : 'Independent Developers'}
+      </span>
     </h1>
     <p class="hero-desc">
-      精选 MCP Servers、AI 编码工具、工作流组件<br/>
-      帮你快速找到「这个场景用什么工具」
+      {isZh
+        ? '精选 MCP Servers、AI 编码工具、工作流组件，帮你快速找到「这个场景用什么工具」'
+        : 'Curated MCP Servers, AI coding tools, and workflow components — find the right tool for your use case'}
     </p>
-    <form class="search-form" action="/search" method="get">
+    <form class="search-form" action={`/search/?lang=${locale}`} method="get">
       <div class="search-wrap">
         <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="11" cy="11" r="8"/>
@@ -22,7 +29,7 @@
           type="text"
           name="q"
           class="search-input"
-          placeholder="搜索 MCP Servers、AI 工具..."
+          placeholder={isZh ? '搜索 MCP Servers、AI 工具...' : 'Search tools...'}
           autocomplete="off"
         />
       </div>
@@ -67,15 +74,8 @@
     line-height: 1.6;
     margin-bottom: 40px;
   }
-  .search-form {
-    max-width: 560px;
-    margin: 0 auto;
-  }
-  .search-wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
+  .search-form { max-width: 560px; margin: 0 auto; }
+  .search-wrap { position: relative; display: flex; align-items: center; }
   .search-icon {
     position: absolute;
     left: 16px;
@@ -93,10 +93,6 @@
     outline: none;
     transition: border-color 200ms ease;
   }
-  .search-input::placeholder {
-    color: var(--text-muted);
-  }
-  .search-input:focus {
-    border-color: var(--accent);
-  }
+  .search-input::placeholder { color: var(--text-muted); }
+  .search-input:focus { border-color: var(--accent); }
 </style>

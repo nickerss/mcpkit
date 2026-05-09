@@ -7,7 +7,9 @@ import CategoryCard from '../components/CategoryCard.astro';
 import FeaturedSection from '../components/FeaturedSection.astro';
 import ToolCard from '../components/ToolCard.astro';
 import { getCollection } from 'astro:content';
+import { getLocaleFromUrl } from '../i18n/index';
 
+const locale = getLocaleFromUrl(Astro.url);
 const mcpServers = await getCollection('mcp-servers');
 const aiTools = await getCollection('ai-tools');
 const deployment = await getCollection('deployment');
@@ -17,9 +19,11 @@ const featured = allTools.filter(t => t.data.featured).slice(0, 5);
 const latest = allTools
   .sort((a, b) => new Date(b.data.submittedAt) - new Date(a.data.submittedAt))
   .slice(0, 9);
+
+const isZh = locale === 'zh';
 ---
 
-<BaseLayout title="mcpkit.run - AI Agent 开发者工具目录">
+<BaseLayout title={isZh ? 'mcpkit.run - AI Agent 开发者工具目录' : 'mcpkit.run — AI Agent Tools for Independent Developers'}>
   <Header />
 
   <main>
@@ -28,23 +32,41 @@ const latest = allTools
     <section class="categories">
       <div class="container">
         <div class="category-cards">
-          <CategoryCard name="MCP Servers" slug="mcp-servers" icon="database" count={mcpServers.length || 50} description="连接 AI Agent 与各类服务的桥梁" />
-          <CategoryCard name="AI Coding Tools" slug="ai-tools" icon="code-2" count={aiTools.length || 30} description="AI 驱动的代码编辑器和 CLI 工具" />
-          <CategoryCard name="工作流 & 部署" slug="deployment" icon="cloud" count={deployment.length || 30} description="部署、数据库、支付一站式工具" />
+          <CategoryCard
+            name={isZh ? 'MCP Servers' : 'MCP Servers'}
+            slug="mcp-servers"
+            icon="database"
+            count={mcpServers.length || 50}
+            description={isZh ? '连接 AI Agent 与各类服务的桥梁' : 'Bridge AI Agents to external services'}
+          />
+          <CategoryCard
+            name={isZh ? 'AI Coding Tools' : 'AI Coding Tools'}
+            slug="ai-tools"
+            icon="code-2"
+            count={aiTools.length || 30}
+            description={isZh ? 'AI 驱动的代码编辑器和 CLI 工具' : 'AI-powered code editors and CLI tools'}
+          />
+          <CategoryCard
+            name={isZh ? '工作流 & 部署' : 'Deployment & Workflow'}
+            slug="deployment"
+            icon="cloud"
+            count={deployment.length || 30}
+            description={isZh ? '部署、数据库、支付一站式工具' : 'Deploy, database, payments, and more'}
+          />
         </div>
       </div>
     </section>
 
     {featured.length > 0 && (
       <section class="featured-section">
-        <FeaturedSection tools={featured} title="编辑精选" />
+        <FeaturedSection tools={featured} title={isZh ? '编辑精选' : 'Featured'} />
       </section>
     )}
 
     {latest.length > 0 && (
       <section class="latest-section">
         <div class="container">
-          <h2 class="section-title">最新收录</h2>
+          <h2 class="section-title">{isZh ? '最新收录' : 'Latest Added'}</h2>
           <div class="tools-grid">
             {latest.map(tool => (
               <ToolCard {...tool.data} slug={tool.slug} />
@@ -64,20 +86,14 @@ const latest = allTools
     margin: 0 auto;
     padding: 0 24px;
   }
-  .categories {
-    padding: 48px 0;
-  }
+  .categories { padding: 48px 0; }
   .category-cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 16px;
   }
-  .featured-section {
-    padding: 48px 0;
-  }
-  .latest-section {
-    padding: 48px 0 80px;
-  }
+  .featured-section { padding: 48px 0; }
+  .latest-section { padding: 48px 0 80px; }
   .section-title {
     font-size: 20px;
     font-weight: 700;
@@ -89,10 +105,6 @@ const latest = allTools
     grid-template-columns: repeat(1, 1fr);
     gap: 16px;
   }
-  @media (min-width: 640px) {
-    .tools-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (min-width: 1024px) {
-    .tools-grid { grid-template-columns: repeat(3, 1fr); }
-  }
+  @media (min-width: 640px) { .tools-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .tools-grid { grid-template-columns: repeat(3, 1fr); } }
 </style>
