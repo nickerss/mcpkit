@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import HeroSection from '../components/HeroSection.astro';
+---
+
+<BaseLayout title="提交工具 - mcpkit.run" description="提交你发现的优秀 AI Agent 开发工具">
+  <Header />
+
+  <main class="main">
+    <div class="page-header">
+      <div class="container">
+        <h1 class="page-title">提交工具</h1>
+        <p class="page-desc">发现了好工具？告诉我们，它就有机会被收录到目录中！</p>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="form-wrap">
+        <slot />
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .main {
+    min-height: calc(100vh - 60px);
+  }
+  .page-header {
+    border-bottom: 1px solid var(--border-color);
+    padding: 40px 0 32px;
+  }
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+  .page-desc {
+    font-size: 16px;
+    color: var(--text-secondary);
+  }
+  .form-wrap {
+    padding: 40px 0 80px;
+    max-width: 720px;
+  }
+</style>

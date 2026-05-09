@@ -2,6 +2,7 @@
 ---
 
 <section class="hero">
+  <div class="hero-bg"></div>
   <div class="hero-content">
     <h1 class="hero-title">
       独立开发者的<br/>
@@ -12,41 +13,90 @@
       帮你快速找到「这个场景用什么工具」
     </p>
     <form class="search-form" action="/search" method="get">
-      <input
-        type="text"
-        name="q"
-        class="search-input"
-        placeholder="搜索工具..."
-        autocomplete="off"
-      />
-      <button type="submit" class="search-btn">搜索</button>
+      <div class="search-wrap">
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input
+          type="text"
+          name="q"
+          class="search-input"
+          placeholder="搜索 MCP Servers、AI 工具..."
+          autocomplete="off"
+        />
+      </div>
     </form>
   </div>
 </section>
 
 <style>
   .hero {
-    @apply py-20 text-center;
+    position: relative;
+    padding: 80px 24px 64px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.15), transparent);
+    pointer-events: none;
   }
   .hero-content {
-    @apply max-w-2xl mx-auto px-4;
+    position: relative;
+    max-width: 720px;
+    margin: 0 auto;
   }
   .hero-title {
-    @apply text-4xl md:text-5xl font-bold mb-6 leading-tight;
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    color: var(--text-primary);
   }
   .gradient-text {
-    @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent;
+    background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
   .hero-desc {
-    @apply text-lg text-gray-400 mb-8 leading-relaxed;
+    font-size: 18px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 40px;
   }
   .search-form {
-    @apply flex gap-2 max-w-lg mx-auto;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  .search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .search-icon {
+    position: absolute;
+    left: 16px;
+    color: var(--text-muted);
+    pointer-events: none;
   }
   .search-input {
-    @apply flex-1 px-4 py-3 bg-gray-900 border border-gray-700 rounded-xl text-gray-100 placeholder-gray-500 focus:outline-none focus:border-primary transition;
+    width: 100%;
+    padding: 16px 16px 16px 48px;
+    font-size: 16px;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    outline: none;
+    transition: border-color 200ms ease;
   }
-  .search-btn {
-    @apply px-6 py-3 bg-primary hover:bg-primary/80 text-white rounded-xl font-medium transition;
+  .search-input::placeholder {
+    color: var(--text-muted);
+  }
+  .search-input:focus {
+    border-color: var(--accent);
   }
 </style>

@@ -12,55 +12,157 @@ interface Props {
 }
 
 const { title, description, category, tags, price, website, logo, slug, featured = false } = Astro.props;
+const priceLabel = price === 'free' ? '免费' : price === 'paid' ? '付费' : price;
+const priceColor = price === 'free' ? 'free' : price === 'paid' ? 'paid' : 'muted';
 ---
 
-<article class:list={["card", { "card--featured": featured }]}>
-  {logo && <img src={logo} alt={title} class="card-logo" />}
-  <div class="card-body">
-    <div class="card-header">
+<article class:list={["tool-card card-hover", { featured }]}>
+  <div class="card-top">
+    <div class="logo-wrap">
+      {logo ? (
+        <img src={logo} alt={title} class="logo" loading="lazy" />
+      ) : (
+        <div class="logo-placeholder">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+          </svg>
+        </div>
+      )}
+    </div>
+    <div class="top-info">
       <h3 class="card-title">{title}</h3>
-      <span class="card-price">{price}</span>
+      <span class:list={["price-badge", priceColor]}>{priceLabel}</span>
     </div>
-    <p class="card-desc">{description}</p>
-    <div class="card-tags">
-      {tags.map(tag => <span class="tag">{tag}</span>)}
-    </div>
-    <a href={website} target="_blank" rel="noopener" class="card-link">官网 →</a>
+  </div>
+
+  <p class="card-desc">{description}</p>
+
+  <div class="tags">
+    {tags.slice(0, 3).map(tag => (
+      <span class="tag">{tag}</span>
+    ))}
+  </div>
+
+  <div class="card-footer">
+    <a href={`/tools/${slug}/`} class="card-link">查看详情 →</a>
+    {website && (
+      <a href={website} target="_blank" rel="noopener" class="website-link">官网 →</a>
+    )}
   </div>
 </article>
 
 <style>
-  .card {
-    @apply bg-gray-900 border border-gray-800 rounded-xl p-4 flex gap-4;
+  .tool-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
-  .card--featured {
-    @apply border-primary shadow-lg;
+  .tool-card.featured {
+    border-color: rgba(99, 102, 241, 0.4);
   }
-  .card-logo {
-    @apply w-12 h-12 rounded-lg object-contain;
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
   }
-  .card-body {
-    @apply flex-1 min-w-0;
+  .logo-wrap {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--bg-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .card-header {
-    @apply flex items-center justify-between mb-2;
+  .logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .logo-placeholder {
+    color: var(--text-muted);
+  }
+  .top-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
   }
   .card-title {
-    @apply font-semibold text-gray-100;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  .card-price {
-    @apply text-xs text-green-400 bg-green-900/30 px-2 py-0.5 rounded;
+  .price-badge {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    width: fit-content;
+  }
+  .price-badge.free {
+    background: rgba(34, 197, 94, 0.1);
+    color: var(--free);
+  }
+  .price-badge.paid {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--paid);
+  }
+  .price-badge.muted {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
   }
   .card-desc {
-    @apply text-sm text-gray-400 line-clamp-2 mb-3;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
-  .card-tags {
-    @apply flex flex-wrap gap-1 mb-3;
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
   }
   .tag {
-    @apply text-xs bg-gray-800 text-gray-300 px-2 py-0.5 rounded;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: var(--tag-bg);
+    color: var(--text-secondary);
+  }
+  .card-footer {
+    margin-top: auto;
+    display: flex;
+    gap: 12px;
   }
   .card-link {
-    @apply text-sm text-primary hover:text-primary/80 transition;
+    font-size: 14px;
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+  .card-link:hover {
+    color: var(--accent-hover);
+  }
+  .website-link {
+    font-size: 14px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+  .website-link:hover {
+    color: var(--text-secondary);
   }
 </style>

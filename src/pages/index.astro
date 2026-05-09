@@ -1,6 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 import HeroSection from '../components/HeroSection.astro';
+import CategoryCard from '../components/CategoryCard.astro';
+import FeaturedSection from '../components/FeaturedSection.astro';
 import ToolCard from '../components/ToolCard.astro';
 import { getCollection } from 'astro:content';
 
@@ -12,93 +16,83 @@ const allTools = [...mcpServers, ...aiTools, ...deployment];
 const featured = allTools.filter(t => t.data.featured).slice(0, 5);
 const latest = allTools
   .sort((a, b) => new Date(b.data.submittedAt) - new Date(a.data.submittedAt))
-  .slice(0, 10);
+  .slice(0, 9);
 ---
 
 <BaseLayout title="mcpkit.run - AI Agent 开发者工具目录">
-  <header class="site-header">
-    <div class="container">
-      <a href="/" class="logo">mcpkit.run</a>
-      <nav class="nav">
-        <a href="/mcp-servers/">MCP Servers</a>
-        <a href="/ai-tools/">AI 工具</a>
-        <a href="/deployment/">部署</a>
-        <a href="/submit/" class="nav-cta">提交工具</a>
-      </nav>
-    </div>
-  </header>
+  <Header />
 
   <main>
     <HeroSection />
 
-    <section class="section">
+    <section class="categories">
       <div class="container">
-        <h2 class="section-title">编辑精选</h2>
-        <div class="grid">
-          {featured.map(tool => (
-            <ToolCard {...tool.data} slug={tool.slug} />
-          ))}
+        <div class="category-cards">
+          <CategoryCard name="MCP Servers" slug="mcp-servers" icon="database" count={mcpServers.length} description="连接 AI Agent 与各类服务的桥梁" />
+          <CategoryCard name="AI Coding Tools" slug="ai-tools" icon="code-2" count={aiTools.length} description="AI 驱动的代码编辑器和 CLI 工具" />
+          <CategoryCard name="工作流 & 部署" slug="deployment" icon="cloud" count={deployment.length} description="部署、数据库、支付一站式工具" />
         </div>
       </div>
     </section>
 
-    <section class="section">
-      <div class="container">
-        <h2 class="section-title">最新收录</h2>
-        <div class="grid">
-          {latest.map(tool => (
-            <ToolCard {...tool.data} slug={tool.slug} />
-          ))}
+    {featured.length > 0 && (
+      <section class="featured-section">
+        <FeaturedSection tools={featured} title="编辑精选" />
+      </section>
+    )}
+
+    {latest.length > 0 && (
+      <section class="latest-section">
+        <div class="container">
+          <h2 class="section-title">最新收录</h2>
+          <div class="tools-grid">
+            {latest.map(tool => (
+              <ToolCard {...tool.data} slug={tool.slug} />
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    )}
   </main>
 
-  <footer class="site-footer">
-    <p>© 2026 mcpkit.run — 独立开发者的 AI Agent 工具箱</p>
-  </footer>
+  <Footer />
 </BaseLayout>
 
 <style>
-  .site-header {
-    @apply border-b border-gray-800;
-  }
   .container {
-    @apply max-w-6xl mx-auto px-4;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
   }
-  .site-header .container {
-    @apply flex items-center justify-between py-4;
+  .categories {
+    padding: 48px 0;
   }
-  .logo {
-    @apply text-xl font-bold text-primary;
+  .category-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
   }
-  .nav {
-    @apply flex items-center gap-6;
+  .featured-section {
+    padding: 48px 0;
   }
-  .nav a {
-    @apply text-sm text-gray-400 hover:text-gray-100 transition;
-  }
-  .nav-cta {
-    @apply bg-primary/20 text-primary px-4 py-2 rounded-lg !important;
-  }
-  .section {
-    @apply py-12;
+  .latest-section {
+    padding: 48px 0 80px;
   }
   .section-title {
-    @apply text-2xl font-bold mb-6;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 20px;
   }
-  .grid {
+  .tools-grid {
     display: grid;
     grid-template-columns: repeat(1, 1fr);
-    gap: 1rem;
+    gap: 16px;
   }
-  @media (min-width: 768px) {
-    .grid { grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: 640px) {
+    .tools-grid { grid-template-columns: repeat(2, 1fr); }
   }
   @media (min-width: 1024px) {
-    .grid { grid-template-columns: repeat(3, 1fr); }
-  }
-  .site-footer {
-    @apply text-center text-sm text-gray-500 py-8 border-t border-gray-800;
+    .tools-grid { grid-template-columns: repeat(3, 1fr); }
   }
 </style>

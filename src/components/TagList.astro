@@ -1,0 +1,36 @@
+---
+interface Props {
+  tags: string[];
+  max?: number;
+}
+
+const { tags, max = 3 } = Astro.props;
+const displayTags = tags.slice(0, max);
+---
+
+<div class="tag-list">
+  {displayTags.map(tag => (
+    <span class="tag">{tag}</span>
+  ))}
+  {tags.length > max && (
+    <span class="tag tag-more">+{tags.length - max}</span>
+  )}
+</div>
+
+<style>
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tag {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: var(--tag-bg);
+    color: var(--text-secondary);
+  }
+  .tag-more {
+    color: var(--text-muted);
+  }
+</style>

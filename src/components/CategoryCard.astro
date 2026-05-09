@@ -1,0 +1,77 @@
+---
+interface Props {
+  name: string;
+  slug: string;
+  icon: string;
+  count: number;
+  description?: string;
+}
+
+const { name, slug, icon, count, description } = Astro.props;
+---
+
+<a href={`/${slug}/`} class="category-card card-hover">
+  <div class="icon-wrap">
+    {icon === 'database' && (
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <ellipse cx="12" cy="5" rx="9" ry="3"/>
+        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+      </svg>
+    )}
+    {icon === 'code-2' && (
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m18 16 4-4-4-4"/>
+        <path d="m6 8-4 4 4 4"/>
+        <path d="m14.5 4-5 16"/>
+      </svg>
+    )}
+    {icon === 'cloud' && (
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+      </svg>
+    )}
+  </div>
+  <div class="info">
+    <h3 class="card-title">{name}</h3>
+    {description && <p class="card-desc">{description}</p>}
+    <span class="count">{count}+ 工具</span>
+  </div>
+</a>
+
+<style>
+  .category-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    text-decoration: none;
+    min-width: 240px;
+    min-height: 140px;
+  }
+  .icon-wrap {
+    color: var(--accent);
+  }
+  .info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .card-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .card-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+  .count {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+</style>

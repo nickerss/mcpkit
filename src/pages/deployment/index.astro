@@ -1,32 +1,85 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import CategoryFilter from '../../components/CategoryFilter.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import FilterSidebar from '../../components/FilterSidebar.astro';
 import ToolCard from '../../components/ToolCard.astro';
 import { getCollection } from 'astro:content';
 
 const tools = await getCollection('deployment');
+
+const priceFilters = [
+  { id: 'all', label: '全部' },
+  { id: 'free', label: '免费', count: tools.filter(t => t.data.price === 'free').length },
+  { id: 'paid', label: '付费', count: tools.filter(t => t.data.price === 'paid').length },
+];
 ---
 
 <BaseLayout title="工作流 & 部署 - mcpkit.run">
-  <main class="container py-12">
-    <h1 class="title">工作流 & 部署</h1>
-    <p class="desc">部署、数据库、支付、邮件一站式工具清单</p>
-    <div class="layout">
-      <CategoryFilter categories={[{ id: 'deployment', name: '工作流 & 部署', slug: 'deployment', icon: 'cloud' }]} activeCategory="deployment" />
-      <div class="grid">
-        {tools.map(tool => (
-          <ToolCard {...tool.data} slug={tool.slug} />
-        ))}
+  <Header />
+
+  <main class="main">
+    <div class="page-header">
+      <div class="container">
+        <h1 class="page-title">工作流 & 部署</h1>
+        <p class="page-desc">部署、数据库、支付、邮件一站式工具清单，共 {tools.length} 个工具</p>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="layout">
+        <FilterSidebar title="价格" options={priceFilters} />
+        <div class="tools-grid">
+          {tools.map(tool => (
+            <ToolCard {...tool.data} slug={tool.slug} />
+          ))}
+        </div>
       </div>
     </div>
   </main>
+
+  <Footer />
 </BaseLayout>
 
 <style>
-  .container { @apply max-w-6xl mx-auto px-4; }
-  .title { @apply text-3xl font-bold mb-2; }
-  .desc { @apply text-gray-400 mb-8; }
-  .layout { @apply flex gap-8; }
-  .grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 1rem; flex: 1; }
-  @media (min-width: 768px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  .main {
+    min-height: calc(100vh - 60px);
+  }
+  .page-header {
+    border-bottom: 1px solid var(--border-color);
+    padding: 40px 0 32px;
+  }
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+  .page-desc {
+    font-size: 16px;
+    color: var(--text-secondary);
+  }
+  .layout {
+    display: flex;
+    gap: 40px;
+    padding: 32px 0 64px;
+    align-items: flex-start;
+  }
+  .tools-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 16px;
+  }
+  @media (min-width: 640px) {
+    .tools-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1024px) {
+    .tools-grid { grid-template-columns: repeat(3, 1fr); }
+  }
 </style>

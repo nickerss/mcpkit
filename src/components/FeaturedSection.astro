@@ -1,0 +1,67 @@
+---
+import ToolCard from './ToolCard.astro';
+
+interface Props {
+  tools: any[];
+  title?: string;
+}
+
+const { tools, title = '编辑精选' } = Astro.props;
+---
+
+<section class="featured">
+  <div class="section-header">
+    <h2 class="section-title">{title}</h2>
+    <a href="/search/" class="view-all">查看全部 →</a>
+  </div>
+  <div class="scroll-container">
+    <div class="cards-scroll">
+      {tools.map(tool => (
+        <div class="card-item">
+          <ToolCard {...tool.data} slug={tool.slug} />
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .featured {
+    padding: 0 24px;
+  }
+  .section-header {
+    max-width: 1280px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .view-all {
+    font-size: 14px;
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+  .view-all:hover {
+    color: var(--accent-hover);
+  }
+  .scroll-container {
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+  .cards-scroll {
+    display: flex;
+    gap: 16px;
+    padding-bottom: 12px;
+    width: max-content;
+  }
+  .card-item {
+    width: 300px;
+    flex-shrink: 0;
+  }
+</style>
