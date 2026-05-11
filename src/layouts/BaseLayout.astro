@@ -28,23 +28,21 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   </head>
   <body>
     <slot />
-    <script is:inline>
+    <script is:inline define:vars={{ locale }}>
       (function() {
+        // Determine language: URL param > localStorage > server locale
         var urlLang = new URLSearchParams(window.location.search).get('lang');
         var storedLang = localStorage.getItem('mcpkit-lang');
-        var lang = urlLang || storedLang || 'en';
+        var lang = urlLang || storedLang || locale || 'en';
         if (lang !== 'en' && lang !== 'zh') lang = 'en';
 
         var texts = {
           en: {
             nav: ['Home', 'MCP Servers', 'AI Tools', 'Deployment', 'Search', 'Submit Tool'],
             navHrefs: ['/', '/mcp-servers/', '/ai-tools/', '/deployment/', '/search/', '/submit/'],
-            heroTitle: 'AI Agent Tools for',
-            heroAccent: 'Independent Developers',
+            heroTitle: 'Your AI Agent Toolkit',
             heroDesc: 'Curated MCP Servers, AI coding tools, and workflow components — find the right tool for your use case',
             heroPlaceholder: 'Search tools...',
-            langLabel: 'EN',
-            langTitle: 'Switch to Chinese',
             sectionFeatured: 'Featured',
             sectionLatest: 'Latest Added',
             footerCopy: '© 2026 MCPKIT — AI Agent Tools for Independent Developers',
@@ -53,12 +51,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
           zh: {
             nav: ['首页', 'MCP 服务器', 'AI 工具', '部署工具', '搜索', '提交工具'],
             navHrefs: ['/?lang=zh', '/mcp-servers/?lang=zh', '/ai-tools/?lang=zh', '/deployment/?lang=zh', '/search/?lang=zh', '/submit/?lang=zh'],
-            heroTitle: '独立开发者的',
-            heroAccent: 'AI Agent 工具箱',
+            heroTitle: '独立开发者的 AI Agent 工具箱',
             heroDesc: '精选 MCP Servers、AI 编码工具、工作流组件，帮你快速找到「这个场景用什么工具」',
             heroPlaceholder: '搜索工具...',
-            langLabel: '中',
-            langTitle: '切换到英文',
             sectionFeatured: '编辑精选',
             sectionLatest: '最新收录',
             footerCopy: '© 2026 MCPKIT — 独立开发者的 AI Agent 工具箱',
@@ -81,25 +76,19 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         var logoLink = document.querySelector('.logo');
         if (logoLink) logoLink.setAttribute('href', '/?lang=' + lang);
 
-        // Hero title (h1) — skip if text already matches target lang (zh has CJK or en has only ASCII)
+        // Hero title (h1) — always set to current lang text
         var heroTitle = document.querySelector('.hero-title');
-        if (heroTitle) {
-          var text = heroTitle.textContent || '';
-          // Determine if text is already the right language
-          var isZhText = /[一-鿿]/.test(text);
-          var isEnText = /^[A-Za-z\s\d .,!'"-]*$/.test(text);
-          var alreadyCorrect = (lang === 'zh' && isZhText) || (lang === 'en' && isEnText);
-          if (!alreadyCorrect) {
-            var hasBr = heroTitle.innerHTML.indexOf('<br') !== -1;
-            if (hasBr) {
-              heroTitle.innerHTML = t.heroTitle + '<br/><span class="gradient-text">' + t.heroAccent + '</span>';
-            } else {
-              heroTitle.textContent = t.heroTitle;
-            }
-          }
-        }
+        if (heroTitle) heroTitle.textContent = t.heroTitle;
+
+        // Hero subtitle (p.hero-subtitle)
+        var heroSubtitle = document.querySelector('.hero-subtitle');
+        if (heroSubtitle) heroSubtitle.textContent = t.heroDesc;
+
+        // Hero desc (p.hero-desc) — some pages use this instead
         var heroDesc = document.querySelector('.hero-desc');
         if (heroDesc) heroDesc.textContent = t.heroDesc;
+
+        // Search input placeholder
         var searchInput = document.querySelector('.search-input');
         if (searchInput) searchInput.setAttribute('placeholder', t.heroPlaceholder);
 
@@ -108,7 +97,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         if (sectionTitles[0]) sectionTitles[0].textContent = t.sectionFeatured;
         if (sectionTitles[1]) sectionTitles[1].textContent = t.sectionLatest;
 
-        // Footer
+        // Footer copyright
         var copyright = document.querySelector('.copyright');
         if (copyright) copyright.textContent = t.footerCopy;
         var footerLinks = document.querySelectorAll('.footer .link');
@@ -118,13 +107,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         // Update HTML lang
         document.documentElement.lang = lang;
 
-        // Update all href/src with ?lang=
-        if (lang !== 'en') {
+        // Update all href/src with ?lang= for zh
+        if (lang === 'zh') {
           var allLinks = document.querySelectorAll('a[href]');
           allLinks.forEach(function(link) {
             var href = link.getAttribute('href');
             if (href && !href.startsWith('http') && !href.includes('?')) {
-              link.setAttribute('href', href + '?lang=' + lang);
+              link.setAttribute('href', href + '?lang=zh');
             }
           });
         }
