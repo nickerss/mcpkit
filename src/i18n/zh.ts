@@ -79,4 +79,50 @@ export const zh = {
     deploymentTitle: '工作流 & 部署',
     deploymentDesc: '部署、数据库、支付、邮件一站式工具清单，共 {count} 个工具',
   },
+  kit: {
+    title: 'Kits',
+    subtitle: 'Kit-based tool combos · Verified · Rated',
+    searchPlaceholder: '搜索工具...',
+    cards: {
+      'ship-a-saas': {
+        name: '🚀 Ship a SaaS',
+        desc: '从零开始构建并部署一个 SaaS 产品，30分钟跑通',
+      },
+      'ai-coding-agent': {
+        name: '🤖 AI Coding Agent',
+        desc: '让 AI Agent 自动处理编码全流程——不只是写代码，是真正能干活的 Agent',
+      },
+      'rag-research': {
+        name: '📊 RAG & Research',
+        desc: '让 AI Agent 做深度研究——爬取网页 → 提取内容 → 存入向量数据库 → 合成报告',
+      },
+      'browser-automation': {
+        name: '⚡ Browser Automation',
+        desc: '让 AI Agent 操作浏览器完成重复性 web 任务',
+      },
+      'devops-monitoring': {
+        name: '🔔 DevOps & Monitoring',
+        desc: '让 AI Agent 自动监控 + 告警 + 修复',
+      },
+    },
+    difficulty: {
+      starter: 'Starter',
+      pro: 'Pro',
+      enterprise: 'Enterprise',
+    },
+    levels: {
+      starter: 'Starter 级别',
+      pro: 'Pro 级别',
+      enterprise: 'Enterprise 级别',
+    },
+    aggregateScore: '套件综合评分',
+    overallRating: '综合评分',
+    toolsCount: '{count} 个工具',
+    certified: '🏅 Certified',
+    rating: '⭐ {rating}',
+    landing: {
+      levelDesc: '说明',
+      aggregateTitle: '套件综合评分',
+    },
+  },
 };

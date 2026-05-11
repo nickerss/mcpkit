@@ -1,25 +1,28 @@
-# UI/UX 设计文档 — MCPKIT
+# UI/UX 设计文档 — MCPKIT v2.0
 
 ## 1. 文档信息
 
-- 版本：v1.1
+- 版本：v2.0
 - 作者：UID
-- 对应 PRD 版本：v1.0（_ARCH.md_ 已确认）
-- 日期：2026-05-09
-- 更新：v1.1 新增国际化（i18n）支持，项目名变更为 MCPKIT
+- 对应 PRD 版本：v2.0（5 个 Kit + 评测体系）
+- 日期：2026-05-11
 
 ---
 
 ## 2. 设计理念
 
-**简约、专业、高效。** 不炫技，让用户快速找到工具、完成任务。
-视觉语言参考 Linear / Vercel 的克制美学：深色主调、精致的卡片、微妙的动效。
+**从目录到工具箱：** 不再堆砌工具列表，而是以真实工作流为导向，让用户找到"完成一件事所需的整套工具 Kit"。
+
+视觉语言延续 v1.0 深色主题（Linear/Vercel 风格），新增：
+- Kit 入口大卡片（横向，hover 有整体联动感）
+- 评测雷达图（清晰、可比较）
+- 认证标签体系（质量信号，视觉权重高）
 
 ---
 
 ## 3. 视觉方向
 
-### 3.1 色彩系统
+### 3.1 色彩系统（延续 v1.0，新增 Kit 专用色）
 
 | Token | Hex | 用途 |
 |-------|-----|------|
@@ -33,14 +36,20 @@
 | `--accent` | `#6366f1` | 主按钮 / 强调 |
 | `--accent-hover` | `#818cf8` | 按钮 Hover |
 | `--tag-bg` | `#1e1e2e` | 标签背景 |
-| `--free` | `#22c55e` | 免费标识 |
-| `--paid` | `#f59e0b` | 付费标识 |
+| `--free` | `#22c55e` | 免费 / 基础 |
+| `--paid` | `#f59e0b` | 付费 / Pro |
+| **Kit 色系** | | |
+| `--kit-ship` | `#f97316` | 🚀 Ship a SaaS |
+| `--kit-coding` | `#06b6d4` | 🤖 AI Coding Agent |
+| `--kit-rag` | `#8b5cf6` | 📊 RAG & Research |
+| `--kit-browser` | `#eab308` | ⚡ Browser Automation |
+| `--kit-devops` | `#ef4444` | 🔔 DevOps & Monitoring |
 
 ### 3.2 字体
 
 - 主字体：**Inter**（Google Fonts），fallback: `system-ui, sans-serif`
 - 代码：**JetBrains Mono**，fallback: `monospace`
-- 字号梯度：12 / 14 / 16 / 20 / 24 / 32 / 48px
+- 字号梯度：12 / 14 / 16 / 20 / 24 / 28 / 32 / 48px
 
 ### 3.3 间距系统
 
@@ -48,20 +57,21 @@
 
 ### 3.4 圆角
 
-- 卡片：`12px`
+- 卡片：`16px`（Kit 卡片 `20px`）
 - 按钮：`8px`
 - 标签：`6px`
 - 输入框：`8px`
 
 ### 3.5 动效
 
-- 卡片 Hover：`transform: translateY(-2px)` + 边框发光，`200ms ease`
-- 按钮 Hover：`background` 过渡，`150ms ease`
-- 页面切换：淡入淡出，`opacity 0→1`，`300ms`
+- Kit 卡片 Hover：整体上浮 4px + 左侧彩条放大 + 背景微亮，`250ms ease`
+- 雷达图：绘制时从中心点向外扩展动画，`600ms ease-out`
+- 认证标签：脉冲光晕（🏅 Certified），`2s ease infinite`
+- 难度切换：淡入淡出，`200ms ease`
 
 ### 3.6 图标
 
-使用 **Lucide Icons**（轻量、一致），通过 `@lucide/astro` 组件引入。
+使用 **Lucide Icons**。
 
 ---
 
@@ -71,269 +81,313 @@
 
 ```
 ┌─────────────────────────────────┐
-│  Header（固定，60px高）          │
+│  Header（固定，60px）            │
 ├─────────────────────────────────┤
 │  Page Content（自适应）           │
+│  （首页 100vh，列表页 自适应）      │
 └─────────────────────────────────┘
 ```
 
-**Header：**
-- 左：Logo（MCPKIT 字样 + 简洁图标）
-- 中：导航（Home / MCP Servers / AI Tools / Deployment / Search）
-- 右：语言切换 + 提交工具按钮（CTA）
+**Header（v2.0 改版）：**
+- 左：Logo（MCPKIT） + 场景导航（Kit 入口按钮）
+- 中：主导航（[Kit 入口] / 所有工具 / 搜索）
+- 右：语言切换 + Submit Tool
 
 ### 4.2 响应式断点
 
 | 断点 | 宽度 | 布局变化 |
 |------|------|---------|
-| Mobile | `< 640px` | 单列，卡片堆叠 |
-| Tablet | `640px - 1024px` | 双列网格 |
-| Desktop | `> 1024px` | 三列网格，侧边筛选栏 |
+| Mobile | `< 640px` | 单列，Kit 卡片堆叠 |
+| Tablet | `640px - 1024px` | 双列 Kit 卡片（2+3 或 3+2） |
+| Desktop | `> 1024px` | 5 列 Kit 卡片一行，或 3+2 两行 |
 
 ---
 
-## 5. 首页（`/`）
+## 5. 首页重构（`/`）
 
 ```
 ┌──────────────────────────────────────────────────────────┐
 │  Header                                                  │
 ├──────────────────────────────────────────────────────────┤
-│  Hero（居中，垂直居中于首屏）                              │
+│  Hero（居中）                                            │
 │  ┌──────────────────────────────────────────────────┐   │
-│  │  Slogan: "AI Agent Tools for Indie Developers"    │   │
-│  │  搜索框（带 icon，placeholder="Search tools..."） │   │
+│  │  标题："Your AI Agent Toolkit"                   │   │
+│  │  副标题：Kit-based tool combos · Verified         │   │
 │  └──────────────────────────────────────────────────┘   │
 ├──────────────────────────────────────────────────────────┤
-│  三大分类入口（横向卡片）                                  │
-│  ┌───────────┐ ┌───────────┐ ┌───────────┐             │
-│  │ MCP       │ │ AI Tools  │ │ Deployment│             │
-│  │ Servers   │ │           │ │           │             │
-│  │ 50+ tools │ │ 30+ tools │ │ 30+ tools │             │
-│  └───────────┘ └───────────┘ └───────────┘             │
+│  Kit 入口区（横向，5个大卡片）                           │
+│  ┌────────────────────────────────────────────────┐     │
+│  │ 🚀 Ship a SaaS    🤖 AI Coding    📊 RAG       │     │
+│  │    30min           Agent           Research     │     │
+│  ├────────────────────────────────────────────────┤     │
+│  │ ⚡ Browser      🔔 DevOps                        │     │
+│  │    Automation   & Monitoring                    │     │
+│  └────────────────────────────────────────────────┘     │
 ├──────────────────────────────────────────────────────────┤
-│  编辑精选（Section Title + 横向滚动卡片）                   │
-│  ┌────────┐ ┌────────┐ ┌────────┐                      │
-│  │Featured│ │Featured│ │Featured│                      │
-│  └────────┘ └────────┘ └────────┘                      │
+│  [View all tools →]（次要入口，小字）                   │
 ├──────────────────────────────────────────────────────────┤
-│  最新收录（Grid，3列）                                    │
-│  ... 工具卡片 ...                                        │
-├──────────────────────────────────────────────────────────┤
-│  Footer（简洁，单行）                                     │
+│  Footer                                                  │
 └──────────────────────────────────────────────────────────┘
 ```
 
-**Hero 区域：**
-- 背景：渐变暗色（`--bg-primary` → `#0f0f18`），上方有微妙的网格纹理
-- Slogan：32px，字重 700，白色 — "AI Agent Tools for Indie Developers"
-- 搜索框：宽度 560px，24px 圆角，内置搜索图标，placeholder "Search tools..."
-- 搜索框 focus 时边框变为 `--accent`
-
-**分类入口卡片：**
-- 尺寸：240px × 140px
-- 背景：`--bg-secondary`，边框 1px `--border`
-- Hover：边框变为 `--accent`，背景变为 `--bg-tertiary`
-- 包含：分类 icon（32px）、分类名称（20px bold）、工具数量（14px muted）
-
-**编辑精选区：**
-- Section Title："Featured" + 右侧"View all →"链接
-
----
-
-## 6. 工具卡片组件（ToolCard）
-
-**视觉规格：**
+**Kit 入口卡片规格：**
 
 ```
-┌─────────────────────────────────────────┐
-│  ┌────┐                                │
-│  │Logo│  工具名称              [Free]   │
-│  └────┘  简短描述（1行，截断）           │
-│                                         │
-│  [database] [local]                    │
-│                                         │
-│  View details →                       │
-└─────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────┐
+│  🚀  [图标 48px，Kit 对应颜色]                        │
+│                                                     │
+│  Ship a SaaS          [Starter] [Pro] [Enterprise] │  ← 难度选择标签
+│  Deploy a SaaS in 30 minutes                       │
+│                                                     │
+│  GitHub MCP · Supabase MCP · Cloudflare · Slack    │  ← 核心工具标签（最多4个）
+│                                                     │
+│  ⭐ 4.4  ·  🏅 Certified ·  12 tools               │  ← 评分 + 认证 + 工具数
+└─────────────────────────────────────────────────────┘
 ```
 
-**详细规格：**
+**卡片详细规格：**
 
 | 属性 | 规格 |
 |------|------|
-| 容器 | `bg-[--bg-secondary]` `border border-[--border]` `rounded-xl` `p-4` |
-| Logo | 40×40px，`object-contain`，圆角 8px |
-| 工具名称 | 16px，字重 600，`--text-primary` |
-| 价格 Badge | 12px，圆角 6px，padding 4px 8px；Free=`bg-green/10 text-green`，Paid=`bg-amber/10 text-amber` |
-| 描述 | 14px，`--text-secondary`，单行截断 |
-| Tags | 12px，`bg-[--tag-bg]` `text-[--text-secondary]`，圆角 6px，gap 6px |
-| 底部链接 | 14px，`--accent`，hover 变色，文本 "View details →" |
+| 尺寸 | 最小 280px 宽，auto 高度（约 200px） |
+| 容器 | `bg-[--bg-secondary]` border，`rounded-2xl`（20px） |
+| 图标 | 48×48px，圆角 12px，背景为 Kit 主色的 15% opacity |
+| 标题 | 22px，字重 700，`--text-primary` |
+| 副标题 | 14px，`--text-secondary` |
+| 难度标签 | Starter=绿 / Pro=橙 / Enterprise=红，边框 pill 样式 |
+| 工具标签 | 12px，`bg-[--tag-bg]`，逗号分隔，最多 4 个 |
+| 评分区 | 14px，带 ⭐ 评分 + 认证标签 + 工具数量 |
+| Hover 效果 | `translateY(-4px)` + `box-shadow` + 左侧彩条（4px 宽 Kit 色）|
 
-**Hover 效果：**
-- 整体：`translateY(-2px)` + `box-shadow: 0 8px 24px rgba(99,102,241,0.15)`
-- 边框颜色变为 `--accent`（opacity 0.4）
+**首页布局建议：**
+- 桌面：5 个 Kit 横排一行（每列 `minmax(240px, 1fr)`）
+- 或 3+2 两行布局（第一行 3 个，第二行 2 个居中）
+- 每个卡片对应一个 Kit 难度默认值（Starter）
 
 ---
 
-## 7. 分类列表页（以 `/mcp-servers/` 为例）
+## 6. Kit 落地页（`/kits/[kit-slug]`）
+
+### 6.1 页面结构
 
 ```
 ┌──────────────────────────────────────────────────────────┐
 │  Header                                                  │
 ├──────────────────────────────────────────────────────────┤
-│  页面 Title："MCP Servers" + 工具总数                    │
-├────────────┬────────────────────────────────────────────┤
-│  筛选侧边栏 │  工具网格（3列）                            │
-│            │  ┌────┐ ┌────┐ ┌────┐                       │
-│  分类        │  │Card│ │Card│ │Card│                      │
-│  ○ All      │  └────┘ └────┘ └────┘                      │
-│  ○ Database │  ┌────┐ ┌────┐ ┌────┐                       │
-│  ○ GitHub   │  │Card│ │Card│ │Card│                      │
-│  ...        │  └────┘ └────┘ └────┘                      │
-│            │                                            │
-│  价格        │  ────── 分页 ──────                        │
-│  ○ All      │                                            │
-│  ○ Free     │                                            │
-│  ○ Paid     │                                            │
-│            │                                            │
-│  标签（热门） │                                            │
-│  [database] │                                            │
-│  [api]      │                                            │
-└────────────┴────────────────────────────────────────────┘
-```
-
-**侧边栏规格：**
-- 宽度：240px（桌面），移动端隐藏（变为顶部筛选 dropdown）
-- 筛选区块之间有分割线
-- 选项：14px，当前选中项 `text-[--accent]` + 左边竖线
-
-**筛选选项文案（英文默认）：**
-- 分类：Category / All / Database / GitHub / API / ...
-- 价格：Price / All / Free / Freemium / Paid
-- 标签：Tags / Popular
-
-**工具网格：**
-- 桌面：3 列，gap 20px
-- 平板：2 列
-- 移动：1 列
-
-**分页：**
-- 简单样式：页码 + Prev / Next
-- 每页 24 条
-
----
-
-## 8. 工具详情页（`/tools/[slug]`）
-
-```
-┌──────────────────────────────────────────────────────────┐
-│  Header                                                  │
+│  Breadcrumb: Home > Kits > 🚀 Ship a SaaS                │
 ├──────────────────────────────────────────────────────────┤
-│  Breadcrumb：Home > MCP Servers > mcp-sqlite             │
+│  Kit Hero（带背景色和图标）                               │
+│  ┌──────────────────────────────────────────────────┐   │
+│  │ 🚀 Ship a SaaS — Deploy a SaaS in 30 min         │   │
+│  │ [Starter] [Pro] [Enterprise]  ← 难度切换 Tab     │   │
+│  └──────────────────────────────────────────────────┘   │
 ├──────────────────────────────────────────────────────────┤
-│  ┌────────────────────────────────────────────────────┐ │
-│  │  ┌────┐  工具名称           [Free]  [Website →]   │ │
-│  │  │Logo│  @mcp-sqlite · Database                    │ │
-│  │  └────┘                                            │ │
-│  │                                                    │ │
-│  │  描述：A lightweight local SQLite MCP Server...    │ │
-│  │                                                    │ │
-│  │  Scenarios:                                       │ │
-│  │  • Local database debugging                       │ │
-│  │  • Offline data querying                          │ │
-│  └────────────────────────────────────────────────────┘ │
+│  左侧（65%）：工具列表    │  右侧（35%）：评测 + 配置    │
+│  ┌─────────────────────  │  ┌──────────────────────┐   │
+│  │ 1. GitHub MCP ⭐4.5   │  │  评测雷达图           │   │
+│  │    🏅 Certified       │  │  四维轴：易用/安全/   │   │
+│  │    描述...            │  │  活跃/场景匹配        │   │
+│  │    [Install] [Config] │  │                       │   │
+│  ├─────────────────────  │  │  综合评分：⭐ 4.3    │   │
+│  │ 2. Supabase MCP ⭐4.3│  │                       │   │
+│  │    🏅 Certified       │  ├──────────────────────┤   │
+│  │    描述...            │  │  配置示例（.env 代码） │   │
+│  │    [Install] [Config] │  │                       │   │
+│  └─────────────────────  │  └──────────────────────┘   │
 ├──────────────────────────────────────────────────────────┤
-│  ┌──────────────────┐  ┌──────────────────────────────┐ │
-│  │  Install Command  │  │  Related Tools              │ │
-│  │  npm install...  │  │  ┌────┐ ┌────┐             │ │
-│  │  [Copy]          │  │  │Card│ │Card│             │ │
-│  └──────────────────┘  │  └────┘ └────┘             │ │
-│                       └──────────────────────────────┘ │
+│  教程区（Step by Step，可折叠）                          │
+├──────────────────────────────────────────────────────────┤
+│  认证标签展示区                                          │
+│  🏅 MCPKIT Certified / ✅ Kit Recommended                │
+├──────────────────────────────────────────────────────────┤
+│  Footer                                                  │
 └──────────────────────────────────────────────────────────┘
 ```
 
-**详情页区块：**
+### 6.2 难度切换 Tab
 
-| 区块 | 规格 |
+- 三个 Tab：Starter / Pro / Enterprise
+- 切换时工具列表内容更新（不同难度对应不同工具组合）
+- 当前选中 Tab：`border-bottom: 2px --accent`，文字变白
+- 非选中：`--text-muted`，hover 时变 `--text-secondary`
+
+### 6.3 工具列表项
+
+每个工具卡（内嵌在 Kit 落地页中）：
+
+```
+┌─────────────────────────────────────────┐
+│  1. GitHub MCP          ⭐ 4.5  🏅      │
+│  AI Agent 连接 GitHub 的官方 MCP 服务器  │
+│                                         │
+│  [Starter] [Pro]  ← 适用难度标签        │
+│                                         │
+│  安装命令: npx @anthropic-ai/mcp-server │
+│  [复制]                                 │
+│                                         │
+│  认证: 🏅 MCPKIT Certified              │
+│  [查看详情 →]  [官方链接 →]            │
+└─────────────────────────────────────────┘
+```
+
+### 6.4 评测雷达图（核心新组件）
+
+**规格：**
+- 画布大小：300×300px
+- 四轴：易用性（顶）、安全性（右下）、活跃度（左下）、场景匹配（右侧）
+- 权重（轴标签旁注明）：易用性 30%、安全性 25%、活跃度 20%、场景匹配 25%
+- 填充色：Kit 主色，opacity 0.3
+- 边框线：Kit 主色，2px
+- 中心点：空心圆，8px
+- 刻度：0-5，环状辅助线（`--border` 色，1px）
+- 轴标签：14px，`--text-secondary`，外围
+
+**动画：** 页面加载时从 0 向外扩展至实际数值，`600ms ease-out`
+
+**变体（工具详情页单工具）：** 同样四轴，但显示该工具自己的评分
+
+---
+
+## 7. 工具详情页（`/tools/[slug]`）
+
+### 7.1 页面结构
+
+```
+┌──────────────────────────────────────────────────────────┐
+│  Header                                                  │
+├──────────────────────────────────────────────────────────┤
+│  Breadcrumb: Home > Kits > 🚀 Ship a SaaS > GitHub MCP   │
+├──────────────────────────────────────────────────────────┤
+│  工具头部                                                │
+│  ┌────────────────────────────────────────────────────┐ │
+│  │  Logo  工具名称              [🏅 Certified]       │ │
+│  │       @github-mcp · 🚀 Ship a SaaS Kit            │ │
+│  │       描述文本...                                  │ │
+│  └────────────────────────────────────────────────────┘ │
+├──────────────────────────────────────────────────────────┤
+│  四维雷达图（居中，单独展示）                            │
+│  ┌──────────────────────┐                             │
+│  │    易用性 4.8         │                             │
+│  │   ↗        ↖          │                             │
+│  │  场景    雷达图    安全   │                             │
+│  │  匹配 4.6       4.3   │                             │
+│  │   ↙        ↘          │                             │
+│  │    活跃度 4.9         │                             │
+│  │                       │                             │
+│  │  综合: ⭐ 4.55        │                             │
+│  └──────────────────────┘                             │
+├──────────────────────────────────────────────────────────┤
+│  认证标签 │ 所属 Kit 标签（可点击跳转 Kit 落地页）       │
+│  🏅 MCPKIT Certified  │  🚀 Ship a SaaS  │  🤖 AI Coding│
+├──────────────────────────────────────────────────────────┤
+│  配置示例（可复制 .env）│  安装命令                     │
+├──────────────────────────────────────────────────────────┤
+│  相关工具（同 Kit 内的其他工具，2-3 个卡片）             │
+└──────────────────────────────────────────────────────────┘
+```
+
+### 7.2 雷达图规格（同上）
+
+### 7.3 Kit 标签
+
+- 显示工具所属的 Kit（最多 3 个）
+- 每个标签：Kit 图标 + Kit 名称，pill 样式，`bg-[--kit-xxx]/10`，文字为对应 Kit 颜色
+- 可点击跳转到对应 Kit 落地页
+
+### 7.4 认证标签（质量信号视觉层级最高）
+
+| 状态 | 样式 |
 |------|------|
-| Logo | 64×64px，圆角 12px |
-| 名称 | 28px，字重 700 |
-| 价格 Badge | 16px |
-| 描述 | 16px，`--text-secondary`，可多行 |
-| 使用场景（Scenarios） | 无序列表，16px |
-| 安装命令区 | 深色背景 `#0d0d14`，16px JetBrains Mono，右侧复制按钮 |
-| 相关工具（Related Tools） | 2 列 ToolCard 网格 |
+| 🏅 MCPKIT Certified | 金色背景渐变 `linear-gradient(135deg, #f59e0b, #fbbf24)`，白色文字，pulse 光晕动画 |
+| ✅ Kit Recommended | 绿色背景 `#22c55e20`，绿色文字 `#22c55e` |
+| ✓ Reviewed | 灰色边框，灰色文字 |
+| ⏳ Pending | 灰字，无边框 |
 
 ---
 
-## 9. 搜索页（`/search`）
+## 8. 评测体系设计
 
-- 搜索框居中（与首页 Hero 一致）
-- 结果：无结果时显示插画 + 提示文字 "No results found. Try a different keyword."
-- 有结果时：输入框下方直接显示匹配列表（单列，间距宽松）
-- 结果项包含：Logo + 名称 + 简短描述 + 分类标签
+### 8.1 四维雷达图轴定义
 
-**搜索页表单文案（英文默认）：**
-- Placeholder: "Search tools..."
-- 无结果提示："No results for '[keyword]'. Check spelling or try a broader term."
+| 轴 | 标签 | 权重 | 说明 |
+|----|------|------|------|
+| 上 | 易用性 (Ease of Use) | 30% | 配置时间、文档完整性、安装复杂度 |
+| 右下 | 安全性 (Security) | 25% | OAuth 权限范围、最小权限原则 |
+| 左下 | 活跃度 (Activity) | 20% | GitHub stars、最近更新频率 |
+| 右 | 场景匹配 (Scenario Fit) | 25% | 与 Kit 目的的匹配程度 |
 
----
-
-## 10. 提交页（`/submit`）
+### 8.2 综合评分计算
 
 ```
-┌──────────────────────────────────────────────────────────┐
-│  Header                                                  │
-├──────────────────────────────────────────────────────────┤
-│  Title: "Submit a Tool" + subtitle                      │
-├──────────────────────────────────────────────────────────┤
-│  表单（居中，最大宽度 640px）                              │
-│  ┌────────────────────────────────────────────────────┐ │
-│  │ Tool Name: ________________________                │ │
-│  │ Website URL: ________________________              │ │
-│  │ Category: _________ (dropdown)                    │ │
-│  │ Price: _________ (Free / Freemium / Paid)         │ │
-│  │ Description: ____________________ (textarea)       │ │
-│  │ Tags: _________ (comma separated)                  │ │
-│  │                                                    │ │
-│  │ [Submit]                                           │ │
-│  └────────────────────────────────────────────────────┘ │
-│                                                      │
-│  底部说明：Submitted tools are reviewed by admins.   │
-└──────────────────────────────────────────────────────────┘
+综合评分 = (易用性×0.30) + (安全性×0.25) + (活跃度×0.20) + (场景匹配×0.25)
 ```
 
-**表单规格：**
-- 输入框：16px 圆角，`bg-[--bg-secondary]` `border border-[--border]`，focus 时 border 变为 `--accent`
-- Label：14px，字重 500，上方 8px 间距
-- 提交按钮：`bg-[--accent]` `text-white` `rounded-lg` `px-6 py-3`
+显示时四舍五入到小数点后一位，如 `⭐ 4.3`
+
+### 8.3 技术实现
+
+**推荐方案：CSS + SVG（零依赖）**
+
+```html
+<!-- 雷达图 SVG 结构 -->
+<svg viewBox="0 0 300 300" width="300" height="300">
+  <!-- 背景网格（5环） -->
+  <!-- 四轴线（中心点 → 4个顶点） -->
+  <!-- 评分区域（polygon） -->
+  <!-- 数据点 + 分数标签 -->
+  <!-- 轴标签（易用性/安全性/活跃度/场景匹配） -->
+</svg>
+```
+
+备选方案：Chart.js（通过 `chart.js` + `vue-chartjs` 或 React wrapper），适合需要高度定制动画时。
 
 ---
 
-## 11. 组件清单
+## 9. 认证标签设计
+
+### 9.1 标签视觉规范
+
+| 认证 | 视觉 |
+|------|------|
+| 🏅 MCPKIT Certified | `bg-gradient-to-r from-amber-500 to-yellow-400` text-white，`rounded-full`，padding `4px 12px`，带脉冲光晕 |
+| ✅ Kit Recommended | `bg-green-500/10` text-green-400，`rounded-full`，padding `4px 12px` |
+| ✓ Reviewed | `border border-[--border]` text-[--text-muted]，`rounded-full`，padding `4px 12px` |
+| ⏳ Pending | text-[--text-muted]，`rounded-full`，padding `4px 12px` |
+
+### 9.2 认证标签展示位置
+
+- 工具卡片（列表）：右上角，紧跟工具名称
+- 工具详情页：工具头部区，紧跟价格 Badge
+- Kit 落地页工具列表：工具名称右侧
+
+---
+
+## 10. 组件清单（v2.0 新增/更新）
 
 | 组件 | 文件 | 说明 |
 |------|------|------|
-| `BaseLayout.astro` | `src/layouts/` | 全局布局，含 Header / Footer |
-| `Header.astro` | `src/components/` | 固定顶部导航栏 |
-| `ToolCard.astro` | `src/components/` | 工具卡片，用于列表和详情页相关工具 |
-| `CategoryCard.astro` | `src/components/` | 分类入口大卡片（首页用） |
-| `FeaturedSection.astro` | `src/components/` | 编辑精选区块 |
-| `HeroSection.astro` | `src/components/` | 首页 Hero 搜索区 |
-| `FilterSidebar.astro` | `src/components/` | 分类列表页侧边筛选 |
-| `SearchBox.astro` | `src/components/` | 搜索框组件 |
-| `PriceBadge.astro` | `src/components/` | 免费/付费标识 |
-| `TagList.astro` | `src/components/` | 标签列表 |
-| `InstallCommand.astro` | `src/components/` | 安装命令展示 + 复制按钮 |
-| `SubmitForm.astro` | `src/components/` | 工具提交表单 |
-| `Footer.astro` | `src/components/` | 页面底部 |
-| `LanguageSwitcher.astro` | `src/components/` | 语言切换下拉组件 |
+| `BaseLayout.astro` | `src/layouts/` | 全局布局（含 Header / Footer） |
+| `Header.astro` | `src/components/` | v2.0 Header（Kit 入口 + Nav） |
+| `KitCard.astro` | `src/components/` | **新增** — 首页 Kit 入口大卡片 |
+| `DifficultyTab.astro` | `src/components/` | **新增** — Starter/Pro/Enterprise 切换 |
+| `KitToolList.astro` | `src/components/` | **新增** — Kit 落地页工具列表 |
+| `RadarChart.astro` | `src/components/` | **新增** — 四维评测雷达图（CSS SVG） |
+| `CertificationBadge.astro` | `src/components/` | **新增** — 认证标签（Certified/Recommended等） |
+| `KitTag.astro` | `src/components/` | **新增** — Kit 归属标签（可点击） |
+| `ToolCard.astro` | `src/components/` | 更新 — 新增认证标签和 Kit 标签 |
+| `ToolDetailHero.astro` | `src/components/` | **新增** — 工具详情页头部 |
+| `KitConfigExample.astro` | `src/components/` | **新增** — 配置示例代码块 |
+| `KitTutorial.astro` | `src/components/` | **新增** — Step by Step 教程区 |
+| `Footer.astro` | `src/components/` | 无变化 |
+| `SearchBox.astro` | `src/components/` | 无变化 |
+| `LanguageSwitcher.astro` | `src/components/` | 无变化 |
 
 ---
 
-## 12. Tailwind 配置扩展
+## 11. Tailwind 配置扩展
 
 ```js
-// tailwind.config.mjs 扩展
+// tailwind.config.mjs
 module.exports = {
   theme: {
     extend: {
@@ -353,12 +407,37 @@ module.exports = {
           DEFAULT: '#6366f1',
           hover: '#818cf8',
         },
-        free: '#22c55e',
-        paid: '#f59e0b',
+        kit: {
+          ship: '#f97316',
+          coding: '#06b6d4',
+          rag: '#8b5cf6',
+          browser: '#eab308',
+          devops: '#ef4444',
+        },
+        cert: {
+          certified: '#f59e0b',
+          recommended: '#22c55e',
+          reviewed: '#9090a0',
+          pending: '#505060',
+        },
       },
-      fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
+      borderRadius: {
+        '2xl': '16px',
+        '3xl': '20px',
+      },
+      animation: {
+        'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+        'radar-expand': 'radar-expand 600ms ease-out forwards',
+      },
+      keyframes: {
+        'pulse-glow': {
+          '0%, 100%': { boxShadow: '0 0 0 0 rgba(245, 158, 11, 0.4)' },
+          '50%': { boxShadow: '0 0 0 8px rgba(245, 158, 11, 0)' },
+        },
+        'radar-expand': {
+          from: { transform: 'scale(0)', opacity: 0 },
+          to: { transform: 'scale(1)', opacity: 1 },
+        },
       },
     },
   },
@@ -367,107 +446,84 @@ module.exports = {
 
 ---
 
-## 13. 国际化（i18n）架构
+## 12. 页面路由规划
 
-### 13.1 核心策略
+| 页面 | 路由 | 说明 |
+|------|------|------|
+| 首页 | `/` | 5 Kit 入口 + 评测展示 |
+| Kit 落地页 | `/kits/ship-a-saas/` | 🚀 Ship a SaaS |
+| Kit 落地页 | `/kits/ai-coding-agent/` | 🤖 AI Coding Agent |
+| Kit 落地页 | `/kits/rag-research/` | 📊 RAG & Research |
+| Kit 落地页 | `/kits/browser-automation/` | ⚡ Browser Automation |
+| Kit 落地页 | `/kits/devops-monitoring/` | 🔔 DevOps & Monitoring |
+| 工具详情 | `/tools/[slug]/` | 四维雷达图 + Kit 标签 |
+| 搜索 | `/search/` | 搜索所有工具 |
+| 提交 | `/submit/` | 提交工具（已有） |
 
-| 维度 | 决策 |
-|------|------|
-| 默认语言 | English |
-| 语言切换 | Header 右上角下拉组件，无刷新切换 |
-| URL 模式 | 不分路径（保持单一路由） |
-| 持久化 | localStorage 存储语言偏好 |
-| 首次渲染 | 检测 `Accept-Language` header，无则默认 EN |
+---
 
-### 13.2 语言切换器设计规格
+## 13. 实现注意事项
 
-**UI 位置**：Header 右侧，与提交按钮并排或左侧
+1. **雷达图实现**：优先使用 CSS + SVG（零依赖），每个轴从中心点出发，polygon 动态绑定评分数据。备选 Chart.js。
+2. **Kit 卡片布局**：首页桌面端使用 CSS Grid `grid-template-columns: repeat(5, 1fr)` 或 `repeat(3, 1fr)` + `repeat(2, 1fr)` 两行布局。
+3. **难度切换**：Tab 切换时通过 URL 参数或状态管理更新工具列表（如 `?level=starter`），保证分享链接有效。
+4. **认证标签动画**：`🏅 Certified` 的 pulse-glow 使用 CSS `@keyframes`，不要用 JS。
+5. **Kit 色系**：每个 Kit 的主色对应 `--kit-*` token，雷达图填充色、卡片左侧彩条、Kit 标签背景均使用该颜色。
+6. **i18n**：v1.0 的 i18n 架构（en.ts / zh.ts + `?lang=`）完全保留，新增 Kit 相关文本追加到翻译文件。
+7. **移动端**：Kit 卡片在移动端变为纵向堆叠（每个卡片 100% 宽），雷达图缩小至 200×200px。
+8. **SEO**：Kit 落地页有独立 title/description，工具详情页 JSON-LD 含评测分数字段。
 
-**触发按钮样式：**
-```
-┌────────────┐
-│  EN ▼     │  ← 32px 高，右侧 chevron-down icon
-└────────────┘
-```
+---
 
-**下拉菜单样式：**
-```
-┌─────────────────┐
-│ ✓ English       │
-│   中文          │
-└─────────────────┘
-```
-- 下拉菜单：`bg-[--bg-secondary]` border，`rounded-lg` shadow，`min-width: 120px`
-- 选中项：`text-[--accent]` + 左侧 checkmark icon
-- Hover：`bg-[--bg-tertiary]`
+## 14. 数据模型（对应 PRD v2.0 frontmatter）
 
-**交互逻辑：**
-- 点击按钮展开下拉，再次点击或选完后收起
-- 选中后页面所有文本即时切换，无刷新
-- 语言偏好存入 `localStorage`（key: `mcpkit-lang`）
-
-### 13.3 翻译内容范围
-
-所有用户可见文本均需中英文版本：
-
-| 文本类型 | 英文 | 中文 |
-|----------|------|------|
-| 导航 | Home, MCP Servers, AI Tools, Deployment, Search, Submit | 首页, MCP Servers, AI 工具, 部署工具, 搜索, 提交 |
-| 页面标题 | Featured, Latest, All Tools, Submit a Tool | 精选, 最新收录, 全部工具, 提交工具 |
-| 按钮 | View details, Submit, Copy, Prev, Next, View all | 查看详情, 提交, 复制, 上一页, 下一页, 查看全部 |
-| 表单 Label | Tool Name, Website URL, Category, Price, Description, Tags | 工具名称, 官网地址, 分类, 价格, 描述, 标签 |
-| 提示语 | No results found, Submit successful, Copied! | 未找到结果, 提交成功, 已复制！ |
-| 筛选选项 | All, Free, Freemium, Paid, Popular Tags | 全部, 免费, Freemium, 付费, 热门标签 |
-| 空状态 | No tools in this category yet. | 该分类下暂无工具。 |
-| 价格 | Free, Freemium, Paid | 免费, Freemium, 付费 |
-
-### 13.4 翻译文件结构（供 DEV 参考）
-
-```
-src/
-  i18n/
-    en.json    # 英文翻译
-    zh.json     # 中文翻译
-  components/
-    LanguageSwitcher.astro
-```
-
-**en.json 示例：**
-```json
-{
-  "nav": {
-    "home": "Home",
-    "mcpServers": "MCP Servers",
-    "aiTools": "AI Tools",
-    "deployment": "Deployment",
-    "search": "Search",
-    "submit": "Submit"
-  },
-  "home": {
-    "heroSlogan": "AI Agent Tools for Indie Developers",
-    "searchPlaceholder": "Search tools..."
-  },
-  "common": {
-    "viewDetails": "View details →",
-    "submit": "Submit",
-    "copy": "Copy",
-    "copied": "Copied!"
+```yaml
+# 工具 frontmatter（每个工具）
+name: github-mcp
+title: GitHub MCP
+description: AI Agent 连接 GitHub 的官方 MCP 服务器
+category: coding-agent
+tags: [github, pr, issues, ci, code-review]
+kit: ["ai-coding-agent", "ship-a-saas", "devops-monitoring"]
+kitRole: "代码管理 + PR review"
+evaluation:
+  easeOfUse: 4.2    # 1-5
+  security: 4.5      # 1-5
+  activity: 5.0      # 1-5
+  scenarioFit: 4.8  # 1-5
+  overall: 4.5      # 加权计算结果
+certificationStatus: "certified"  # pending / reviewed / recommended / certified
+installCommand: "npx @anthropic-ai/mcp-server-github"
+envVars:
+  - GITHUB_TOKEN
+configExample: |
+  {
+    "mcpServers": {
+      "github": {
+        "command": "npx",
+        "args": ["-y", "@anthropic-ai/mcp-server-github"]
+      }
+    }
   }
-}
+
+# Kit frontmatter（每个 Kit）
+name: ship-a-saas
+title: 🚀 Ship a SaaS
+description: 从零开始构建并部署一个 SaaS 产品，30分钟跑通
+icon: rocket
+color: "#f97316"
+levels:
+  starter:
+    description: "30分钟跑通基础 SaaS"
+    tools: [github-mcp, supabase-mcp, cloudflare-pages-mcp]
+  pro:
+    description: "完整生产级 SaaS"
+    tools: [github-mcp, supabase-mcp, cloudflare-r2-mcp, slack-mcp, sentry-mcp]
+  enterprise:
+    description: "企业级大规模部署"
+    tools: [github-mcp, supabase-mcp, cloudflare-r2-mcp, slack-mcp, sentry-mcp, aws-mcp]
 ```
 
 ---
 
-## 14. 实现注意事项
-
-1. **图片处理**：ToolCard 的 Logo 使用 `object-contain`，不裁剪；如果工具无 Logo，用分类 icon 占位
-2. **SEO**：每个页面 `<head>` 含独立 title/description；详情页 JSON-LD；`lang="en"` 属性默认
-3. **性能**：首屏图片需 LCP 优化；ToolCard 懒加载
-4. **无障碍**：所有交互元素有 `:focus-visible` 样式，图标按钮带 `aria-label`
-5. **移动端**：筛选侧边栏在移动端变为顶部 Select 下拉；卡片单列
-6. **Pagefind 集成**：搜索框 `data-pagefind-search` 属性，搜索结果页用 Pagefind JS 渲染
-7. **i18n**：翻译 JSON 文件统一存放于 `src/i18n/`；语言偏好用 `localStorage` 键 `mcpkit-lang`
-
----
-
-*文档版本：v1.1 | 更新内容：项目名变更为 MCPKIT，新增国际化（i18n）支持*
+*文档版本：v2.0 | 对应 PRD v2.0 | 下一步：PM/Arch 审核 → Dev 实现*

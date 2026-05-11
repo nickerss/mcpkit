@@ -1,0 +1,77 @@
+---
+interface Props {
+  current?: 'starter' | 'pro' | 'enterprise';
+  baseUrl: string;
+}
+
+const { current = 'starter', baseUrl } = Astro.props;
+const levels = ['starter', 'pro', 'enterprise'] as const;
+
+const labels = {
+  starter: 'Starter',
+  pro: 'Pro',
+  enterprise: 'Enterprise',
+};
+
+const colors = {
+  starter: 'var(--free)',
+  pro: 'var(--paid)',
+  enterprise: '#ef4444',
+};
+---
+
+<div class="difficulty-tabs">
+  {levels.map(level => (
+    <a
+      href={`${baseUrl}?level=${level}`}
+      class={`tab ${current === level ? 'active' : ''}`}
+      style={`--tab-color: ${colors[level]}`}
+      data-level={level}
+    >
+      {labels[level]}
+    </a>
+  ))}
+</div>
+
+<script>
+  // Read URL param on load to activate correct tab (for static pages)
+  const params = new URLSearchParams(window.location.search);
+  const level = params.get('level') || 'starter';
+  const tabs = document.querySelectorAll('.difficulty-tabs .tab');
+  tabs.forEach(tab => {
+    if (tab.getAttribute('data-level') === level) {
+      tab.classList.add('active');
+    } else {
+      tab.classList.remove('active');
+    }
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+</script>
+
+<style>
+  .difficulty-tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab {
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: color 200ms ease, border-color 200ms ease;
+    cursor: pointer;
+  }
+  .tab:hover {
+    color: var(--text-secondary);
+  }
+  .tab.active {
+    color: var(--tab-color);
+    border-bottom-color: var(--tab-color);
+  }
+</style>

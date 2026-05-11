@@ -564,6 +564,43 @@ declare module 'astro:content' {
   data: InferEntrySchema<"deployment">
 } & { render(): Render[".md"] };
 };
+"kits": {
+"ai-coding-agent.md": {
+	id: "ai-coding-agent.md";
+  slug: "ai-coding-agent";
+  body: string;
+  collection: "kits";
+  data: InferEntrySchema<"kits">
+} & { render(): Render[".md"] };
+"browser-automation.md": {
+	id: "browser-automation.md";
+  slug: "browser-automation";
+  body: string;
+  collection: "kits";
+  data: InferEntrySchema<"kits">
+} & { render(): Render[".md"] };
+"devops-monitoring.md": {
+	id: "devops-monitoring.md";
+  slug: "devops-monitoring";
+  body: string;
+  collection: "kits";
+  data: InferEntrySchema<"kits">
+} & { render(): Render[".md"] };
+"rag-research.md": {
+	id: "rag-research.md";
+  slug: "rag-research";
+  body: string;
+  collection: "kits";
+  data: InferEntrySchema<"kits">
+} & { render(): Render[".md"] };
+"ship-a-saas.md": {
+	id: "ship-a-saas.md";
+  slug: "ship-a-saas";
+  body: string;
+  collection: "kits";
+  data: InferEntrySchema<"kits">
+} & { render(): Render[".md"] };
+};
 "mcp-servers": {
 "brave-search-mcp.md": {
 	id: "brave-search-mcp.md";

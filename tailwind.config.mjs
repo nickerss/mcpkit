@@ -21,6 +21,19 @@ export default {
         },
         free: '#22c55e',
         paid: '#f59e0b',
+        kit: {
+          ship: '#f97316',
+          coding: '#06b6d4',
+          rag: '#8b5cf6',
+          browser: '#eab308',
+          devops: '#ef4444',
+        },
+        cert: {
+          certified: '#f59e0b',
+          recommended: '#22c55e',
+          reviewed: '#9090a0',
+          pending: '#505060',
+        },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
@@ -31,6 +44,22 @@ export default {
         btn: '8px',
         tag: '6px',
         input: '8px',
+        '2xl': '16px',
+        '3xl': '20px',
+      },
+      animation: {
+        'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+        'radar-expand': 'radar-expand 600ms ease-out forwards',
+      },
+      keyframes: {
+        'pulse-glow': {
+          '0%, 100%': { boxShadow: '0 0 0 0 rgba(245, 158, 11, 0.4)' },
+          '50%': { boxShadow: '0 0 0 8px rgba(245, 158, 11, 0)' },
+        },
+        'radar-expand': {
+          from: { transform: 'scale(0)', opacity: 0 },
+          to: { transform: 'scale(1)', opacity: 1 },
+        },
       },
     },
   },

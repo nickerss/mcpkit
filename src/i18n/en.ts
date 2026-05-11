@@ -79,4 +79,50 @@ export const en = {
     deploymentTitle: 'Deployment & Workflow',
     deploymentDesc: 'Deploy, database, payments, and more — {count} tools',
   },
+  kit: {
+    title: 'Kits',
+    subtitle: 'Kit-based tool combos · Verified · Rated',
+    searchPlaceholder: 'Search tools...',
+    cards: {
+      'ship-a-saas': {
+        name: '🚀 Ship a SaaS',
+        desc: 'Build and deploy a SaaS from scratch in 30 minutes',
+      },
+      'ai-coding-agent': {
+        name: '🤖 AI Coding Agent',
+        desc: 'Let AI Agents handle the full coding workflow — not just writing code, but actually getting things done',
+      },
+      'rag-research': {
+        name: '📊 RAG & Research',
+        desc: 'Deep research with AI Agents — crawl web → extract content → store in vector DB → synthesize reports',
+      },
+      'browser-automation': {
+        name: '⚡ Browser Automation',
+        desc: 'Let AI Agents control browsers to automate repetitive web tasks',
+      },
+      'devops-monitoring': {
+        name: '🔔 DevOps & Monitoring',
+        desc: 'Let AI Agents automatically monitor + alert + fix issues',
+      },
+    },
+    difficulty: {
+      starter: 'Starter',
+      pro: 'Pro',
+      enterprise: 'Enterprise',
+    },
+    levels: {
+      starter: 'Starter Level',
+      pro: 'Pro Level',
+      enterprise: 'Enterprise Level',
+    },
+    aggregateScore: 'Kit Aggregate Score',
+    overallRating: 'Overall Rating',
+    toolsCount: '{count} tools',
+    certified: '🏅 Certified',
+    rating: '⭐ {rating}',
+    landing: {
+      levelDesc: 'Description',
+      aggregateTitle: 'Kit Aggregate Score',
+    },
+  },
 };

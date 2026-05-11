@@ -1,0 +1,201 @@
+---
+interface Props {
+  easeOfUse: number;
+  security: number;
+  activity: number;
+  scenarioFit: number;
+  overall?: number;
+  size?: number;
+  kitColor?: string;
+}
+
+const {
+  easeOfUse,
+  security,
+  activity,
+  scenarioFit,
+  overall,
+  size = 300,
+  kitColor = '#6366f1',
+} = Astro.props;
+
+const cx = size / 2;
+const cy = size / 2;
+const maxRadius = (size / 2) * 0.75;
+const labelRadius = (size / 2) * 0.92;
+
+// 4 axes at 90° intervals, starting from top (easeOfUse)
+// Top (90°): easeOfUse
+// Right (0°): security
+// Bottom-right (270°): activity
+// Bottom-left (180°): scenarioFit
+
+function pointOnCircle(angleDeg: number, radius: number) {
+  const rad = (angleDeg - 90) * Math.PI / 180;
+  return {
+    x: cx + radius * Math.cos(rad),
+    y: cy + radius * Math.sin(rad),
+  };
+}
+
+const angles = {
+  easeOfUse: 90,
+  security: 0,
+  activity: 270,
+  scenarioFit: 180,
+};
+
+const values = { easeOfUse, security, activity, scenarioFit };
+
+function getPoint(key: keyof typeof angles, value: number) {
+  return pointOnCircle(angles[key], (value / 5) * maxRadius);
+}
+
+const easePoint = getPoint('easeOfUse', easeOfUse);
+const secPoint = getPoint('security', security);
+const actPoint = getPoint('activity', activity);
+const fitPoint = getPoint('scenarioFit', scenarioFit);
+
+const polygonPoints = `${easePoint.x},${easePoint.y} ${secPoint.x},${secPoint.y} ${actPoint.x},${actPoint.y} ${fitPoint.x},${fitPoint.y}`;
+
+// Grid levels at 1, 2, 3, 4, 5
+const gridLevels = [1, 2, 3, 4, 5].map(v => {
+  return {
+    radius: (v / 5) * maxRadius,
+    points: Object.entries(angles).map(([key, angle]) => {
+      const p = pointOnCircle(angle as number, (v / 5) * maxRadius);
+      return `${p.x},${p.y}`;
+    }).join(' '),
+  };
+});
+
+// Axis lines from center
+const axisLines = Object.entries(angles).map(([_, angle]) => {
+  const end = pointOnCircle(angle as number, maxRadius);
+  return { x1: cx, y1: cy, x2: end.x, y2: end.y };
+});
+
+// Axis labels
+const labels = {
+  easeOfUse: { text: '易用性', angle: 90, weight: '30%' },
+  security: { text: '安全性', angle: 0, weight: '25%' },
+  activity: { text: '活跃度', angle: 270, weight: '20%' },
+  scenarioFit: { text: '场景匹配', angle: 180, weight: '25%' },
+};
+
+function getLabelPos(angle: number) {
+  return pointOnCircle(angle, labelRadius);
+}
+
+const displayOverall = overall ?? parseFloat(((easeOfUse * 0.3 + security * 0.25 + activity * 0.2 + scenarioFit * 0.25))).toFixed(1);
+---
+
+<div class="radar-chart" data-size={size} style={`width:${size}px;height:${size}px`}>
+  <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size}>
+    <defs>
+      <linearGradient id={`radar-grad-${kitColor.replace('#','')}`} x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color={kitColor} stop-opacity="0.4"/>
+        <stop offset="100%" stop-color={kitColor} stop-opacity="0.15"/>
+      </linearGradient>
+    </defs>
+
+    <!-- Grid rings -->
+    {gridLevels.map(g => (
+      <polygon
+        points={g.points}
+        fill="none"
+        stroke="var(--border)"
+        stroke-width="1"
+        opacity="0.5"
+      />
+    ))}
+
+    <!-- Axis lines -->
+    {axisLines.map(a => (
+      <line x1={a.x1} y1={a.y1} x2={a.x2} y2={a.y2} stroke="var(--border)" stroke-width="1" opacity="0.4"/>
+    ))}
+
+    <!-- Score polygon -->
+    <polygon
+      points={polygonPoints}
+      fill={`url(#radar-grad-${kitColor.replace('#','')})`}
+      stroke={kitColor}
+      stroke-width="2"
+      class="radar-polygon"
+    />
+
+    <!-- Score dots -->
+    <circle cx={easePoint.x} cy={easePoint.y} r="5" fill={kitColor} class="radar-dot"/>
+    <circle cx={secPoint.x} cy={secPoint.y} r="5" fill={kitColor} class="radar-dot"/>
+    <circle cx={actPoint.x} cy={actPoint.y} r="5" fill={kitColor} class="radar-dot"/>
+    <circle cx={fitPoint.x} cy={fitPoint.y} r="5" fill={kitColor} class="radar-dot"/>
+
+    <!-- Axis labels -->
+    {Object.entries(labels).map(([key, label]) => {
+      const pos = getLabelPos(label.angle);
+      return (
+        <text
+          x={pos.x}
+          y={pos.y}
+          text-anchor="middle"
+          dominant-baseline="middle"
+          fill="var(--text-secondary)"
+          font-size="12"
+          font-weight="500"
+        >
+          {label.text}
+          <tspan font-size="10" fill="var(--text-muted)"> ({label.weight})</tspan>
+        </text>
+      );
+    })}
+
+    <!-- Score values near dots -->
+    <text x={easePoint.x} y={easePoint.y - 14} text-anchor="middle" fill={kitColor} font-size="13" font-weight="700">{easeOfUse.toFixed(1)}</text>
+    <text x={secPoint.x + 16} y={secPoint.y} text-anchor="start" dominant-baseline="middle" fill={kitColor} font-size="13" font-weight="700">{security.toFixed(1)}</text>
+    <text x={actPoint.x} y={actPoint.y + 22} text-anchor="middle" fill={kitColor} font-size="13" font-weight="700">{activity.toFixed(1)}</text>
+    <text x={fitPoint.x - 16} y={fitPoint.y} text-anchor="end" dominant-baseline="middle" fill={kitColor} font-size="13" font-weight="700">{scenarioFit.toFixed(1)}</text>
+
+    <!-- Center dot -->
+    <circle cx={cx} cy={cy} r="4" fill="var(--bg-tertiary)" stroke={kitColor} stroke-width="1.5"/>
+  </svg>
+
+  {overall !== undefined && (
+    <div class="radar-overall">
+      <span class="overall-label">综合</span>
+      <span class="overall-score">⭐ {displayOverall}</span>
+    </div>
+  )}
+</div>
+
+<style>
+  .radar-chart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .radar-polygon {
+    transform-origin: center;
+    animation: radar-expand 600ms ease-out forwards;
+  }
+  .radar-dot {
+    animation: radar-expand 600ms ease-out forwards;
+  }
+  .radar-overall {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+  }
+  .overall-label {
+    color: var(--text-secondary);
+  }
+  .overall-score {
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  @keyframes radar-expand {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+</style>

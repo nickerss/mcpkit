@@ -1,0 +1,46 @@
+---
+interface Props {
+  kit: string;
+  kitName: string;
+  href?: string;
+}
+
+const { kit, kitName, href } = Astro.props;
+
+const colorMap: Record<string, string> = {
+  'ship-a-saas': '#f97316',
+  'ai-coding-agent': '#06b6d4',
+  'rag-research': '#8b5cf6',
+  'browser-automation': '#eab308',
+  'devops-monitoring': '#ef4444',
+};
+
+const color = colorMap[kit] || '#6366f1';
+const tagStyle = `background: ${color}15; color: ${color}; border: 1px solid ${color}30;`;
+---
+
+{href ? (
+  <a href={href} class="kit-tag" style={tagStyle}>
+    {kitName}
+  </a>
+) : (
+  <span class="kit-tag" style={tagStyle}>
+    {kitName}
+  </span>
+)}
+
+<style>
+  .kit-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: opacity 150ms ease;
+    white-space: nowrap;
+  }
+  a.kit-tag:hover { opacity: 0.8; }
+</style>

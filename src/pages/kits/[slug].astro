@@ -1,0 +1,269 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import RadarChart from '../../components/RadarChart.astro';
+import DifficultyTab from '../../components/DifficultyTab.astro';
+import CertificationBadge from '../../components/CertificationBadge.astro';
+import { getCollection } from 'astro:content';
+import { getLocaleFromUrl } from '../../i18n/index';
+
+const locale = getLocaleFromUrl(Astro.url);
+const isZh = locale === 'zh';
+
+export async function getStaticPaths() {
+  const kits = await getCollection('kits');
+  return kits.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const kit = entry.data;
+
+// Read ?level= param (default starter)
+const url = new URL(Astro.request.url);
+const level = (url.searchParams.get('level') || 'starter') as 'starter' | 'pro' | 'enterprise';
+const currentLevel = level === 'pro' || level === 'enterprise' ? level : 'starter';
+
+const levelData = kit.levels[currentLevel];
+
+// Build baseUrl from page URL
+const baseUrl = `/kits/${entry.slug}/`;
+
+// Placeholder evaluation data per tool
+function placeholderEval(tool: string) {
+  const seed = tool.length * 1.7;
+  return {
+    easeOfUse: 3 + (seed % 20) / 10,
+    security: 3.5 + (seed % 15) / 10,
+    activity: 3 + (seed % 25) / 10,
+    scenarioFit: 3.5 + (seed % 20) / 10,
+  };
+}
+
+// Kit-level aggregate scores (average across tools for current level)
+function avgScores(tools: string[]) {
+  const evals = tools.map(placeholderEval);
+  return {
+    easeOfUse: evals.reduce((s, e) => s + e.easeOfUse, 0) / evals.length,
+    security: evals.reduce((s, e) => s + e.security, 0) / evals.length,
+    activity: evals.reduce((s, e) => s + e.activity, 0) / evals.length,
+    scenarioFit: evals.reduce((s, e) => s + e.scenarioFit, 0) / evals.length,
+  };
+}
+
+const aggregate = avgScores(levelData.tools);
+const kitOverall = parseFloat((aggregate.easeOfUse * 0.3 + aggregate.security * 0.25 + aggregate.activity * 0.2 + aggregate.scenarioFit * 0.25).toFixed(1));
+
+const levelLabels = { starter: 'Starter', pro: 'Pro', enterprise: 'Enterprise' };
+---
+
+<BaseLayout title={`${kit.title} - mcpkit.run`} description={kit.description}>
+  <Header />
+
+  <main>
+    <!-- Kit Hero -->
+    <section class="kit-hero" style={`--kit-color: ${kit.color}`}>
+      <div class="hero-bg"></div>
+      <div class="hero-content">
+        <div class="kit-icon-wrap">
+          <span class="kit-icon">{kit.icon === 'rocket' ? '🚀' : kit.icon === 'bot' ? '🤖' : kit.icon === 'search' ? '📊' : kit.icon === 'zap' ? '⚡' : kit.icon === 'bell' ? '🔔' : '🛠'}</span>
+        </div>
+        <h1 class="kit-title">{kit.title}</h1>
+        <p class="kit-desc">{kit.description}</p>
+        <div class="kit-meta">
+          <CertificationBadge status="certified" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Difficulty Tabs + Content -->
+    <section class="kit-body">
+      <div class="container">
+        <DifficultyTab current={currentLevel} baseUrl={baseUrl} />
+
+        <div class="kit-layout">
+          <!-- Main: Tool list -->
+          <div class="tool-list">
+            <p class="level-desc">{levelData.description}</p>
+            <div class="tools-grid">
+              {levelData.tools.map(tool => {
+                const eval_ = placeholderEval(tool);
+                const overall = parseFloat((eval_.easeOfUse * 0.3 + eval_.security * 0.25 + eval_.activity * 0.2 + eval_.scenarioFit * 0.25).toFixed(1));
+                return (
+                  <div class="tool-card">
+                    <div class="tool-card-header">
+                      <span class="tool-name">{tool}</span>
+                      <CertificationBadge status="certified" size="sm" />
+                    </div>
+                    <RadarChart
+                      easeOfUse={eval_.easeOfUse}
+                      security={eval_.security}
+                      activity={eval_.activity}
+                      scenarioFit={eval_.scenarioFit}
+                      overall={overall}
+                      size={220}
+                      kitColor={kit.color}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <!-- Sidebar: Kit aggregate RadarChart -->
+          <aside class="kit-sidebar">
+            <div class="sidebar-card">
+              <h3 class="sidebar-title">{isZh ? '套件综合评分' : 'Kit Aggregate Score'}</h3>
+              <RadarChart
+                easeOfUse={aggregate.easeOfUse}
+                security={aggregate.security}
+                activity={aggregate.activity}
+                scenarioFit={aggregate.scenarioFit}
+                overall={kitOverall}
+                size={280}
+                kitColor={kit.color}
+              />
+              <div class="sidebar-rating">
+                <span class="rating-label">{isZh ? '综合评分' : 'Overall Rating'}</span>
+                <span class="rating-val">⭐ {kitOverall.toFixed(1)}</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .kit-hero {
+    position: relative;
+    padding: 80px 24px 64px;
+    text-align: center;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--kit-color) 8%, transparent);
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% -20%, color-mix(in srgb, var(--kit-color) 30%, transparent), transparent);
+    pointer-events: none;
+  }
+  .hero-content {
+    position: relative;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .kit-icon-wrap {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    background: color-mix(in srgb, var(--kit-color) 20%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+  }
+  .kit-icon { font-size: 40px; }
+  .kit-title {
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+  }
+  .kit-desc {
+    font-size: 18px;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  .kit-meta { display: flex; justify-content: center; gap: 8px; }
+
+  .kit-body { padding: 40px 0 80px; }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .kit-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    margin-top: 32px;
+  }
+  @media (min-width: 900px) {
+    .kit-layout { grid-template-columns: 1fr 320px; }
+  }
+
+  .level-desc {
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+  }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+
+  .tool-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .tool-card-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .tool-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .kit-sidebar {
+    position: sticky;
+    top: 24px;
+    height: fit-content;
+  }
+  .sidebar-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .sidebar-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: center;
+    margin: 0;
+  }
+  .sidebar-rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+  }
+  .rating-label { color: var(--text-secondary); }
+  .rating-val { font-weight: 700; color: var(--text-primary); }
+</style>

@@ -1,0 +1,171 @@
+---
+interface Props {
+  kit: string;
+  kitName: string;
+  kitDesc: string;
+  icon: string;
+  color: string;
+  level: 'starter' | 'pro' | 'enterprise';
+  tools: string[];
+  rating: number;
+  certified: boolean;
+  toolCount: number;
+  href: string;
+}
+
+const {
+  kit,
+  kitName,
+  kitDesc,
+  icon,
+  color,
+  level,
+  tools,
+  rating,
+  certified,
+  toolCount,
+  href,
+} = Astro.props;
+
+const colorMap: Record<string, string> = {
+  ship: '#f97316',
+  coding: '#06b6d4',
+  rag: '#8b5cf6',
+  browser: '#eab308',
+  devops: '#ef4444',
+};
+
+const kitColor = colorMap[kit] || color;
+---
+
+<a href={href} class="kit-card" style={`--kit-color: ${kitColor}`}>
+  <div class="kit-icon-wrap" style={`background: ${kitColor}20`}>
+    <span class="kit-icon">{icon}</span>
+  </div>
+
+  <div class="kit-info">
+    <div class="kit-name-row">
+      <h3 class="kit-name">{kitName}</h3>
+      <span class={`level-badge level-${level}`}>{level.charAt(0).toUpperCase() + level.slice(1)}</span>
+    </div>
+    <p class="kit-desc">{kitDesc}</p>
+
+    <div class="kit-tools">
+      {tools.slice(0, 4).join(' · ')}
+    </div>
+
+    <div class="kit-meta">
+      <span class="rating">⭐ {rating.toFixed(1)}</span>
+      {certified && <span class="cert-badge">🏅 Certified</span>}
+      <span class="tool-count">{toolCount} tools</span>
+    </div>
+  </div>
+
+  <div class="kit-accent-bar"></div>
+</a>
+
+<style>
+  .kit-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: transform 250ms ease, box-shadow 250ms ease;
+    cursor: pointer;
+    min-width: 280px;
+  }
+  .kit-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  }
+  .kit-card:hover .kit-accent-bar {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  .kit-accent-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--kit-color);
+    border-radius: 0 2px 2px 0;
+    opacity: 0;
+    transform: scaleY(0.8);
+    transition: opacity 250ms ease, transform 250ms ease;
+  }
+  .kit-icon-wrap {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .kit-icon {
+    font-size: 24px;
+  }
+  .kit-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+  .kit-name-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .kit-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+  }
+  .level-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 6px;
+    text-transform: capitalize;
+    border: 1px solid currentColor;
+  }
+  .level-starter { color: var(--free); border-color: var(--free); background: #22c55e10; }
+  .level-pro { color: var(--paid); border-color: var(--paid); background: #f59e0b10; }
+  .level-enterprise { color: #ef4444; border-color: #ef4444; background: #ef444410; }
+  .kit-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.5;
+  }
+  .kit-tools {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .kit-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    flex-wrap: wrap;
+  }
+  .rating { font-weight: 600; }
+  .cert-badge {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 600;
+  }
+  .tool-count { color: var(--text-muted); }
+</style>

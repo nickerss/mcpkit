@@ -2,109 +2,211 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import HeroSection from '../components/HeroSection.astro';
-import CategoryCard from '../components/CategoryCard.astro';
-import FeaturedSection from '../components/FeaturedSection.astro';
-import ToolCard from '../components/ToolCard.astro';
+import KitCard from '../components/KitCard.astro';
 import { getCollection } from 'astro:content';
 import { getLocaleFromUrl } from '../i18n/index';
 
 const locale = getLocaleFromUrl(Astro.url);
-const mcpServers = await getCollection('mcp-servers');
-const aiTools = await getCollection('ai-tools');
-const deployment = await getCollection('deployment');
-
-const allTools = [...mcpServers, ...aiTools, ...deployment];
-const featured = allTools.filter(t => t.data.featured).slice(0, 5);
-const latest = allTools
-  .sort((a, b) => new Date(b.data.submittedAt) - new Date(a.data.submittedAt))
-  .slice(0, 9);
-
 const isZh = locale === 'zh';
+
+const kits = await getCollection('kits');
+
+const kitCards = [
+  {
+    kit: 'ship-a-saas',
+    kitName: isZh ? '🚀 Ship a SaaS' : '🚀 Ship a SaaS',
+    kitDesc: isZh
+      ? '从零开始构建并部署一个 SaaS 产品，30分钟跑通'
+      : 'Build and deploy a SaaS from scratch in 30 minutes',
+    icon: '🚀',
+    color: '#f97316',
+    level: 'starter' as const,
+    tools: ['github-mcp', 'supabase-mcp', 'cloudflare-pages-mcp'],
+    rating: 4.7,
+    certified: true,
+    toolCount: 3,
+    href: '/kits/ship-a-saas/',
+  },
+  {
+    kit: 'ai-coding-agent',
+    kitName: isZh ? '🤖 AI Coding Agent' : '🤖 AI Coding Agent',
+    kitDesc: isZh
+      ? '让 AI Agent 自动处理编码全流程——不只是写代码，是真正能干活的 Agent'
+      : 'Let AI Agents handle the full coding workflow — not just writing code, but actually getting things done',
+    icon: '🤖',
+    color: '#06b6d4',
+    level: 'starter' as const,
+    tools: ['claude-code', 'github-mcp', 'filesystem-mcp'],
+    rating: 4.8,
+    certified: true,
+    toolCount: 3,
+    href: '/kits/ai-coding-agent/',
+  },
+  {
+    kit: 'rag-research',
+    kitName: isZh ? '📊 RAG & Research' : '📊 RAG & Research',
+    kitDesc: isZh
+      ? '让 AI Agent 做深度研究——爬取网页 → 提取内容 → 存入向量数据库 → 合成报告'
+      : 'Deep research with AI Agents — crawl web → extract content → store in vector DB → synthesize reports',
+    icon: '📊',
+    color: '#8b5cf6',
+    level: 'starter' as const,
+    tools: ['brave-search-mcp', 'firecrawl-mcp', 'supabase-mcp'],
+    rating: 4.5,
+    certified: false,
+    toolCount: 3,
+    href: '/kits/rag-research/',
+  },
+  {
+    kit: 'browser-automation',
+    kitName: isZh ? '⚡ Browser Automation' : '⚡ Browser Automation',
+    kitDesc: isZh
+      ? '让 AI Agent 操作浏览器完成重复性 web 任务'
+      : 'Let AI Agents control browsers to automate repetitive web tasks',
+    icon: '⚡',
+    color: '#eab308',
+    level: 'starter' as const,
+    tools: ['playwright-mcp', 'claude-code', 'filesystem-mcp'],
+    rating: 4.6,
+    certified: false,
+    toolCount: 3,
+    href: '/kits/browser-automation/',
+  },
+  {
+    kit: 'devops-monitoring',
+    kitName: isZh ? '🔔 DevOps & Monitoring' : '🔔 DevOps & Monitoring',
+    kitDesc: isZh
+      ? '让 AI Agent 自动监控 + 告警 + 修复'
+      : 'Let AI Agents automatically monitor + alert + fix issues',
+    icon: '🔔',
+    color: '#ef4444',
+    level: 'starter' as const,
+    tools: ['github-mcp', 'npm-mcp', 'slack-mcp'],
+    rating: 4.4,
+    certified: false,
+    toolCount: 3,
+    href: '/kits/devops-monitoring/',
+  },
+];
 ---
 
 <BaseLayout title={isZh ? 'MCPKIT — AI Agent 开发者工具目录' : 'MCPKIT — AI Agent Tools for Independent Developers'}>
   <Header />
 
   <main>
-    <HeroSection />
-
-    <section class="categories">
-      <div class="container">
-        <div class="category-cards">
-          <CategoryCard
-            name={isZh ? 'MCP Servers' : 'MCP Servers'}
-            slug="mcp-servers"
-            icon="database"
-            count={mcpServers.length || 50}
-            description={isZh ? '连接 AI Agent 与各类服务的桥梁' : 'Bridge AI Agents to external services'}
-          />
-          <CategoryCard
-            name={isZh ? 'AI Coding Tools' : 'AI Coding Tools'}
-            slug="ai-tools"
-            icon="code-2"
-            count={aiTools.length || 30}
-            description={isZh ? 'AI 驱动的代码编辑器和 CLI 工具' : 'AI-powered code editors and CLI tools'}
-          />
-          <CategoryCard
-            name={isZh ? '工作流 & 部署' : 'Deployment & Workflow'}
-            slug="deployment"
-            icon="cloud"
-            count={deployment.length || 30}
-            description={isZh ? '部署、数据库、支付一站式工具' : 'Deploy, database, payments, and more'}
-          />
-        </div>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-content">
+        <h1 class="hero-title">
+          {isZh ? 'Your AI Agent Toolkit' : 'Your AI Agent Toolkit'}
+        </h1>
+        <p class="hero-subtitle">
+          {isZh
+            ? 'Kit-based tool combos · Verified · Rated'
+            : 'Kit-based tool combos · Verified · Rated'}
+        </p>
+        <form class="search-form" action={`/search/?lang=${locale}`} method="get">
+          <div class="search-wrap">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input
+              type="text"
+              name="q"
+              class="search-input"
+              placeholder={isZh ? '搜索工具...' : 'Search tools...'}
+              autocomplete="off"
+            />
+          </div>
+        </form>
       </div>
     </section>
 
-    {featured.length > 0 && (
-      <section class="featured-section">
-        <FeaturedSection tools={featured} title={isZh ? '编辑精选' : 'Featured'} />
-      </section>
-    )}
-
-    {latest.length > 0 && (
-      <section class="latest-section">
-        <div class="container">
-          <h2 class="section-title">{isZh ? '最新收录' : 'Latest Added'}</h2>
-          <div class="tools-grid">
-            {latest.map(tool => (
-              <ToolCard {...tool.data} slug={tool.slug} />
-            ))}
-          </div>
+    <!-- Kit Cards Grid -->
+    <section class="kits-section">
+      <div class="container">
+        <div class="kits-grid">
+          {kitCards.map(card => (
+            <KitCard {...card} />
+          ))}
         </div>
-      </section>
-    )}
+      </div>
+    </section>
   </main>
 
   <Footer />
 </BaseLayout>
 
 <style>
+  .hero {
+    position: relative;
+    padding: 80px 24px 64px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.15), transparent);
+    pointer-events: none;
+  }
+  .hero-content {
+    position: relative;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .hero-title {
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+  .hero-subtitle {
+    font-size: 18px;
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+  }
+  .search-form { max-width: 560px; margin: 0 auto; }
+  .search-wrap { position: relative; display: flex; align-items: center; }
+  .search-icon {
+    position: absolute;
+    left: 16px;
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+  .search-input {
+    width: 100%;
+    padding: 16px 16px 16px 48px;
+    font-size: 16px;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    outline: none;
+    transition: border-color 200ms ease;
+  }
+  .search-input::placeholder { color: var(--text-muted); }
+  .search-input:focus { border-color: var(--accent); }
+
+  .kits-section {
+    padding: 48px 0 80px;
+  }
   .container {
     max-width: 1280px;
     margin: 0 auto;
     padding: 0 24px;
   }
-  .categories { padding: 48px 0; }
-  .category-cards {
+  .kits-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
   }
-  .featured-section { padding: 48px 0; }
-  .latest-section { padding: 48px 0 80px; }
-  .section-title {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 20px;
+  @media (min-width: 1200px) {
+    .kits-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
-  .tools-grid {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    gap: 16px;
-  }
-  @media (min-width: 640px) { .tools-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 1024px) { .tools-grid { grid-template-columns: repeat(3, 1fr); } }
 </style>
