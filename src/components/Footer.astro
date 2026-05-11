@@ -2,22 +2,36 @@
 import { getLocaleFromUrl } from '../i18n/index';
 
 const locale = getLocaleFromUrl(Astro.url);
+const year = new Date().getFullYear();
 ---
 
 <footer class="footer">
   <div class="footer-inner">
-    <p class="copyright">
-      {locale === 'zh'
-        ? `© ${new Date().getFullYear()} MCPKIT — 独立开发者的 AI Agent 工具箱`
-        : `© ${new Date().getFullYear()} MCPKIT — AI Agent Tools for Independent Developers`}
-    </p>
-    <div class="links">
-      <a href={`/submit/?lang=${locale}`} class="link">
-        {locale === 'zh' ? '提交工具' : 'Submit Tool'}
-      </a>
-      <a href={`/search/?lang=${locale}`} class="link">
-        {locale === 'zh' ? '搜索' : 'Search'}
-      </a>
+    <div class="footer-left">
+      <div class="footer-brand">
+        <span class="brand">MCPKIT</span>
+        <span class="tagline">
+          {locale === 'zh'
+            ? 'AI Agent 工具箱 · 精选套件 · 四维评测认证'
+            : 'AI Agent Toolkit · Curated Kits · 4-Dimension Evaluation'}
+        </span>
+      </div>
+      <div class="footer-kits">
+        <span class="footer-label">{locale === 'zh' ? 'Kits' : 'Kits'}:</span>
+        <a href="/kits/ship-a-saas/" class="kit-link">🚀 Ship a SaaS</a>
+        <a href="/kits/ai-coding-agent/" class="kit-link">🤖 AI Coding Agent</a>
+        <a href="/kits/rag-research/" class="kit-link">📊 RAG & Research</a>
+        <a href="/kits/browser-automation/" class="kit-link">⚡ Browser Automation</a>
+        <a href="/kits/devops-monitoring/" class="kit-link">🔔 DevOps & Monitoring</a>
+      </div>
+    </div>
+    <div class="footer-right">
+      <div class="links">
+        <a href={`/submit/`} class="link">{locale === 'zh' ? '提交工具' : 'Submit Tool'}</a>
+        <a href={`/search/`} class="link">{locale === 'zh' ? '搜索' : 'Search'}</a>
+        <a href={`/mcp-servers/`} class="link">{locale === 'zh' ? '所有工具' : 'All Tools'}</a>
+      </div>
+      <p class="copyright">© {year} MCPKIT</p>
     </div>
   </div>
 </footer>
@@ -25,24 +39,63 @@ const locale = getLocaleFromUrl(Astro.url);
 <style>
   .footer {
     border-top: 1px solid var(--border-color);
-    padding: 32px 24px;
+    padding: 40px 24px;
   }
   .footer-inner {
     max-width: 1280px;
     margin: 0 auto;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    gap: 16px;
+    gap: 32px;
     flex-wrap: wrap;
   }
-  .copyright {
-    font-size: 14px;
+  .footer-left {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .brand {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .tagline {
+    font-size: 13px;
     color: var(--text-muted);
+  }
+  .footer-kits {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .footer-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+  .kit-link {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+  .kit-link:hover { color: var(--text-primary); }
+  .footer-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
   }
   .links {
     display: flex;
-    gap: 24px;
+    gap: 20px;
   }
   .link {
     font-size: 14px;
@@ -51,4 +104,8 @@ const locale = getLocaleFromUrl(Astro.url);
     transition: color 150ms ease;
   }
   .link:hover { color: var(--text-secondary); }
+  .copyright {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
 </style>

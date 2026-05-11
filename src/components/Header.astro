@@ -3,22 +3,19 @@ import { getLocaleFromUrl } from '../i18n/index';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 
 const locale = getLocaleFromUrl(Astro.url);
-const navLinks = [
-  { href: `/${locale === 'zh' ? '?lang=zh' : ''}`, label: 'Home', zhLabel: '首页' },
-  { href: `/mcp-servers/${locale === 'zh' ? '?lang=zh' : ''}`, label: 'MCP Servers', zhLabel: 'MCP 服务器' },
-  { href: `/ai-tools/${locale === 'zh' ? '?lang=zh' : ''}`, label: 'AI Tools', zhLabel: 'AI 工具' },
-  { href: `/deployment/${locale === 'zh' ? '?lang=zh' : ''}`, label: 'Deployment', zhLabel: '部署工具' },
-  { href: `/search/${locale === 'zh' ? '?lang=zh' : ''}`, label: 'Search', zhLabel: '搜索' },
-];
+const langParam = locale === 'zh' ? '?lang=zh' : '';
+const base = (path: string) => `${path}/${langParam}`;
 
-const currentLang = locale === 'zh' ? '中文' : 'EN';
-const switchLang = locale === 'zh' ? 'EN' : '中文';
-const switchHref = locale === 'zh' ? '/?lang=en' : '/?lang=zh';
+const navLinks = [
+  { href: '/kits/ship-a-saas/', label: 'Kits', zhLabel: 'Kits' },
+  { href: '/mcp-servers/', label: 'All Tools', zhLabel: '所有工具' },
+  { href: '/search/', label: 'Search', zhLabel: '搜索' },
+];
 ---
 
 <header class="header">
   <div class="header-inner">
-    <a href={`/?lang=${locale}`} class="logo">
+    <a href={`/${langParam}`} class="logo">
       <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="logo-g" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -40,7 +37,7 @@ const switchHref = locale === 'zh' ? '/?lang=en' : '/?lang=zh';
 
     <div class="right-area">
       <LanguageSwitcher />
-      <a href={`/submit/?lang=${locale}`} class="cta-btn">{locale === 'zh' ? '提交工具' : 'Submit Tool'}</a>
+      <a href={`/submit/${langParam}`} class="cta-btn">{locale === 'zh' ? '提交工具' : 'Submit Tool'}</a>
     </div>
   </div>
 </header>
@@ -102,20 +99,6 @@ const switchHref = locale === 'zh' ? '/?lang=en' : '/?lang=zh';
     align-items: center;
     gap: 8px;
     flex-shrink: 0;
-  }
-  .lang-switch {
-    padding: 6px 12px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    background: var(--bg-tertiary);
-    border-radius: 6px;
-    text-decoration: none;
-    transition: color 150ms ease, background-color 150ms ease;
-  }
-  .lang-switch:hover {
-    color: var(--text-primary);
-    background: var(--bg-secondary);
   }
   .cta-btn {
     padding: 8px 16px;
