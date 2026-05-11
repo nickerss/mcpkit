@@ -6,7 +6,8 @@ tags: [github, pr, issues, ci, code-review]
 price: free
 website: https://github.com/modelcontextprotocol/servers
 logo: 
-description: Official GitHub MCP server connecting AI Agents to GitHub APIs for repository management, PR reviews, and Issue tracking.
+descriptionEn: "Official GitHub MCP server connecting AI Agents to GitHub APIs for repository management, PR reviews, and Issue tracking."
+description: "官方 GitHub MCP 服务，连接 AI Agent 与 GitHub API，支持代码仓库管理、PR 审查、Issue 追踪。"
 kit: ["ship-a-saas", "ai-coding-agent", "devops-monitoring"]
 kitRole: "Code storage + CI/CD + PR review automation"
 evaluation:

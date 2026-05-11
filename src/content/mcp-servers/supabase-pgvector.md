@@ -6,7 +6,8 @@ tags: [supabase, pgvector, vector, rag, embedding]
 price: freemium
 website: https://supabase.com
 logo: 
-description: Supabase MCP with PGVector extension for storing and querying embeddings - the vector database backbone for RAG research pipelines.
+descriptionEn: "Supabase MCP with PGVector extension for storing and querying embeddings - the vector database backbone for RAG research pipelines."
+description: "Supabase MCP + PGVector 扩展，存储和查询向量嵌入 - RAG 研究流水线的向量数据库支柱。"
 kit: ["rag-research"]
 kitRole: "Vector storage and similarity search for RAG knowledge base"
 evaluation:

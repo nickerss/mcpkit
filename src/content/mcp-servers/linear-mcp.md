@@ -6,7 +6,8 @@ tags: [linear, project-management, issues, sprints, team]
 price: freemium
 website: https://github.com/linear/mcp-linear
 logo: 
-description: Linear API MCP enabling AI Agents to manage Issues, Sprints, and Projects - ideal for automated task creation and status updates.
+descriptionEn: "Linear API MCP enabling AI Agents to manage Issues, Sprints, and Projects - ideal for automated task creation and status updates."
+description: "Linear API MCP，让 AI Agent 管理 Issues、Sprints 和 Projects - 自动化任务创建和状态更新的理想工具。"
 kit: ["ai-coding-agent", "devops-monitoring"]
 kitRole: "Engineering task and sprint management for team-based AI coding"
 evaluation:

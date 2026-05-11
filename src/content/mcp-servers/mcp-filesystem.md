@@ -6,7 +6,8 @@ tags: [filesystem, local, storage, io, devtools]
 price: free
 website: https://github.com/modelcontextprotocol/servers
 logo: 
-description: Local filesystem operation MCP for reading, writing, and managing files - essential for AI Agents to interact with project code.
+descriptionEn: "Local filesystem operation MCP for reading, writing, and managing files - essential for AI Agents to interact with project code."
+description: "本地文件系统操作 MCP，读写管理文件 - AI Agent 与项目代码交互的必备工具。"
 kit: ["ai-coding-agent", "browser-automation", "devops-monitoring"]
 kitRole: "Local file read/write access for code editing and config management"
 evaluation:

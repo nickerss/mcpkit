@@ -6,7 +6,8 @@ tags: [chromium, browser, automation, web, headless]
 price: free
 website: https://github.com/mcp-community/chromium-mcp
 logo: 
-description: Headless Chromium browser MCP for AI Agents to control Chrome/Chromium - form filling, data scraping, and automated UI testing.
+descriptionEn: "Headless Chromium browser MCP for AI Agents to control Chrome/Chromium - form filling, data scraping, and automated UI testing."
+description: "无头 Chromium 浏览器 MCP，让 AI Agent 控制 Chrome/Chromium - 表单填写、数据爬取、自动化 UI 测试。"
 kit: ["browser-automation"]
 kitRole: "Browser instance control for enterprise-scale web automation"
 evaluation:

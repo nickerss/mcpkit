@@ -6,7 +6,8 @@ tags: [openai, gpt, llm, ai, embedding]
 price: pay-as-you-go
 website: https://openai.com
 logo: 
-description: OpenAI GPT and Embedding API MCP for RAG analysis and text generation - widely used for embeddings and GPT-4o synthesis in research pipelines.
+descriptionEn: "OpenAI GPT and Embedding API MCP for RAG analysis and text generation - widely used for embeddings and GPT-4o synthesis in research pipelines."
+description: "OpenAI GPT 和 Embedding API MCP，用于 RAG 分析和文本生成 - 广泛用于研究流水线中的嵌入生成和 GPT-4o 合成。"
 kit: ["rag-research"]
 kitRole: "Embedding generation and GPT-4o analysis for research synthesis"
 evaluation:

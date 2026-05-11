@@ -6,7 +6,8 @@ tags: [sentry, error-tracking, monitoring, devops]
 price: freemium
 website: https://sentry.io
 logo: 
-description: Sentry error tracking API MCP for querying error events, managing Issues, and configuring Alerts - critical for SaaS production monitoring.
+descriptionEn: "Sentry error tracking API MCP for querying error events, managing Issues, and configuring Alerts - critical for SaaS production monitoring."
+description: "Sentry 错误追踪 API MCP，查询错误事件、管理 Issues、配置告警 - SaaS 生产环境监控关键组件。"
 kit: ["ship-a-saas", "devops-monitoring"]
 kitRole: "Production error tracking and alerting for SaaS reliability"
 evaluation:

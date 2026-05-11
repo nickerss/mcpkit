@@ -6,7 +6,8 @@ tags: [cursor, editor, ide, ai-coding, composer]
 price: freemium
 website: https://cursor.com
 logo: 
-description: AI-first code editor built on VS Code with multi-line Composer mode and conversational UI for pair programming with AI.
+descriptionEn: "AI-first code editor built on VS Code with multi-line Composer mode and conversational UI for pair programming with AI."
+description: "AI 优先的代码编辑器，基于 VS Code 构建，多行 Composer 模式，对话式 UI，与 AI 结对编程。"
 kit: ["ai-coding-agent"]
 kitRole: "Primary AI coding editor with GUI - pair programming and code generation"
 evaluation:

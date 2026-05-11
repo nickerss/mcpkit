@@ -6,7 +6,8 @@ tags: [supabase, database, auth, storage, backend]
 price: freemium
 website: https://supabase.com
 logo: 
-description: Supabase MCP providing PostgreSQL database, Auth, Storage, and Edge Functions - complete BaaS backend for SaaS.
+descriptionEn: "Supabase MCP providing PostgreSQL database, Auth, Storage, and Edge Functions - complete BaaS backend for SaaS."
+description: "Supabase MCP，提供 PostgreSQL 数据库、Auth 身份认证、Storage 文件存储和 Edge Functions 边缘函数 - SaaS 完整后端 BaaS 方案。"
 kit: ["ship-a-saas", "rag-research", "browser-automation"]
 kitRole: "Database + Auth + Storage backend for SaaS products"
 evaluation:

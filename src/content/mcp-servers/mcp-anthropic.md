@@ -6,7 +6,8 @@ tags: [anthropic, claude, llm, ai, reasoning]
 price: pay-as-you-go
 website: https://anthropic.com
 logo: 
-description: Anthropic Claude API MCP for AI analysis and report synthesis in RAG workflows - top-tier reasoning and long-context for research.
+descriptionEn: "Anthropic Claude API MCP for AI analysis and report synthesis in RAG workflows - top-tier reasoning and long-context for research."
+description: "Anthropic Claude API MCP，用于 RAG 工作流中的 AI 分析和报告合成 - 一流推理能力和长上下文，适合深度研究。"
 kit: ["rag-research", "browser-automation"]
 kitRole: "AI analysis and report synthesis from gathered research data"
 evaluation:

@@ -97,15 +97,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         if (sectionTitles[0]) sectionTitles[0].textContent = t.sectionFeatured;
         if (sectionTitles[1]) sectionTitles[1].textContent = t.sectionLatest;
 
-        // Lang toggle
-        var langBtn = document.getElementById('lang-toggle');
-        if (langBtn) {
-          var langLabel = langBtn.querySelector('.lang-label');
-          if (langLabel) langLabel.textContent = t.langLabel;
-          langBtn.setAttribute('title', t.langTitle);
-          langBtn.setAttribute('aria-label', t.langTitle);
-        }
-
         // Footer
         var copyright = document.querySelector('.copyright');
         if (copyright) copyright.textContent = t.footerCopy;

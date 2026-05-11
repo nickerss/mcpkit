@@ -6,7 +6,8 @@ tags: [playwright, browser, testing, automation, e2e]
 price: free
 website: https://github.com/microsoft/playwright-mcp
 logo: 
-description: Microsoft Playwright MCP for AI Agents to control browsers - click, fill forms, navigate, capture screenshots for automated testing and web scraping.
+descriptionEn: "Microsoft Playwright MCP for AI Agents to control browsers - click, fill forms, navigate, capture screenshots for automated testing and web scraping."
+description: "Microsoft Playwright MCP，让 AI Agent 控制浏览器 - 点击、填表、导航、截图，用于自动化测试和网页爬取。"
 kit: ["ai-coding-agent", "browser-automation"]
 kitRole: "Browser automation for testing and web interaction tasks"
 evaluation:

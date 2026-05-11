@@ -6,7 +6,8 @@ tags: [cloudflare, dns, workers, deployment, devops]
 price: freemium
 website: https://developers.cloudflare.com
 logo: 
-description: Cloudflare comprehensive MCP for AI Agents to manage DNS, Workers, Pages, and R2 - full cloud infrastructure control for DevOps.
+descriptionEn: "Cloudflare comprehensive MCP for AI Agents to manage DNS, Workers, Pages, and R2 - full cloud infrastructure control for DevOps."
+description: "Cloudflare 综合 MCP，让 AI Agent 管理 DNS、Workers、Pages 和 R2 - DevOps 完整云基础设施控制。"
 kit: ["devops-monitoring"]
 kitRole: "Cloud infrastructure management and deployment automation"
 evaluation:

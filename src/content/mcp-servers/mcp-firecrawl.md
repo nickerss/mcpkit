@@ -6,7 +6,8 @@ tags: [firecrawl, scraping, web, crawl, rag]
 price: freemium
 website: https://firecrawl.dev
 logo: 
-description: Intelligent web scraping MCP with JavaScript rendering and deep crawling - extracts clean Markdown from any website for RAG pipelines.
+descriptionEn: "Intelligent web scraping MCP with JavaScript rendering and deep crawling - extracts clean Markdown from any website for RAG pipelines."
+description: "智能网页爬取 MCP，支持 JavaScript 渲染和深度爬取 - 从任意网站提取干净 Markdown，用于 RAG 流水线。"
 kit: ["rag-research"]
 kitRole: "Deep web content extraction for RAG data ingestion"
 evaluation:

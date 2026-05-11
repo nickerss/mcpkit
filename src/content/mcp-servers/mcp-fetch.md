@@ -6,7 +6,8 @@ tags: [http, api, fetch, web, network]
 price: free
 website: https://github.com/modelcontextprotocol/servers
 logo: 
-description: HTTP request MCP for AI Agents to call REST APIs and fetch data from research sources - the universal API connector for RAG data pipelines.
+descriptionEn: "HTTP request MCP for AI Agents to call REST APIs and fetch data from research sources - the universal API connector for RAG data pipelines."
+description: "HTTP 请求 MCP，让 AI Agent 调用 REST API 并从数据源获取内容 - RAG 数据流水线的通用 API 连接器。"
 kit: ["rag-research"]
 kitRole: "API data fetching and webhook triggers for research data sources"
 evaluation:

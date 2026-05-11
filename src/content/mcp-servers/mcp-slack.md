@@ -6,7 +6,8 @@ tags: [slack, messaging, notifications, team]
 price: free
 website: https://github.com/modelcontextprotocol/servers
 logo: 
-description: Slack API MCP for sending channel messages, managing channels, and searching history - essential for deployment and alert notifications.
+descriptionEn: "Slack API MCP for sending channel messages, managing channels, and searching history - essential for deployment and alert notifications."
+description: "Slack API MCP，发送频道消息、管理频道、搜索历史记录 - 部署和告警通知必备。"
 kit: ["ship-a-saas", "browser-automation", "devops-monitoring", "ai-coding-agent"]
 kitRole: "Team notifications for deployments, errors, and task completions"
 evaluation:

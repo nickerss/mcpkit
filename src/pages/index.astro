@@ -99,12 +99,10 @@ const kitCards = [
       <div class="hero-bg"></div>
       <div class="hero-content">
         <h1 class="hero-title">
-          {isZh ? 'Your AI Agent Toolkit' : 'Your AI Agent Toolkit'}
+          {isZh ? '独立开发者的 AI Agent 工具箱' : 'Your AI Agent Toolkit'}
         </h1>
         <p class="hero-subtitle">
-          {isZh
-            ? 'Kit-based tool combos · Verified · Rated'
-            : 'Kit-based tool combos · Verified · Rated'}
+          {isZh ? 'Kit 化工具套件 · 精选认证 · 四维评测' : 'Kit-based tool combos · Verified · Rated'}
         </p>
         <form class="search-form" action={`/search/?lang=${locale}`} method="get">
           <div class="search-wrap">
@@ -134,7 +132,7 @@ const kitCards = [
         </div>
 
         <div class="view-all-wrap">
-          <a href="/mcp-servers/" class="view-all-link">查看全部工具 →</a>
+          <a href="/mcp-servers/" class="view-all-link">{isZh ? '查看全部工具 →' : 'View all tools →'}</a>
         </div>
       </div>
     </section>

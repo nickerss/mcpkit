@@ -6,7 +6,8 @@ tags: [claude, anthropic, cli, coding, agent]
 price: paid
 website: https://claude.ai/claude-code
 logo: 
-description: Anthropic official CLI coding Agent with deep codebase understanding, multi-file refactoring, and autonomous task execution.
+descriptionEn: "Anthropic official CLI coding Agent with deep codebase understanding, multi-file refactoring, and autonomous task execution."
+description: "Anthropic 官方 CLI 编程 Agent，深度理解代码库，多文件重构，自主执行编码任务。"
 kit: ["ai-coding-agent", "browser-automation"]
 kitRole: "Primary AI coding Agent - writes, reviews, and modifies code autonomously"
 evaluation:

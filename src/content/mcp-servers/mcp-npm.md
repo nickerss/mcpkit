@@ -6,7 +6,8 @@ tags: [npm, javascript, package, security, devops]
 price: free
 website: https://github.com/modelcontextprotocol/servers
 logo: 
-description: NPM package management MCP for AI Agents to search packages, audit security vulnerabilities, and manage dependencies during CI/CD.
+descriptionEn: "NPM package management MCP for AI Agents to search packages, audit security vulnerabilities, and manage dependencies during CI/CD."
+description: "NPM 包管理 MCP，让 AI Agent 搜索包、审计安全漏洞、在 CI/CD 中管理依赖。"
 kit: ["devops-monitoring"]
 kitRole: "Package security auditing and dependency management in CI pipelines"
 evaluation:

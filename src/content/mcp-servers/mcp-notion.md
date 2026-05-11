@@ -6,7 +6,8 @@ tags: [notion, notes, knowledge-base, documentation]
 price: freemium
 website: https://github.com/modelcontextprotocol/servers
 logo: 
-description: Notion API MCP for reading/writing pages, managing databases, and searching knowledge bases - AI coding Agent documentation partner.
+descriptionEn: "Notion API MCP for reading/writing pages, managing databases, and searching knowledge bases - AI coding Agent documentation partner."
+description: "Notion API MCP，读写页面、管理数据库、搜索知识库 - AI 编程 Agent 的文档协作伙伴。"
 kit: ["ai-coding-agent", "rag-research"]
 kitRole: "Technical documentation and knowledge base management for AI coding"
 evaluation:

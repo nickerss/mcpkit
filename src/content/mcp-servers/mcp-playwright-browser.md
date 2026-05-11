@@ -6,7 +6,8 @@ tags: [playwright, browser, automation, web, scraping]
 price: free
 website: https://github.com/microsoft/playwright-mcp
 logo: 
-description: Playwright browser control MCP for AI Agents - headless browser control with form filling, navigation, and screenshot capture.
+descriptionEn: "Playwright browser control MCP for AI Agents - headless browser control with form filling, navigation, and screenshot capture."
+description: "Playwright 浏览器控制 MCP，让 AI Agent 操作浏览器 - 无头浏览器控制，支持表单填写、导航和截图。"
 kit: ["browser-automation"]
 kitRole: "Browser instance control for web scraping and UI automation"
 evaluation:

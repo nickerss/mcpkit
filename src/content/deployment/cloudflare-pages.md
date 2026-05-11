@@ -6,7 +6,8 @@ tags: [cloudflare, hosting, cdn, deployment, frontend]
 price: free
 website: https://pages.cloudflare.com
 logo: 
-description: Cloudflare Pages deployment platform with global CDN, one-click deploy from GitHub, and seamless Workers integration.
+descriptionEn: "Cloudflare Pages deployment platform with global CDN, one-click deploy from GitHub, and seamless Workers integration."
+description: "Cloudflare Pages 部署平台，全球 CDN 覆盖，一键从 GitHub 部署，无缝集成 Workers。"
 kit: ["ship-a-saas"]
 kitRole: "One-click deployment and global CDN for SaaS frontends"
 evaluation:

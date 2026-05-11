@@ -6,7 +6,8 @@ tags: [pagerduty, alerting, incident, monitoring, devops]
 price: paid
 website: https://github.com/PagerDuty/mcp-pagerduty
 logo: 
-description: PagerDuty MCP for AI Agents to manage incidents, send alerts, and trigger automated remediation workflows in enterprise DevOps.
+descriptionEn: "PagerDuty MCP for AI Agents to manage incidents, send alerts, and trigger automated remediation workflows in enterprise DevOps."
+description: "PagerDuty MCP，让 AI Agent 管理事故、发送告警、触发自动化修复工作流，企业级 DevOps 必备。"
 kit: ["ship-a-saas", "devops-monitoring"]
 kitRole: "Incident alerting and on-call management for production systems"
 evaluation:

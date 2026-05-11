@@ -9,24 +9,30 @@ const locale = getLocaleFromUrl(Astro.url);
   class="lang-select"
   aria-label="Select language"
 >
-  <option value="en" selected={locale !== 'zh'}>EN</option>
-  <option value="zh" selected={locale === 'zh'}>中文</option>
+  <option value="en">EN</option>
+  <option value="zh">中文</option>
 </select>
 
 <script>
-  const select = document.getElementById('lang-select') as HTMLSelectElement | null;
-  select?.addEventListener('change', (e) => {
-    const target = e.target as HTMLSelectElement;
-    const lang = target.value;
-    const url = new URL(window.location.href);
-    url.searchParams.set('lang', lang);
-    localStorage.setItem('mcpkit-lang', lang);
-    window.location.replace(url.toString());
-  });
-  // Custom event hook for external listeners
-  select?.addEventListener('languageChange', (e) => {
-    // Reserved hook for future use
-  });
+  (function initLangSelect() {
+    var urlLang = new URLSearchParams(window.location.search).get('lang');
+    var storedLang = localStorage.getItem('mcpkit-lang');
+    var lang = urlLang || storedLang || 'en';
+    if (lang !== 'en' && lang !== 'zh') lang = 'en';
+
+    var select = document.getElementById('lang-select') as HTMLSelectElement | null;
+    if (select) {
+      select.value = lang;
+      select.addEventListener('change', function(e) {
+        var target = e.target as HTMLSelectElement;
+        var newLang = target.value;
+        var url = new URL(window.location.href);
+        url.searchParams.set('lang', newLang);
+        localStorage.setItem('mcpkit-lang', newLang);
+        window.location.replace(url.toString());
+      });
+    }
+  })();
 </script>
 
 <style>

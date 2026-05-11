@@ -6,7 +6,8 @@ tags: [brave, search, web, privacy, research]
 price: freemium
 website: https://github.com/mcp-community/brave-search-mcp
 logo: 
-description: Brave Search API MCP providing privacy-first web search for AI research Agents - no tracking, clean results for knowledge gathering.
+descriptionEn: "Brave Search API MCP providing privacy-first web search for AI research Agents - no tracking, clean results for knowledge gathering."
+description: "Brave Search API MCP，提供隐私优先的网页搜索服务 - 无追踪，干净结果，为 AI 研究 Agent 收集知识。"
 kit: ["rag-research", "browser-automation"]
 kitRole: "Multi-source web search for research data collection"
 evaluation:

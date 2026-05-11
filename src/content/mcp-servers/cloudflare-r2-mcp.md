@@ -6,7 +6,8 @@ tags: [cloudflare, r2, storage, cdn, s3-compatible]
 price: freemium
 website: https://developers.cloudflare.com/r2
 logo: 
-description: Cloudflare R2 object storage MCP with S3-compatible API, no egress fees, and global edge delivery for SaaS file assets.
+descriptionEn: "Cloudflare R2 object storage MCP with S3-compatible API, no egress fees, and global edge delivery for SaaS file assets."
+description: "Cloudflare R2 对象存储 MCP，S3 兼容 API，零出口费用，全球边缘分发 SaaS 文件资源。"
 kit: ["ship-a-saas"]
 kitRole: "File storage with zero egress costs for SaaS products"
 evaluation:
