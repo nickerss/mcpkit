@@ -57,15 +57,22 @@
         var logoLink = document.querySelector('.logo');
         if (logoLink) logoLink.setAttribute('href', '/?lang=' + lang);
 
-        // Hero title (h1) — only apply i18n if hero is English (no non-ASCII)
+        // Hero title (h1) — replace only if page lang doesn't match URL lang
         var heroTitle = document.querySelector('.hero-title');
-        if (heroTitle) {
-          var isAscii = /^[�-]*$/.test(heroTitle.textContent || '');
-          var hasBr = heroTitle.innerHTML.indexOf('<br') !== -1;
-          if (isAscii && hasBr) {
-            heroTitle.innerHTML = t.heroTitle + '<br/><span class="gradient-text">' + t.heroAccent + '</span>';
-          } else if (isAscii) {
-            heroTitle.textContent = t.heroTitle;
+        if (heroTitle && t.heroTitle) {
+          var currentText = heroTitle.textContent || '';
+          // Skip if hero already shows the target lang text
+          var alreadyCorrect = (
+            (lang === 'zh' && /[一-鿿]/.test(currentText)) ||
+            (lang === 'en' && /^[A-Za-z]/.test(currentText) && !/[一-鿿]/.test(currentText))
+          );
+          if (!alreadyCorrect) {
+            var hasBr = heroTitle.innerHTML.indexOf('<br') !== -1;
+            if (hasBr) {
+              heroTitle.innerHTML = t.heroTitle + '<br/><span class="gradient-text">' + t.heroAccent + '</span>';
+            } else {
+              heroTitle.textContent = t.heroTitle;
+            }
           }
         }
         var heroDesc = document.querySelector('.hero-desc');
