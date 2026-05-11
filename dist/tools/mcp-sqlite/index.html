@@ -56,15 +56,14 @@
         var logoLink = document.querySelector('.logo');
         if (logoLink) logoLink.setAttribute('href', '/?lang=' + lang);
 
-        // Hero title (h1) — replace only if page lang doesn't match URL lang
+        // Hero title (h1) — skip if text already matches target lang (zh has CJK or en has only ASCII)
         var heroTitle = document.querySelector('.hero-title');
-        if (heroTitle && t.heroTitle) {
-          var currentText = heroTitle.textContent || '';
-          // Skip if hero already shows the target lang text
-          var alreadyCorrect = (
-            (lang === 'zh' && /[一-鿿]/.test(currentText)) ||
-            (lang === 'en' && /^[A-Za-z]/.test(currentText) && !/[一-鿿]/.test(currentText))
-          );
+        if (heroTitle) {
+          var text = heroTitle.textContent || '';
+          // Determine if text is already the right language
+          var isZhText = /[一-鿿]/.test(text);
+          var isEnText = /^[A-Za-z\s\d .,!'"-]*$/.test(text);
+          var alreadyCorrect = (lang === 'zh' && isZhText) || (lang === 'en' && isEnText);
           if (!alreadyCorrect) {
             var hasBr = heroTitle.innerHTML.indexOf('<br') !== -1;
             if (hasBr) {
