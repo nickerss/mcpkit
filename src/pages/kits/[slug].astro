@@ -5,6 +5,7 @@ import Footer from '../../components/Footer.astro';
 import RadarChart from '../../components/RadarChart.astro';
 import DifficultyTab from '../../components/DifficultyTab.astro';
 import CertificationBadge from '../../components/CertificationBadge.astro';
+import InstallCommand from '../../components/InstallCommand.astro';
 import { getCollection } from 'astro:content';
 import { getLocaleFromUrl } from '../../i18n/index';
 
@@ -32,9 +33,22 @@ const levelData = kit.levels[currentLevel];
 // Build baseUrl from page URL
 const baseUrl = `/kits/${entry.slug}/`;
 
-// Placeholder evaluation data per tool
-function placeholderEval(tool: string) {
-  const seed = tool.length * 1.7;
+// Fetch all tool entries from all 3 collections
+const [mcpServers, aiTools, deploymentTools] = await Promise.all([
+  getCollection('mcp-servers'),
+  getCollection('ai-tools'),
+  getCollection('deployment'),
+]);
+const allTools = [...mcpServers, ...aiTools, ...deploymentTools];
+
+// Build map: tool name → entry
+const toolMap = new Map(allTools.map(t => [t.data.name, t]));
+
+// Real eval data fallback
+function getEval(toolName: string) {
+  const e = toolMap.get(toolName)?.data.evaluation;
+  if (e) return e;
+  const seed = toolName.length * 1.7;
   return {
     easeOfUse: 3 + (seed % 20) / 10,
     security: 3.5 + (seed % 15) / 10,
@@ -45,7 +59,7 @@ function placeholderEval(tool: string) {
 
 // Kit-level aggregate scores (average across tools for current level)
 function avgScores(tools: string[]) {
-  const evals = tools.map(placeholderEval);
+  const evals = tools.map(getEval);
   return {
     easeOfUse: evals.reduce((s, e) => s + e.easeOfUse, 0) / evals.length,
     security: evals.reduce((s, e) => s + e.security, 0) / evals.length,
@@ -89,24 +103,51 @@ const levelLabels = { starter: 'Starter', pro: 'Pro', enterprise: 'Enterprise' }
           <div class="tool-list">
             <p class="level-desc">{levelData.description}</p>
             <div class="tools-grid">
-              {levelData.tools.map(tool => {
-                const eval_ = placeholderEval(tool);
+              {levelData.tools.map(toolName => {
+                const toolEntry = toolMap.get(toolName);
+                const eval_ = getEval(toolName);
                 const overall = parseFloat((eval_.easeOfUse * 0.3 + eval_.security * 0.25 + eval_.activity * 0.2 + eval_.scenarioFit * 0.25).toFixed(1));
+                const certStatus = (toolEntry?.data.certificationStatus as any) || 'pending';
+                const installCmd = toolEntry?.data.installCommand;
+                const envVars = toolEntry?.data.envVars;
+                const configExample = toolEntry?.data.configExample;
+
                 return (
                   <div class="tool-card">
                     <div class="tool-card-header">
-                      <span class="tool-name">{tool}</span>
-                      <CertificationBadge status="certified" size="sm" />
+                      <div class="tool-name-row">
+                        <span class="tool-name">{toolName}</span>
+                        <CertificationBadge status={certStatus} size="sm" />
+                      </div>
+                      {toolEntry && (
+                        <p class="tool-desc">{toolEntry.data.description}</p>
+                      )}
                     </div>
-                    <RadarChart
-                      easeOfUse={eval_.easeOfUse}
-                      security={eval_.security}
-                      activity={eval_.activity}
-                      scenarioFit={eval_.scenarioFit}
-                      overall={overall}
-                      size={220}
-                      kitColor={kit.color}
-                    />
+
+                    {installCmd && (
+                      <div class="tool-install">
+                        <InstallCommand command={installCmd} />
+                      </div>
+                    )}
+
+                    {envVars && envVars.length > 0 && (
+                      <div class="tool-envvars">
+                        <span class="env-label">{isZh ? '环境变量' : 'Env Vars'}:</span>
+                        <code class="env-list">{envVars.join(', ')}</code>
+                      </div>
+                    )}
+
+                    <div class="tool-radar">
+                      <RadarChart
+                        easeOfUse={eval_.easeOfUse}
+                        security={eval_.security}
+                        activity={eval_.activity}
+                        scenarioFit={eval_.scenarioFit}
+                        overall={overall}
+                        size={180}
+                        kitColor={kit.color}
+                      />
+                    </div>
                   </div>
                 );
               })}
@@ -177,74 +218,113 @@ const levelLabels = { starter: 'Starter', pro: 'Pro', enterprise: 'Enterprise' }
     margin-bottom: 12px;
   }
   .kit-desc {
-    font-size: 18px;
+    font-size: 16px;
     color: var(--text-secondary);
     margin-bottom: 20px;
     line-height: 1.6;
   }
-  .kit-meta { display: flex; justify-content: center; gap: 8px; }
-
-  .kit-body { padding: 40px 0 80px; }
+  .kit-meta {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+  .kit-body {
+    padding: 48px 0 80px;
+  }
   .container {
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
     padding: 0 24px;
   }
   .kit-layout {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 320px;
     gap: 32px;
     margin-top: 32px;
   }
-  @media (min-width: 900px) {
-    .kit-layout { grid-template-columns: 1fr 320px; }
+  .tool-list {
+    min-width: 0;
   }
-
   .level-desc {
-    font-size: 16px;
+    font-size: 15px;
     color: var(--text-secondary);
     margin-bottom: 24px;
+    line-height: 1.6;
   }
-
   .tools-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 20px;
   }
-
   .tool-card {
     background: var(--bg-secondary);
     border: 1px solid var(--border);
-    border-radius: 16px;
+    border-radius: 12px;
     padding: 20px;
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 16px;
   }
   .tool-card-header {
-    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .tool-name-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
   }
   .tool-name {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
     color: var(--text-primary);
   }
-
+  .tool-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .tool-install {
+    font-size: 13px;
+  }
+  .tool-envvars {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .env-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+  .env-list {
+    font-size: 11px;
+    color: var(--text-secondary);
+    background: var(--bg-tertiary);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: monospace;
+  }
+  .tool-radar {
+    display: flex;
+    justify-content: center;
+  }
   .kit-sidebar {
     position: sticky;
     top: 24px;
-    height: fit-content;
+    align-self: start;
   }
   .sidebar-card {
     background: var(--bg-secondary);
     border: 1px solid var(--border);
-    border-radius: 20px;
+    border-radius: 12px;
     padding: 24px;
     display: flex;
     flex-direction: column;
@@ -252,18 +332,32 @@ const levelLabels = { starter: 'Starter', pro: 'Pro', enterprise: 'Enterprise' }
     gap: 16px;
   }
   .sidebar-title {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--text-primary);
     text-align: center;
-    margin: 0;
   }
   .sidebar-rating {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
-    font-size: 18px;
+    gap: 4px;
   }
-  .rating-label { color: var(--text-secondary); }
-  .rating-val { font-weight: 700; color: var(--text-primary); }
+  .rating-label {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .rating-val {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  @media (max-width: 900px) {
+    .kit-layout {
+      grid-template-columns: 1fr;
+    }
+    .kit-sidebar {
+      position: static;
+    }
+  }
 </style>
