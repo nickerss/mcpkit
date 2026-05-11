@@ -57,11 +57,16 @@
         var logoLink = document.querySelector('.logo');
         if (logoLink) logoLink.setAttribute('href', '/?lang=' + lang);
 
-        // Hero title (h1)
+        // Hero title (h1) — only apply i18n if hero is English (no non-ASCII)
         var heroTitle = document.querySelector('.hero-title');
         if (heroTitle) {
-          var parts = heroTitle.innerHTML.split('<br');
-          heroTitle.innerHTML = t.heroTitle + '<br/><span class="gradient-text">' + t.heroAccent + '</span>';
+          var isAscii = /^[�-]*$/.test(heroTitle.textContent || '');
+          var hasBr = heroTitle.innerHTML.indexOf('<br') !== -1;
+          if (isAscii && hasBr) {
+            heroTitle.innerHTML = t.heroTitle + '<br/><span class="gradient-text">' + t.heroAccent + '</span>';
+          } else if (isAscii) {
+            heroTitle.textContent = t.heroTitle;
+          }
         }
         var heroDesc = document.querySelector('.hero-desc');
         if (heroDesc) heroDesc.textContent = t.heroDesc;
