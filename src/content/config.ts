@@ -16,7 +16,7 @@ const toolSchema = z.object({
   tags: z.array(z.string()),
   price: z.string(),
   website: z.string(),
-  logo: z.string().optional(),
+  logo: z.string().nullable(),
   description: z.string(),
   scenarios: z.array(z.string()).optional(),
   installCommand: z.string().optional(),

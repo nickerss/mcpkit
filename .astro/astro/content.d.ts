@@ -602,6 +602,13 @@ declare module 'astro:content' {
 } & { render(): Render[".md"] };
 };
 "mcp-servers": {
+"aws-mcp.md": {
+	id: "aws-mcp.md";
+  slug: "aws-mcp";
+  body: string;
+  collection: "mcp-servers";
+  data: InferEntrySchema<"mcp-servers">
+} & { render(): Render[".md"] };
 "brave-search-mcp.md": {
 	id: "brave-search-mcp.md";
   slug: "brave-search-mcp";
@@ -616,9 +623,23 @@ declare module 'astro:content' {
   collection: "mcp-servers";
   data: InferEntrySchema<"mcp-servers">
 } & { render(): Render[".md"] };
+"chromium-mcp.md": {
+	id: "chromium-mcp.md";
+  slug: "chromium-mcp";
+  body: string;
+  collection: "mcp-servers";
+  data: InferEntrySchema<"mcp-servers">
+} & { render(): Render[".md"] };
 "cline-mcp.md": {
 	id: "cline-mcp.md";
   slug: "cline-mcp";
+  body: string;
+  collection: "mcp-servers";
+  data: InferEntrySchema<"mcp-servers">
+} & { render(): Render[".md"] };
+"cloudflare-mcp.md": {
+	id: "cloudflare-mcp.md";
+  slug: "cloudflare-mcp";
   body: string;
   collection: "mcp-servers";
   data: InferEntrySchema<"mcp-servers">
@@ -637,9 +658,23 @@ declare module 'astro:content' {
   collection: "mcp-servers";
   data: InferEntrySchema<"mcp-servers">
 } & { render(): Render[".md"] };
+"firefox-mcp.md": {
+	id: "firefox-mcp.md";
+  slug: "firefox-mcp";
+  body: string;
+  collection: "mcp-servers";
+  data: InferEntrySchema<"mcp-servers">
+} & { render(): Render[".md"] };
 "groq-mcp.md": {
 	id: "groq-mcp.md";
   slug: "groq-mcp";
+  body: string;
+  collection: "mcp-servers";
+  data: InferEntrySchema<"mcp-servers">
+} & { render(): Render[".md"] };
+"linear-mcp.md": {
+	id: "linear-mcp.md";
+  slug: "linear-mcp";
   body: string;
   collection: "mcp-servers";
   data: InferEntrySchema<"mcp-servers">
@@ -854,6 +889,20 @@ declare module 'astro:content' {
   collection: "mcp-servers";
   data: InferEntrySchema<"mcp-servers">
 } & { render(): Render[".md"] };
+"mcp-playwright-browser.md": {
+	id: "mcp-playwright-browser.md";
+  slug: "mcp-playwright-browser";
+  body: string;
+  collection: "mcp-servers";
+  data: InferEntrySchema<"mcp-servers">
+} & { render(): Render[".md"] };
+"mcp-playwright.md": {
+	id: "mcp-playwright.md";
+  slug: "mcp-playwright";
+  body: string;
+  collection: "mcp-servers";
+  data: InferEntrySchema<"mcp-servers">
+} & { render(): Render[".md"] };
 "mcp-postgres.md": {
 	id: "mcp-postgres.md";
   slug: "mcp-postgres";
@@ -945,6 +994,13 @@ declare module 'astro:content' {
   collection: "mcp-servers";
   data: InferEntrySchema<"mcp-servers">
 } & { render(): Render[".md"] };
+"pagerduty-mcp.md": {
+	id: "pagerduty-mcp.md";
+  slug: "pagerduty-mcp";
+  body: string;
+  collection: "mcp-servers";
+  data: InferEntrySchema<"mcp-servers">
+} & { render(): Render[".md"] };
 "planetscale-mcp.md": {
 	id: "planetscale-mcp.md";
   slug: "planetscale-mcp";
@@ -955,6 +1011,13 @@ declare module 'astro:content' {
 "supabase-mcp.md": {
 	id: "supabase-mcp.md";
   slug: "supabase-mcp";
+  body: string;
+  collection: "mcp-servers";
+  data: InferEntrySchema<"mcp-servers">
+} & { render(): Render[".md"] };
+"supabase-pgvector.md": {
+	id: "supabase-pgvector.md";
+  slug: "supabase-pgvector";
   body: string;
   collection: "mcp-servers";
   data: InferEntrySchema<"mcp-servers">

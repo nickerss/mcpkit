@@ -16,7 +16,7 @@ evaluation:
   scenarioFit: 5
   overall: 4.7
 certificationStatus: "recommended"
-installCommand: "Download from https://cursor.com or \`brew install cursor\`"
+installCommand: "Download from https://cursor.com or brew install cursor"
 envVars: ["ANTHROPIC_API_KEY", "OPENAI_API_KEY"]
 configExample: |
   # Cursor settings.json
