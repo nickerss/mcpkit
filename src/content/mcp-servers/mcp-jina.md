@@ -1,22 +1,37 @@
 ---
-title: "mcp-jina"
-name: mcp-jina
+title: "Jina Reader MCP"
+name: jina-reader-mcp
 category: mcp-servers
-tags: [jina, search, rag, ai]
+tags: [jina, reader, web, parsing, rag]
 price: freemium
-website: https://jina.ai
-logo: ""
-description: Jina AI search and reading comprehension API MCP for web content and document understanding, perfect for RAG system enhancement.
-scenarios: ["Document Q&A", "Knowledge base augmentation", "Search result summarization"]
+website: https://jina.ai/reader
+logo: 
+description: Jina Reader MCP converts any URL into clean, structured Markdown - perfect for preprocessing web content before vector storage in RAG systems.
+kit: ["rag-research"]
+kitRole: "URL to Markdown conversion for RAG pipeline ingestion"
+evaluation:
+  easeOfUse: 5
+  security: 4
+  activity: 5
+  scenarioFit: 5
+  overall: 4.8
+certificationStatus: "recommended"
+installCommand: "npx @jina/mcp-server"
+envVars: ["JINA_API_KEY"]
+configExample: |
+  {
+    "mcpServers": {
+      "jina": {
+        "command": "npx",
+        "args": ["-y", "@jina/mcp-server"],
+        "env": { "JINA_API_KEY": "jj_xxx" }
+      }
+    }
+  }
 featured: false
-submittedAt: "2026-05-09T00:00:00.000Z"
+submittedAt: "2026-05-11T00:00:00.000Z"
 ---
 
-# mcp-jina
+# Jina Reader MCP
 
-Jina AI search and reading comprehension API MCP for web content and document understanding, perfect for RAG system enhancement.
-
-**Use Cases:**
-- Document Q&A
-- Knowledge base augmentation
-- Search result summarization
+Jina Reader MCP converts any URL into clean, structured Markdown - perfect for preprocessing web content before vector storage in RAG systems.

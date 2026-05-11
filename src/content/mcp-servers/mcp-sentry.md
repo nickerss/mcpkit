@@ -1,22 +1,41 @@
 ---
 title: "Sentry MCP"
-name: mcp-sentry
+name: sentry-mcp
 category: mcp-servers
 tags: [sentry, error-tracking, monitoring, devops]
 price: freemium
 website: https://sentry.io
-logo: ""
-description: Sentry error tracking API MCP supporting error event queries, issue management, and alert configuration.
-scenarios: ["Error automation", "Issue creation", "Monitoring alerts"]
+logo: 
+description: Sentry error tracking API MCP for querying error events, managing Issues, and configuring Alerts - critical for SaaS production monitoring.
+kit: ["ship-a-saas", "devops-monitoring"]
+kitRole: "Production error tracking and alerting for SaaS reliability"
+evaluation:
+  easeOfUse: 4
+  security: 4
+  activity: 5
+  scenarioFit: 5
+  overall: 4.5
+certificationStatus: "recommended"
+installCommand: "npx @sentry/mcp-server"
+envVars: ["SENTRY_AUTH_TOKEN", "SENTRY_ORGANIZATION", "SENTRY_PROJECT"]
+configExample: |
+  {
+    "mcpServers": {
+      "sentry": {
+        "command": "npx",
+        "args": ["-y", "@sentry/mcp-server"],
+        "env": {
+          "SENTRY_AUTH_TOKEN": "sntrys_xxx",
+          "SENTRY_ORGANIZATION": "myorg",
+          "SENTRY_PROJECT": "myproject"
+        }
+      }
+    }
+  }
 featured: false
-submittedAt: "2026-05-09T00:00:00.000Z"
+submittedAt: "2026-05-11T00:00:00.000Z"
 ---
 
 # Sentry MCP
 
-Sentry error tracking API MCP supporting error event queries, issue management, and alert configuration.
-
-**Use Cases:**
-- Error automation
-- Issue creation
-- Monitoring alerts
+Sentry error tracking API MCP for querying error events, managing Issues, and configuring Alerts - critical for SaaS production monitoring.

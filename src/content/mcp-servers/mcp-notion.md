@@ -1,22 +1,37 @@
 ---
 title: "Notion MCP"
-name: mcp-notion
+name: notion-mcp
 category: mcp-servers
-tags: [notion, notes, knowledge-base, collaboration]
+tags: [notion, notes, knowledge-base, documentation]
 price: freemium
-website: https://notion.so
-logo: ""
-description: Notion API MCP supporting page read/write, database operations, and knowledge base management for AI + notes collaboration.
-scenarios: ["Auto meeting notes", "Project status sync", "Knowledge base Q&A"]
+website: https://github.com/modelcontextprotocol/servers
+logo: 
+description: Notion API MCP for reading/writing pages, managing databases, and searching knowledge bases - AI coding Agent documentation partner.
+kit: ["ai-coding-agent", "rag-research"]
+kitRole: "Technical documentation and knowledge base management for AI coding"
+evaluation:
+  easeOfUse: 4
+  security: 4
+  activity: 4
+  scenarioFit: 4
+  overall: 4
+certificationStatus: "recommended"
+installCommand: "npx @modelcontextprotocol/server-notion"
+envVars: ["NOTION_API_KEY"]
+configExample: |
+  {
+    "mcpServers": {
+      "notion": {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-notion"],
+        "env": { "NOTION_API_KEY": "secret_xxx" }
+      }
+    }
+  }
 featured: false
-submittedAt: "2026-05-09T00:00:00.000Z"
+submittedAt: "2026-05-11T00:00:00.000Z"
 ---
 
 # Notion MCP
 
-Notion API MCP supporting page read/write, database operations, and knowledge base management for AI + notes collaboration.
-
-**Use Cases:**
-- Auto meeting notes
-- Project status sync
-- Knowledge base Q&A
+Notion API MCP for reading/writing pages, managing databases, and searching knowledge bases - AI coding Agent documentation partner.

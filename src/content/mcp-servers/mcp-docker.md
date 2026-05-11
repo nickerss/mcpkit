@@ -1,22 +1,36 @@
 ---
-title: "mcp-docker"
-name: mcp-docker
+title: "Docker MCP"
+name: docker-mcp
 category: mcp-servers
-tags: [docker, devops, container, infrastructure]
+tags: [docker, container, devops, infrastructure, ci-cd]
 price: free
 website: https://github.com/modelcontextprotocol/servers
-logo: ""
-description: Docker container management MCP supporting image operations, container start/stop, and log viewing for AI-driven DevOps automation.
-scenarios: ["Environment deployment", "Automated troubleshooting", "Container orchestration"]
+logo: 
+description: Docker container management MCP for AI Agents to control containers, images, and Docker Compose - core infrastructure tool for DevOps automation.
+kit: ["ai-coding-agent", "devops-monitoring"]
+kitRole: "Container orchestration and environment management for AI coding Agents"
+evaluation:
+  easeOfUse: 3
+  security: 3
+  activity: 5
+  scenarioFit: 4
+  overall: 3.7
+certificationStatus: "reviewed"
+installCommand: "npx @modelcontextprotocol/server-docker"
+envVars: ["DOCKER_HOST"]
+configExample: |
+  {
+    "mcpServers": {
+      "docker": {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-docker"]
+      }
+    }
+  }
 featured: false
-submittedAt: "2026-05-09T00:00:00.000Z"
+submittedAt: "2026-05-11T00:00:00.000Z"
 ---
 
-# mcp-docker
+# Docker MCP
 
-Docker container management MCP supporting image operations, container start/stop, and log viewing for AI-driven DevOps automation.
-
-**Use Cases:**
-- Environment deployment
-- Automated troubleshooting
-- Container orchestration
+Docker container management MCP for AI Agents to control containers, images, and Docker Compose - core infrastructure tool for DevOps automation.

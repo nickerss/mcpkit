@@ -2,21 +2,30 @@
 title: "Claude Code"
 name: claude-code
 category: ai-tools
-tags: [cli, anthropic, claude, refactoring]
+tags: [claude, anthropic, cli, coding, agent]
 price: paid
 website: https://claude.ai/claude-code
-logo: ""
-description: Anthropic official CLI coding tool with deep codebase understanding, supporting complex multi-file refactoring and autonomous execution.
-scenarios: ["Complex bug fixes", "System refactoring", "Code review"]
+logo: 
+description: Anthropic official CLI coding Agent with deep codebase understanding, multi-file refactoring, and autonomous task execution.
+kit: ["ai-coding-agent", "browser-automation"]
+kitRole: "Primary AI coding Agent - writes, reviews, and modifies code autonomously"
+evaluation:
+  easeOfUse: 4
+  security: 5
+  activity: 5
+  scenarioFit: 5
+  overall: 4.8
+certificationStatus: "certified"
+installCommand: "npm install -g @anthropic-ai/claude-code"
+envVars: ["ANTHROPIC_API_KEY"]
+configExample: |
+  # Claude Code configuration
+  export ANTHROPIC_API_KEY="sk-ant-xxx"
+  # Then run: claude-code
 featured: false
-submittedAt: "2026-05-09T00:00:00.000Z"
+submittedAt: "2026-05-11T00:00:00.000Z"
 ---
 
 # Claude Code
 
-Anthropic official CLI coding tool with deep codebase understanding, supporting complex multi-file refactoring and autonomous execution.
-
-**Use Cases:**
-- Complex bug fixes
-- System refactoring
-- Code review
+Anthropic official CLI coding Agent with deep codebase understanding, multi-file refactoring, and autonomous task execution.

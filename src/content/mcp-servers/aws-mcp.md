@@ -2,13 +2,13 @@
 title: "AWS MCP"
 name: aws-mcp
 category: mcp-servers
-tags: [aws, s3, iam, cloud, infrastructure]
+tags: [aws, ec2, lambda, iam, cloud, infrastructure]
 price: pay-as-you-go
 website: https://aws.amazon.com/mcp
 logo: 
-description: AWS MCP connecting AI Agents to AWS services - S3, EC2, Lambda, IAM - for infrastructure management at enterprise scale.
+description: AWS MCP connecting AI Agents to full AWS service suite - S3, EC2, Lambda, IAM, CloudWatch for complete enterprise cloud infrastructure management.
 kit: ["ship-a-saas", "devops-monitoring"]
-kitRole: "Enterprise cloud infrastructure and S3 storage management"
+kitRole: "Enterprise cloud infrastructure - EC2, Lambda, IAM, CloudWatch management"
 evaluation:
   easeOfUse: 2
   security: 3
@@ -38,4 +38,4 @@ submittedAt: "2026-05-11T00:00:00.000Z"
 
 # AWS MCP
 
-AWS MCP connecting AI Agents to AWS services - S3, EC2, Lambda, IAM - for infrastructure management at enterprise scale.
+AWS MCP connecting AI Agents to full AWS service suite - S3, EC2, Lambda, IAM, CloudWatch for complete enterprise cloud infrastructure management.

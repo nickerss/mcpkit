@@ -132,6 +132,10 @@ const kitCards = [
             <KitCard {...card} />
           ))}
         </div>
+
+        <div class="view-all-wrap">
+          <a href="/mcp-servers/" class="view-all-link">查看全部工具 →</a>
+        </div>
       </div>
     </section>
   </main>
@@ -208,5 +212,20 @@ const kitCards = [
     .kits-grid {
       grid-template-columns: repeat(3, 1fr);
     }
+  }
+
+  .view-all-link {
+    font-size: 14px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+  .view-all-link:hover {
+    color: var(--accent);
+  }
+
+  .view-all-wrap {
+    text-align: center;
+    margin-top: 32px;
   }
 </style>

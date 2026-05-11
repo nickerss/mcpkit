@@ -2,21 +2,32 @@
 title: "Cursor"
 name: cursor
 category: ai-tools
-tags: [editor, ide, ai-coding, copilot-alternative]
+tags: [cursor, editor, ide, ai-coding, composer]
 price: freemium
 website: https://cursor.com
-logo: ""
-description: AI-first code editor built on VS Code with multi-line editing and Composer for whole-codebase modifications. Exceptional conversational programming experience.
-scenarios: ["Daily development", "Code refactoring", "Feature implementation"]
+logo: 
+description: AI-first code editor built on VS Code with multi-line Composer mode and conversational UI for pair programming with AI.
+kit: ["ai-coding-agent"]
+kitRole: "Primary AI coding editor with GUI - pair programming and code generation"
+evaluation:
+  easeOfUse: 5
+  security: 4
+  activity: 5
+  scenarioFit: 5
+  overall: 4.7
+certificationStatus: "recommended"
+installCommand: "Download from https://cursor.com or \`brew install cursor\`"
+envVars: ["ANTHROPIC_API_KEY", "OPENAI_API_KEY"]
+configExample: |
+  # Cursor settings.json
+  {
+    "cursor.apiKey": "sk-ant-xxx",
+    "cursor.model": "sonnet"
+  }
 featured: false
-submittedAt: "2026-05-09T00:00:00.000Z"
+submittedAt: "2026-05-11T00:00:00.000Z"
 ---
 
 # Cursor
 
-AI-first code editor built on VS Code with multi-line editing and Composer for whole-codebase modifications. Exceptional conversational programming experience.
-
-**Use Cases:**
-- Daily development
-- Code refactoring
-- Feature implementation
+AI-first code editor built on VS Code with multi-line Composer mode and conversational UI for pair programming with AI.
