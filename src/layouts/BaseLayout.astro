@@ -30,7 +30,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <slot />
     <script is:inline define:vars={{ locale }}>
       (function() {
-        // Determine language: URL param > localStorage > server locale
         var urlLang = new URLSearchParams(window.location.search).get('lang');
         var storedLang = localStorage.getItem('mcpkit-lang');
         var lang = urlLang || storedLang || locale || 'en';
@@ -38,10 +37,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
         var texts = {
           en: {
-            nav: ['Home', 'MCP Servers', 'AI Tools', 'Deployment', 'Search', 'Submit Tool'],
-            navHrefs: ['/', '/mcp-servers/', '/ai-tools/', '/deployment/', '/search/', '/submit/'],
-            heroTitle: 'Your AI Agent Toolkit',
-            heroDesc: 'Curated MCP Servers, AI coding tools, and workflow components — find the right tool for your use case',
+            nav: ['Kits', 'All Tools', 'Search'],
+            navHrefs: ['/kits/ship-a-saas/', '/mcp-servers/', '/search/'],
+            heroTitle: 'Your AI Agent',
+            heroAccent: 'Toolkit',
+            heroSubtitle: 'Kit-based tool combos · Verified · Rated',
             heroPlaceholder: 'Search tools...',
             sectionFeatured: 'Featured',
             sectionLatest: 'Latest Added',
@@ -49,10 +49,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
             footerLinks: ['Search', 'Submit Tool']
           },
           zh: {
-            nav: ['首页', 'MCP 服务器', 'AI 工具', '部署工具', '搜索', '提交工具'],
-            navHrefs: ['/?lang=zh', '/mcp-servers/?lang=zh', '/ai-tools/?lang=zh', '/deployment/?lang=zh', '/search/?lang=zh', '/submit/?lang=zh'],
-            heroTitle: '独立开发者的 AI Agent 工具箱',
-            heroDesc: '精选 MCP Servers、AI 编码工具、工作流组件，帮你快速找到「这个场景用什么工具」',
+            nav: ['Kits', '所有工具', '搜索'],
+            navHrefs: ['/kits/ship-a-saas/?lang=zh', '/mcp-servers/?lang=zh', '/search/?lang=zh'],
+            heroTitle: '独立开发者的',
+            heroAccent: 'AI Agent 工具箱',
+            heroSubtitle: 'Kit 化工具套件 · 精选认证 · 四维评测',
             heroPlaceholder: '搜索工具...',
             sectionFeatured: '编辑精选',
             sectionLatest: '最新收录',
@@ -76,17 +77,27 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         var logoLink = document.querySelector('.logo');
         if (logoLink) logoLink.setAttribute('href', '/?lang=' + lang);
 
-        // Hero title (h1) — always set to current lang text
+        // Hero title (h1) — preserve gradient span, set only text before <br>
         var heroTitle = document.querySelector('.hero-title');
-        if (heroTitle) heroTitle.textContent = t.heroTitle;
+        if (heroTitle) {
+          var hasBr = heroTitle.innerHTML.indexOf('<br') !== -1;
+          if (hasBr) {
+            var accent = heroTitle.querySelector('.gradient-text');
+            if (accent) accent.textContent = t.heroAccent;
+            var parts = heroTitle.innerHTML.split('<br');
+            heroTitle.innerHTML = t.heroTitle + '<br' + parts[1];
+          } else {
+            heroTitle.textContent = t.heroTitle + ' ' + t.heroAccent;
+          }
+        }
 
-        // Hero subtitle (p.hero-subtitle)
+        // Hero subtitle
         var heroSubtitle = document.querySelector('.hero-subtitle');
-        if (heroSubtitle) heroSubtitle.textContent = t.heroDesc;
+        if (heroSubtitle) heroSubtitle.textContent = t.heroSubtitle;
 
-        // Hero desc (p.hero-desc) — some pages use this instead
+        // Hero desc (some pages use this)
         var heroDesc = document.querySelector('.hero-desc');
-        if (heroDesc) heroDesc.textContent = t.heroDesc;
+        if (heroDesc) heroDesc.textContent = t.heroSubtitle;
 
         // Search input placeholder
         var searchInput = document.querySelector('.search-input');
@@ -107,7 +118,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         // Update HTML lang
         document.documentElement.lang = lang;
 
-        // Update all href/src with ?lang= for zh
+        // Update all href with ?lang= for zh
         if (lang === 'zh') {
           var allLinks = document.querySelectorAll('a[href]');
           allLinks.forEach(function(link) {
