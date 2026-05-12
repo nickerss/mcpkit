@@ -97,7 +97,7 @@ const levelLabels = { starter: 'Starter', pro: 'Pro', enterprise: 'Enterprise' }
     <section class="kit-info-section">
       <div class="container">
         <p class="kit-tagline-text en-hide">{kit.tagline?.zh || ''}</p><p class="kit-tagline-text zh-hide" style="display:none">{kit.tagline?.en || ''}</p>
-        {kit.pros && kit.pros.length > 0 && (
+        {kit.pros && kit.pros.zh && kit.pros.zh.length > 0 && (
           <div class="kit-pros">
             <h3 class="en-hide">✨ 优势</h3><h3 class="zh-hide" style="display:none">✨ Pros</h3>
             <ul>
@@ -105,7 +105,7 @@ const levelLabels = { starter: 'Starter', pro: 'Pro', enterprise: 'Enterprise' }
             </ul>
           </div>
         )}
-        {kit.cons && kit.cons.length > 0 && (
+        {kit.cons && kit.cons.zh && kit.cons.zh.length > 0 && (
           <div class="kit-cons">
             <h3 class="en-hide">⚠️ 局限</h3><h3 class="zh-hide" style="display:none">⚠️ Considerations</h3>
             <ul>
@@ -113,7 +113,7 @@ const levelLabels = { starter: 'Starter', pro: 'Pro', enterprise: 'Enterprise' }
             </ul>
           </div>
         )}
-        {kit.targetAudience && kit.targetAudience.length > 0 && (
+        {kit.targetAudience && kit.targetAudience.zh && kit.targetAudience.zh.length > 0 && (
           <p class="kit-target"><span class="en-hide">👥 适合: {kit.targetAudience?.zh}</span><span class="zh-hide" style="display:none">👥 For: {kit.targetAudience?.en}</span></p>
         )}
       </div>
