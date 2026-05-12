@@ -40,7 +40,7 @@ const locale = getLocaleFromUrl(Astro.url);
     appearance: none;
     display: flex;
     align-items: center;
-    padding: 6px 28px 6px 10px;
+    padding: 6px 32px 6px 10px;
     font-size: 13px;
     font-weight: 600;
     color: var(--text-secondary);
@@ -49,11 +49,22 @@ const locale = getLocaleFromUrl(Astro.url);
     border-radius: 8px;
     cursor: pointer;
     transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239090a0' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 8px center;
     font-family: 'JetBrains Mono', monospace;
     letter-spacing: 0.05em;
+    position: relative;
+  }
+  .lang-select::after {
+    content: '';
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid var(--accent);
+    pointer-events: none;
   }
   .lang-select:hover {
     color: var(--accent);
