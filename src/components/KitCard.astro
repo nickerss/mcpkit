@@ -40,7 +40,7 @@ const kitColor = colorMap[kit] || color;
 
 <a href={href} class="kit-card" style={`--kit-color: ${kitColor}`}>
   <div class="kit-icon-wrap" style={`background: ${kitColor}20`}>
-    <span class="kit-icon">{icon}</span>
+    <span class="kit-icon" set:html={icon}></span>
   </div>
 
   <div class="kit-info">
