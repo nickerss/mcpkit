@@ -16,20 +16,12 @@ const year = new Date().getFullYear();
             : 'AI Agent Toolkit · Curated Kits · 4-Dimension Evaluation'}
         </span>
       </div>
-      <div class="footer-kits">
-        <span class="footer-label">{locale === 'zh' ? 'Kits' : 'Kits'}:</span>
-        <a href="/kits/ship-a-saas/" class="kit-link">🚀 Ship a SaaS</a>
-        <a href="/kits/ai-coding-agent/" class="kit-link">🤖 AI Coding Agent</a>
-        <a href="/kits/rag-research/" class="kit-link">📊 RAG & Research</a>
-        <a href="/kits/browser-automation/" class="kit-link">⚡ Browser Automation</a>
-        <a href="/kits/devops-monitoring/" class="kit-link">🔔 DevOps & Monitoring</a>
-      </div>
     </div>
     <div class="footer-right">
       <div class="links">
         <a href={`/submit/`} class="link">{locale === 'zh' ? '提交工具' : 'Submit Tool'}</a>
         <a href={`/search/`} class="link">{locale === 'zh' ? '搜索' : 'Search'}</a>
-        <a href="/kits/ship-a-saas/" class="link">{locale === 'zh' ? '所有工具' : 'All Tools'}</a>
+        <a href={`/?lang=${locale}`} class="link">{locale === 'zh' ? '首页' : 'Home'}</a>
       </div>
       <p class="copyright">© {year} MCPKIT</p>
     </div>
@@ -53,7 +45,7 @@ const year = new Date().getFullYear();
   .footer-left {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 4px;
   }
   .footer-brand {
     display: flex;
@@ -69,24 +61,6 @@ const year = new Date().getFullYear();
     font-size: 13px;
     color: var(--text-muted);
   }
-  .footer-kits {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-  }
-  .footer-label {
-    font-size: 12px;
-    color: var(--text-muted);
-    font-weight: 600;
-  }
-  .kit-link {
-    font-size: 12px;
-    color: var(--text-secondary);
-    text-decoration: none;
-    transition: color 150ms ease;
-  }
-  .kit-link:hover { color: var(--text-primary); }
   .footer-right {
     display: flex;
     flex-direction: column;

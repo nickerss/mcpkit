@@ -2,45 +2,99 @@
 import { getLocaleFromUrl } from '../i18n/index';
 
 const locale = getLocaleFromUrl(Astro.url);
+const isZh = locale === 'zh';
 ---
 
-<select
-  id="lang-select"
-  class="lang-select"
-  aria-label="Select language"
->
-  <option value="en">EN</option>
-  <option value="zh">中文</option>
-</select>
+<div class="lang-switcher" id="lang-switcher">
+  <button class="lang-btn" id="lang-btn" aria-haspopup="listbox" aria-expanded="false">
+    <svg class="globe-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+    </svg>
+    <span class="lang-label">{isZh ? 'EN' : 'EN'}</span>
+    <svg class="chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <path d="m6 9 6 6 6-6"/>
+    </svg>
+  </button>
+  <div class="lang-dropdown" id="lang-dropdown" role="listbox">
+    <div class="lang-option" data-lang="en" role="option">
+      <span>EN</span>
+      <svg class="check-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </div>
+    <div class="lang-option" data-lang="zh" role="option">
+      <span>中文</span>
+      <svg class="check-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </div>
+  </div>
+</div>
 
 <script>
-  (function initLangSelect() {
+  (function initLangSwitcher() {
+    var container = document.getElementById('lang-switcher');
+    var btn = document.getElementById('lang-btn');
+    var dropdown = document.getElementById('lang-dropdown');
+    var options = dropdown?.querySelectorAll('.lang-option');
+
+    function setActive(lang) {
+      var url = new URL(window.location.href);
+      url.searchParams.set('lang', lang);
+      localStorage.setItem('mcpkit-lang', lang);
+      window.location.replace(url.toString());
+    }
+
+    function updateUI(lang) {
+      var labels = { en: 'EN', zh: '中文' };
+      btn?.querySelector('.lang-label')?.setAttribute('textContent', labels[lang] || 'EN');
+      options?.forEach(function(opt) {
+        var isActive = opt.getAttribute('data-lang') === lang;
+        opt.classList.toggle('active', isActive);
+        opt.style.display = isActive ? 'none' : 'flex';
+      });
+    }
+
+    btn?.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var expanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!expanded));
+      dropdown?.classList.toggle('open');
+    });
+
+    document.addEventListener('click', function() {
+      btn?.setAttribute('aria-expanded', 'false');
+      dropdown?.classList.remove('open');
+    });
+
+    options?.forEach(function(opt) {
+      opt.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var lang = opt.getAttribute('data-lang') || 'en';
+        setActive(lang);
+      });
+    });
+
+    // Init from URL or localStorage
     var urlLang = new URLSearchParams(window.location.search).get('lang');
     var storedLang = localStorage.getItem('mcpkit-lang');
     var lang = urlLang || storedLang || 'en';
     if (lang !== 'en' && lang !== 'zh') lang = 'en';
-
-    var select = document.getElementById('lang-select') as HTMLSelectElement | null;
-    if (select) {
-      select.value = lang;
-      select.addEventListener('change', function(e) {
-        var target = e.target as HTMLSelectElement;
-        var newLang = target.value;
-        var url = new URL(window.location.href);
-        url.searchParams.set('lang', newLang);
-        localStorage.setItem('mcpkit-lang', newLang);
-        window.location.replace(url.toString());
-      });
-    }
+    updateUI(lang);
   })();
 </script>
 
 <style>
-  .lang-select {
-    appearance: none;
+  .lang-switcher {
+    position: relative;
+    display: inline-flex;
+  }
+  .lang-btn {
     display: flex;
     align-items: center;
-    padding: 6px 32px 6px 10px;
+    gap: 6px;
+    padding: 6px 10px;
     font-size: 13px;
     font-weight: 600;
     color: var(--text-secondary);
@@ -51,28 +105,49 @@ const locale = getLocaleFromUrl(Astro.url);
     transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
     font-family: 'JetBrains Mono', monospace;
     letter-spacing: 0.05em;
-    position: relative;
   }
-  .lang-select::after {
-    content: '';
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: 5px solid var(--accent);
-    pointer-events: none;
-  }
-  .lang-select:hover {
+  .lang-btn:hover {
     color: var(--accent);
     background-color: var(--bg-secondary);
     border-color: var(--accent);
   }
-  .lang-select:focus {
-    outline: none;
-    border-color: var(--accent);
+  .globe-icon { color: var(--text-muted); }
+  .lang-label { color: var(--text-primary); }
+  .chevron { color: var(--text-muted); flex-shrink: 0; }
+
+  .lang-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+    min-width: 100%;
+    z-index: 200;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   }
+  .lang-dropdown.open { display: flex; }
+
+  .lang-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background-color 100ms ease, color 100ms ease;
+    font-family: 'JetBrains Mono', monospace;
+    gap: 8px;
+  }
+  .lang-option:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+  }
+  .lang-option.active { display: none !important; }
+  .check-icon { color: var(--accent); }
 </style>
