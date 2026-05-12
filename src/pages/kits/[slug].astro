@@ -93,10 +93,29 @@ const levelLabels = { starter: 'Starter', pro: 'Pro', enterprise: 'Enterprise' }
       </div>
     </section>
 
-    <!-- Kit tagline -->
-    <section class="kit-tagline-section">
+    <!-- Kit Info -->
+    <section class="kit-info-section">
       <div class="container">
-        <p class="kit-tagline-text"></p>
+        <p class="kit-tagline-text">{kit.tagline || ''}</p>
+        {kit.pros && kit.pros.length > 0 && (
+          <div class="kit-pros">
+            <h3>{isZh ? '✨ 优势' : '✨ Pros'}</h3>
+            <ul>
+              {kit.pros.map((p) => (<li>{p}</li>))}
+            </ul>
+          </div>
+        )}
+        {kit.cons && kit.cons.length > 0 && (
+          <div class="kit-cons">
+            <h3>{isZh ? '⚠️ 局限' : '⚠️ Considerations'}</h3>
+            <ul>
+              {kit.cons.map((c) => (<li>{c}</li>))}
+            </ul>
+          </div>
+        )}
+        {kit.targetAudience && kit.targetAudience.length > 0 && (
+          <p class="kit-target">{isZh ? '👥 适合' : '👥 For'}: {kit.targetAudience}</p>
+        )}
       </div>
     </section>
 
@@ -368,14 +387,43 @@ const levelLabels = { starter: 'Starter', pro: 'Pro', enterprise: 'Enterprise' }
     }
   }
 
-  .kit-tagline-section {
-    padding: 0 0 24px;
+.kit-info-section {
+    padding: 0 0 32px;
   }
   .kit-tagline-text {
     font-size: 16px;
     color: var(--text-secondary);
     text-align: center;
-    margin: 0;
+    margin-bottom: 24px;
     line-height: 1.6;
+  }
+  .kit-pros, .kit-cons {
+    margin-bottom: 16px;
+  }
+  .kit-pros h3, .kit-cons h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+  .kit-pros ul, .kit-cons ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .kit-pros li, .kit-cons li {
+    font-size: 14px;
+    color: var(--text-secondary);
+    padding-left: 16px;
+    position: relative;
+  }
+  .kit-pros li::before { content: '+'; position: absolute; left: 0; color: #22c55e; font-weight: bold; }
+  .kit-cons li::before { content: '-'; position: absolute; left: 0; color: #f59e0b; font-weight: bold; }
+  .kit-target {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 8px;
   }
 </style>
