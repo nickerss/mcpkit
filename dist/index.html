@@ -93,6 +93,20 @@
         // Update HTML lang
         document.documentElement.lang = lang;
 
+        // Kit info language toggle
+        document.querySelectorAll('.en-hide, .zh-hide').forEach(function(el) {
+          el.style.display = '';
+        });
+        if (lang === 'zh') {
+          document.querySelectorAll('.en-hide').forEach(function(el) {
+            el.style.display = 'none';
+          });
+        } else {
+          document.querySelectorAll('.zh-hide').forEach(function(el) {
+            el.style.display = 'none';
+          });
+        }
+
         // Update all href with ?lang= for zh
         if (lang === 'zh') {
           var allLinks = document.querySelectorAll('a[href]');
