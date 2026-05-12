@@ -70,10 +70,10 @@ const kits = defineCollection({
       }),
     }),
     featuredTools: z.array(z.string()).optional(),
-    tagline: z.string().optional(),
-    pros: z.array(z.string()).optional(),
-    cons: z.array(z.string()).optional(),
-    targetAudience: z.string().optional(),
+    tagline: z.object({ zh: z.string(), en: z.string() }).optional(),
+    pros: z.object({ zh: z.array(z.string()), en: z.array(z.string()) }).optional(),
+    cons: z.object({ zh: z.array(z.string()), en: z.array(z.string()) }).optional(),
+    targetAudience: z.object({ zh: z.string(), en: z.string() }).optional(),
   }),
 });
 

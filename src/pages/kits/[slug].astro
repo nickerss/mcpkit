@@ -96,25 +96,25 @@ const levelLabels = { starter: 'Starter', pro: 'Pro', enterprise: 'Enterprise' }
     <!-- Kit Info -->
     <section class="kit-info-section">
       <div class="container">
-        <p class="kit-tagline-text">{kit.tagline || ''}</p>
+        <p class="kit-tagline-text en-hide">{kit.tagline?.zh || ''}</p><p class="kit-tagline-text zh-hide" style="display:none">{kit.tagline?.en || ''}</p>
         {kit.pros && kit.pros.length > 0 && (
           <div class="kit-pros">
-            <h3>{isZh ? '✨ 优势' : '✨ Pros'}</h3>
+            <h3 class="en-hide">✨ 优势</h3><h3 class="zh-hide" style="display:none">✨ Pros</h3>
             <ul>
-              {kit.pros.map((p) => (<li>{p}</li>))}
+              {kit.pros?.zh.map((p) => (<li class="en-hide">{p}</li>))}{kit.pros?.en.map((p) => (<li class="zh-hide" style="display:none">{p}</li>))}
             </ul>
           </div>
         )}
         {kit.cons && kit.cons.length > 0 && (
           <div class="kit-cons">
-            <h3>{isZh ? '⚠️ 局限' : '⚠️ Considerations'}</h3>
+            <h3 class="en-hide">⚠️ 局限</h3><h3 class="zh-hide" style="display:none">⚠️ Considerations</h3>
             <ul>
-              {kit.cons.map((c) => (<li>{c}</li>))}
+              {kit.cons?.zh.map((c) => (<li class="en-hide">{c}</li>))}{kit.cons?.en.map((c) => (<li class="zh-hide" style="display:none">{c}</li>))}
             </ul>
           </div>
         )}
         {kit.targetAudience && kit.targetAudience.length > 0 && (
-          <p class="kit-target">{isZh ? '👥 适合' : '👥 For'}: {kit.targetAudience}</p>
+          <p class="kit-target"><span class="en-hide">👥 适合: {kit.targetAudience?.zh}</span><span class="zh-hide" style="display:none">👥 For: {kit.targetAudience?.en}</span></p>
         )}
       </div>
     </section>
@@ -426,4 +426,7 @@ const levelLabels = { starter: 'Starter', pro: 'Pro', enterprise: 'Enterprise' }
     color: var(--text-muted);
     margin-top: 8px;
   }
+
+  .en-hide { display: none; }
+  .zh-hide { display: inline; }
 </style>
