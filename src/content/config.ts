@@ -70,6 +70,10 @@ const kits = defineCollection({
       }),
     }),
     featuredTools: z.array(z.string()).optional(),
+    tagline: z.string().optional(),
+    pros: z.array(z.string()).optional(),
+    cons: z.array(z.string()).optional(),
+    targetAudience: z.string().optional(),
   }),
 });
 
