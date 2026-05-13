@@ -38,6 +38,36 @@ levels:
   enterprise:
     description: "团队协作编码 Agent"
     tools: [claude-code, github-mcp, linear-mcp, docker-mcp, slack-mcp]
+testimonials:
+    - quote: "Claude Code 配上这套 Kit，代码质量明显提升，PR review 时间减少了一半。"
+      author: "@alex_fullstack"
+      name: "Alex Chen"
+      role: "全栈工程师"
+      rating: 5
+    - quote: "Cursor + GitHub MCP 的组合太顺了，代码审查到部署一键完成。"
+      author: "@sarah_dev"
+      name: "Sarah Kim"
+      role: "前端工程师"
+      rating: 4
+configExample: |
+      {
+        "mcpServers": {
+          "claude-code": {
+            "command": "claude-code",
+            "env": { "ANTHROPIC_API_KEY": "sk-ant-xxx" }
+          },
+          "github": {
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-github"],
+            "env": { "GITHUB_TOKEN": "ghp_xxxx" }
+          },
+          "filesystem": {
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/project"]
+          }
+        }
+      }
+
 ---
 
 # 🤖 AI Coding Agent

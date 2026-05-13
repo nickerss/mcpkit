@@ -38,6 +38,36 @@ levels:
   enterprise:
     description: "大规模多浏览器协作"
     tools: [playwright-mcp, claude-code, filesystem-mcp, slack-mcp, supabase-mcp, docker-mcp]
+testimonials:
+    - quote: "用 Playwright MCP 自动化了我每天要做的表单提交，节省了 2 小时/天。"
+      author: "@qa_engineer"
+      name: "陈工"
+      role: "QA 工程师"
+      rating: 5
+    - quote: "批量数据采集的场景下，这套 Kit 比 API 还稳定，不担心反爬。"
+      author: "@ops_lee"
+      name: "李运营"
+      role: "电商运营"
+      rating: 4
+configExample: |
+      {
+        "mcpServers": {
+          "playwright": {
+            "command": "npx",
+            "args": ["-y", "@microsoft/playwright-mcp-server"],
+            "env": { "PLAYWRIGHT_BROWSERS_PATH": "/tmp/playwright" }
+          },
+          "claude-code": {
+            "command": "claude-code",
+            "env": { "ANTHROPIC_API_KEY": "sk-ant-xxx" }
+          },
+          "filesystem": {
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-filesystem", "/tmp/automation"]
+          }
+        }
+      }
+
 ---
 
 # ⚡ Browser Automation

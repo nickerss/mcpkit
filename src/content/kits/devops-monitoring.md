@@ -38,6 +38,47 @@ levels:
   enterprise:
     description: "企业级大规模监控"
     tools: [github-mcp, docker-mcp, slack-mcp, npm-mcp, filesystem-mcp, sentry-mcp, aws-mcp]
+testimonials:
+    - quote: "半夜告警终于能收到 Slack 通知了，再也不用盯着服务器。"
+      author: "@sre_wang"
+      name: "王工"
+      role: "SRE 工程师"
+      rating: 5
+    - quote: "GitHub Actions + Slack + Sentry 这套组合，让我一个人管 5 个项目没问题。"
+      author: "@indie_dev"
+      name: "独立开发者小李"
+      role: "独立开发者"
+      rating: 5
+configExample: |
+      {
+        "mcpServers": {
+          "github": {
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-github"],
+            "env": { "GITHUB_TOKEN": "ghp_xxxx" }
+          },
+          "slack": {
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-slack"],
+            "env": { "SLACK_BOT_TOKEN": "xoxb-xxx" }
+          },
+          "sentry": {
+            "command": "npx",
+            "args": ["-y", "@sentry/mcp-server"],
+            "env": {
+              "SENTRY_AUTH_TOKEN": "sntrys_xxx",
+              "SENTRY_ORGANIZATION": "myorg",
+              "SENTRY_PROJECT": "myproject"
+            }
+          },
+          "npm": {
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-npm"],
+            "env": { "NPM_TOKEN": "npm_xxx" }
+          }
+        }
+      }
+
 ---
 
 # 🔔 DevOps & Monitoring

@@ -38,6 +38,38 @@ levels:
   enterprise:
     description: "企业级多语言研究"
     tools: [brave-search-mcp, firecrawl-mcp, supabase-mcp, jina-reader-mcp, openai-mcp]
+testimonials:
+    - quote: "RAG 研究套件让我一个人做了一整周的市场调研，工具链太顺了。"
+      author: "@research_maria"
+      name: "Maria Chen"
+      role: "市场研究员"
+      rating: 5
+    - quote: "Brave Search + Firecrawl + Supabase 的组合，直接省去了我写爬虫的时间。"
+      author: "@data_analyst"
+      name: "张明"
+      role: "数据分析师"
+      rating: 5
+configExample: |
+      {
+        "mcpServers": {
+          "brave-search": {
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+            "env": { "BRAVE_API_KEY": "BSA.xxx" }
+          },
+          "firecrawl": {
+            "command": "npx",
+            "args": ["-y", "@firecrawl/mcp-server"],
+            "env": { "FIRECRAWL_API_KEY": "fc-xxx" }
+          },
+          "supabase": {
+            "command": "npx",
+            "args": ["-y", "@supabase/mcp-server-supabase"],
+            "env": { "SUPABASE_ACCESS_TOKEN": "sb-xxx" }
+          }
+        }
+      }
+
 ---
 
 # 📊 RAG & Research

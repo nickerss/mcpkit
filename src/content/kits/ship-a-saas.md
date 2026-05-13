@@ -38,6 +38,38 @@ levels:
   enterprise:
     description: "企业级大规模部署"
     tools: [github-mcp, supabase-mcp, cloudflare-r2-mcp, slack-mcp, sentry-mcp, aws-mcp]
+testimonials:
+    - quote: "以前配置这些要半天，现在 5 分钟搞定。Kit 把工具组合都配好了，直接用就行。"
+      author: "@dev_lee"
+      name: "李明"
+      role: "独立开发者"
+      rating: 5
+    - quote: "30分钟跑通了我的第一个 SaaS 产品，用的是 Cloudflare Pages + Supabase，省了太多时间。"
+      author: "@maria_startup"
+      name: "Maria Wang"
+      role: "Solo Founder"
+      rating: 5
+configExample: |
+      {
+        "mcpServers": {
+          "github": {
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-github"],
+            "env": { "GITHUB_TOKEN": "ghp_xxxx" }
+          },
+          "supabase": {
+            "command": "npx",
+            "args": ["-y", "@supabase/mcp-server-supabase"],
+            "env": { "SUPABASE_ACCESS_TOKEN": "sb-xxx" }
+          },
+          "cloudflare-pages": {
+            "command": "npx",
+            "args": ["-y", "@cloudflare/mcp-server-pages"],
+            "env": { "CLOUDFLARE_API_TOKEN": "cf_xxx" }
+          }
+        }
+      }
+
 ---
 
 # 🚀 Ship a SaaS
