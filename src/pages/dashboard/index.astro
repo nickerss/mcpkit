@@ -1,5 +1,5 @@
 ---
-export const prerender = true;
+
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
@@ -7,9 +7,22 @@ import { getLocaleFromUrl } from '../../i18n/index';
 
 const locale = getLocaleFromUrl(Astro.url);
 const isZh = locale === 'zh';
+
+// Check if user is logged in by checking session cookie
+const sessionToken = Astro.cookies.get('session')?.value;
+const isLoggedIn = !!sessionToken;
+
+const tabs = [
+  { id: 'claim', label: isZh ? '认领工具' : 'Claim Tool', href: '/dashboard/' },
+  { id: 'submit-kit', label: isZh ? '提交 Kit' : 'Submit Kit', href: '/dashboard/submit-kit/' },
+  { id: 'my-tools', label: isZh ? '我的工具' : 'My Tools', href: '/dashboard/my-tools/' },
+];
+
+const success = Astro.url.searchParams.get('success') === '1';
+const error = Astro.url.searchParams.get('error');
 ---
 
-<BaseLayout title={isZh ? '开发者仪表盘 — MCPKIT' : 'Developer Dashboard — MCPKIT'}>
+<BaseLayout title={isZh ? '认领工具 — MCPKIT' : 'Claim Tool — MCPKIT'}>
   <Header />
 
   <main class="main">
@@ -22,71 +35,107 @@ const isZh = locale === 'zh';
       </div>
     </div>
 
-    <div class="container dashboard-grid">
-      <!-- Stats Cards -->
-      <div class="stats-row">
-        <div class="stat-card">
-          <span class="stat-value">0</span>
-          <span class="stat-label">{isZh ? '已提交工具' : 'Submitted Tools'}</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value">0</span>
-          <span class="stat-label">{isZh ? '已认领工具' : 'Claimed Tools'}</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value">0</span>
-          <span class="stat-label">{isZh ? 'Kit 配方' : 'Kit Recipes'}</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value">$0</span>
-          <span class="stat-label">{isZh ? '本月收益' : 'Revenue This Month'}</span>
-        </div>
-      </div>
+    <div class="container">
+      <!-- Tab Navigation -->
+      <nav class="tab-nav">
+        {tabs.map(tab => (
+          <a
+            href={tab.href}
+            class:list={['tab-btn', { active: tab.id === 'claim' }]}
+          >
+            {tab.label}
+          </a>
+        ))}
+      </nav>
 
-      <!-- Quick Actions -->
-      <div class="dashboard-section">
-        <h2 class="section-title">{isZh ? '快捷操作' : 'Quick Actions'}</h2>
-        <div class="action-cards">
-          <a href="/dashboard/submit-kit/" class="action-card">
-            <div class="action-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+      <div class="tab-content">
+        {!isLoggedIn ? (
+          <div class="login-required">
+            <div class="login-card">
+              <div class="login-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+              </div>
+              <h2>{isZh ? '请先登录' : 'Please Sign In'}</h2>
+              <p>{isZh ? '登录后才能认领工具和管理你的工具列表。' : 'Sign in to claim tools and manage your tool listings.'}</p>
+              <a href="/api/auth/github" class="btn-github">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                {isZh ? '使用 GitHub 登录' : 'Sign in with GitHub'}
+              </a>
             </div>
-            <div class="action-text">
-              <h3>{isZh ? '提交工具' : 'Submit Tool'}</h3>
-              <p>{isZh ? '提交新的 MCP 工具到目录' : 'Submit a new MCP tool to the directory'}</p>
-            </div>
-          </a>
-          <a href="/dashboard/claim-tool/" class="action-card">
-            <div class="action-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9S3 16.97 3 12 7.03 3 12 3s9 4.03 9 9z"/></svg>
-            </div>
-            <div class="action-text">
-              <h3>{isZh ? '认领工具' : 'Claim Tool'}</h3>
-              <p>{isZh ? '申请认领你维护的工具' : 'Request to claim a tool you maintain'}</p>
-            </div>
-          </a>
-          <a href="/developer/" class="action-card">
-            <div class="action-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-            </div>
-            <div class="action-text">
-              <h3>{isZh ? '创建 Kit 配方' : 'Create Kit Recipe'}</h3>
-              <p>{isZh ? '将多个工具组合成可复用的场景化套件' : 'Combine tools into reusable scenario-based kits'}</p>
-            </div>
-          </a>
-        </div>
-      </div>
-
-      <!-- Recent Activity -->
-      <div class="dashboard-section">
-        <h2 class="section-title">{isZh ? '最近活动' : 'Recent Activity'}</h2>
-        <div class="activity-list">
-          <div class="empty-state">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-            <p>{isZh ? '暂无活动记录' : 'No activity yet'}</p>
-            <p class="hint">{isZh ? '提交或认领工具后，这里会显示你的活动' : 'Your activity will appear here after you submit or claim tools'}</p>
           </div>
-        </div>
+        ) : (
+          <div class="form-card">
+            {success && (
+              <div class="alert alert-success">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                {isZh ? '认领申请已提交！等待审核。' : 'Claim request submitted! Awaiting review.'}
+              </div>
+            )}
+            {error && (
+              <div class="alert alert-error">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                {isZh ? '提交失败，请重试。' : 'Submission failed, please try again.'}
+              </div>
+            )}
+
+            <form id="claim-form" class="claim-form" method="POST" action="/api/dashboard/claim">
+              <div class="form-group">
+                <label for="tool-name">{isZh ? '工具名称 / Slug *' : 'Tool Name / Slug *'}</label>
+                <input
+                  type="text"
+                  id="tool-name"
+                  name="tool_name"
+                  required
+                  placeholder={isZh ? '输入工具名称或 slug，如 mcp-github' : 'Enter tool name or slug, e.g. mcp-github'}
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="tool-url">{isZh ? '工具 URL *' : 'Tool URL *'}</label>
+                <input
+                  type="url"
+                  id="tool-url"
+                  name="tool_url"
+                  required
+                  placeholder="https://github.com/owner/repo"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="reason">{isZh ? '申请理由 *' : 'Reason for Claim *'}</label>
+                <textarea
+                  id="reason"
+                  name="reason"
+                  rows="4"
+                  required
+                  placeholder={isZh ? '说明你为什么应该拥有该工具的认领权（如：你是维护者、核心贡献者等）' : 'Explain why you should have claim rights (e.g. you are the maintainer, a core contributor, etc.)'}
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="github-link">{isZh ? 'GitHub 链接（可选）' : 'GitHub Link (Optional)'}</label>
+                <input
+                  type="url"
+                  id="github-link"
+                  name="github_link"
+                  placeholder="https://github.com/owner/repo"
+                />
+              </div>
+
+              <div class="form-actions">
+                <a href="/dashboard/my-tools/" class="btn-ghost">{isZh ? '取消' : 'Cancel'}</a>
+                <button type="submit" class="btn-primary" id="submit-btn">
+                  {isZh ? '提交申请' : 'Submit Claim'}
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
       </div>
     </div>
   </main>
@@ -94,66 +143,158 @@ const isZh = locale === 'zh';
   <Footer />
 </BaseLayout>
 
+<script>
+  const form = document.getElementById('claim-form') as HTMLFormElement;
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+
+  form?.addEventListener('submit', () => {
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+    }
+  });
+</script>
+
 <style>
   .main { min-height: calc(100vh - 60px); padding-bottom: 80px; }
-  .page-header { border-bottom: 1px solid var(--border-color); padding: 40px 0 32px; }
-  .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
-  .page-title { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
-  .page-desc { color: var(--text-secondary); font-size: 16px; }
-  .dashboard-grid { padding-top: 32px; display: flex; flex-direction: column; gap: 32px; }
-  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
-  .stat-card {
+  .page-header { border-bottom: 1px solid var(--border-color); padding: 32px 0 24px; }
+  .container { max-width: 640px; margin: 0 auto; padding: 0 24px; }
+  .page-title { font-size: 26px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+  .page-desc { color: var(--text-secondary); font-size: 15px; }
+
+  .tab-nav {
+    display: flex;
+    gap: 4px;
+    padding: 24px 0 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .tab-btn {
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 150ms ease;
+    text-decoration: none;
+  }
+  .tab-btn:hover { color: var(--text-primary); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .tab-content { padding-top: 32px; }
+
+  .login-required {
+    display: flex;
+    justify-content: center;
+    padding: 32px 0;
+  }
+  .login-card {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 20px;
+    border-radius: 16px;
+    padding: 40px;
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-  }
-  .stat-value { font-size: 28px; font-weight: 700; color: var(--text-primary); }
-  .stat-label { font-size: 13px; color: var(--text-secondary); }
-  .dashboard-section { display: flex; flex-direction: column; gap: 16px; }
-  .section-title { font-size: 18px; font-weight: 700; color: var(--text-primary); }
-  .action-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-  .action-card {
-    display: flex;
+    align-items: center;
     gap: 16px;
-    padding: 20px;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    text-decoration: none;
-    transition: border-color 150ms ease, transform 150ms ease;
   }
-  .action-card:hover { border-color: var(--accent); transform: translateY(-1px); }
-  .action-icon {
-    width: 44px;
-    height: 44px;
+  .login-icon {
+    width: 64px;
+    height: 64px;
     background: var(--accent-muted);
-    border-radius: 10px;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--accent);
-    flex-shrink: 0;
   }
-  .action-text h3 { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
-  .action-text p { font-size: 13px; color: var(--text-secondary); }
-  .activity-list {
+  .login-card h2 { font-size: 20px; font-weight: 700; color: var(--text-primary); }
+  .login-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
+  .btn-github {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background: #24292f;
+    color: white;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 150ms ease;
+  }
+  .btn-github:hover { background: #3d4349; }
+
+  .form-card {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  .empty-state {
+    border-radius: 16px;
+    padding: 32px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    padding: 48px 24px;
-    color: var(--text-tertiary);
-    text-align: center;
+    gap: 24px;
   }
-  .hint { font-size: 13px; color: var(--text-tertiary); }
+  .claim-form { display: flex; flex-direction: column; gap: 20px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .form-group input, .form-group textarea {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-default, #3f3f46);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--text-primary);
+    font-family: inherit;
+    outline: none;
+    transition: border-color 150ms ease;
+  }
+  .form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
+  .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-tertiary); }
+  .form-group textarea { resize: vertical; }
+
+  .alert {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .alert-success { background: rgba(34,197,94,0.1); color: #22c55e; border: 1px solid rgba(34,197,94,0.2); }
+  .alert-error { background: rgba(239,68,68,0.1); color: #ef4444; border: 1px solid rgba(239,68,68,0.2); }
+
+  .form-actions { display: flex; gap: 12px; justify-content: flex-end; padding-top: 8px; }
+  .btn-primary {
+    padding: 10px 28px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 150ms ease;
+  }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn-ghost {
+    padding: 10px 28px;
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+  }
+  .btn-ghost:hover { border-color: var(--text-secondary); }
 </style>

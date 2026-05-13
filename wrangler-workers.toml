@@ -1,0 +1,24 @@
+name = "mcpkit-api"
+main = "src/workers/index.ts"
+compatibility_date = "2026-05-13"
+compatibility_flags = ["nodejs_compat"]
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "mcpkit-db"
+database_id = "1114ca36-bdc1-4908-a678-3a7161ecd4ab"
+
+# KV Namespace for sessions and cache  
+[[kv_namespaces]]
+binding = "CACHE"
+id = "3f2da378368042e484a5a8cfc40c5874"
+
+# Environment variables (non-sensitive)
+[vars]
+ENV = "production"
+SITE_URL = "https://mcpkit.run"
+
+# Cron trigger: runs Quality Score calculation daily at 00:00 UTC
+[triggers]
+crons = ["0 0 * * *"]
