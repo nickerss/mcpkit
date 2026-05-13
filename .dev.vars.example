@@ -1,0 +1,16 @@
+# Cloudflare API Token (for wrangler remote operations)
+# CLOUDFLARE_API_TOKEN=your_token_here
+
+# GitHub OAuth App credentials
+GITHUB_CLIENT_ID=your_github_client_id
+GITHUB_CLIENT_SECRET=your_github_client_secret
+
+# Site URL
+SITE_URL=http://localhost:4321
+
+# JWT Secret (for local dev)
+JWT_SECRET=dev_secret_change_in_production
+
+# Stripe (test keys)
+STRIPE_SECRET_KEY=sk_test_xxx
+STRIPE_WEBHOOK_SECRET=whsec_xxx

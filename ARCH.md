@@ -1,438 +1,587 @@
-# MCPKIT v2.0 技术设计文档
+# mcpkit.run 技术设计文档 ARCH v3.0
 
 ## 1. 文档信息
 
-- 版本：v2.0
-- 日期：2026-05-11
-- 对应 PRD 版本：v2.0
-- 状态：**待 DEV 确认后开发**
+- 版本：v3.0
+- 作者：Arch-老K
+- 对应PRD版本：v3.0
+- 日期：2026-05-13
+- 状态：[CONFIRMED]
 
 ---
 
-## 2. 总体架构
+## 2. v1.0 架构评估
 
-### 2.1 架构定位
+### 2.1 v1.0 架构回顾
 
-本项目为**内容型静态网站**，以 Astro 为核心框架，数据以结构化 Markdown/JSON 存储于 GitHub 仓库，部署至 Cloudflare Pages。无自建后端服务。
+```
+用户 → Cloudflare Pages → Astro 静态站点
+                              ↓
+                         content/
+                        (Markdown)
+                              ↓
+                      Pagefind 搜索（内置）
+```
 
-**v2.0 核心变化：** 从工具目录升级为 Kit 工具箱，新增评测体系（机器自动评分）和认证体系。
+### 2.2 v3.0 新需求对架构的冲击
 
-### 2.2 架构图
+| v1.0 设计 | v3.0 新需求 | 兼容性 | 结论 |
+|---|---|---|---|
+| 纯静态站点 | 用户认证（GitHub OAuth） | ❌ 不兼容 | 需要 Workers API |
+| 无数据库 | 用户数据、Kit 配方、评论、订阅 | ❌ 不兼容 | 需要 D1 |
+| 无会话管理 | 登录状态、会员权限 | ❌ 不兼容 | 需要 KV 存 Session |
+| Pagefind 搜索 | 站内搜索 + Quality Score 排序 | ⚠️ 勉强可用 | 需扩展为 API 搜索 |
+| 纯内容管理 | 付费推广、Kit 市场、CPC | ❌ 不兼容 | 需要支付 + 权限系统 |
+| 无安全扫描 | 自动化漏洞检测 | ❌ 不兼容 | 需要异步任务系统 |
+
+**总结：Astro + Cloudflare Pages 静态架构无法直接承载 v3.0，必须升级为"Cloudflare Pages 前端 + Cloudflare Workers API + D1/KV/R2"的混合架构。**
+
+---
+
+## 3. 目标架构：Cloudflare 全家桶混合架构
+
+### 3.1 架构图
 
 ```mermaid
 graph TD
-    用户 --> Cloudflare Pages --> Astro静态站点
-    Astro站点 --> Pagefind索引 --> 搜索结果
-    Astro站点 --> Kit数据[Kit frontmatter<br/>Markdown]
-    Astro站点 --> 工具数据[工具 frontmatter<br/>含评测字段]
-    用户 --> 工具提交 --> Formspree --> GitHub Issues --> 审核 --> 更新工具数据
-    评测系统 --> GitHub_API[GitHub API<br/>自动评分]
-    评测系统 --> 评测数据[evaluation<br/>frontmatter]
-    RadarChart组件 --> 评测雷达图[四维雷达图<br/>CSS SVG]
-    认证系统 --> 认证标签[Certified / Kit Rec. / Reviewed / Pending]
+    用户 --> CF_Pages[Cloudflare Pages<br/>Astro SSR/静态]
+    CF_Pages --> CF_Workers[Cloudflare Workers<br/>API + SSR]
+    
+    CF_Workers --> D1[(Cloudflare D1<br/>SQL 数据库)]
+    CF_Workers --> KV[Cloudflare KV<br/>Session + Cache]
+    CF_Workers --> R2[(Cloudflare R2<br/>文件存储)]
+    CF_Workers --> Queue[Cloudflare D1<br/>扫描任务队列表]
+
+    外部 --> GitHub_OAuth[GitHub OAuth]
+    外部 --> Turnstile[Cloudflare Turnstile<br/>反垃圾]
+    外部 --> Stripe[Stripe 支付]
+
+    CF_Workers --> 安全扫描器[安全扫描 Worker<br/>定时触发]
+    安全扫描器 --> Queue
+    安全扫描器 --> D1
 ```
 
-### 2.3 核心技术决策
+### 3.2 核心升级决策
 
-| 决策点 | 选用方案 | 理由 |
+| 决策点 | v1.0 | v3.0 | 理由 |
+|---|---|---|---|
+| 站点模式 | 纯静态（Static） | 混合（Hybrid SSR） | 工具/Kit 详情页需要 SSR 做 SEO |
+| 前端框架 | Astro | Astro + Cloudflare SSR适配 | 复用，适配 Cloudflare Pages Workers |
+| 搜索 | Pagefind | Cloudflare AI Search（免费 10k vectors） | D1 无全文搜索，需向量或 API 层 |
+| 数据库 | Git Markdown | Cloudflare D1 | 关系数据，用户/Kit/评论/订阅 |
+| Session | 无 | Cloudflare KV | 分布式 Session，JWT token 管理 |
+| 后端逻辑 | 无 | Cloudflare Workers | API 路由、认证中间件、商业逻辑 |
+| 文件存储 | Git | Cloudflare R2 | Kit 配置文件、Logo、报告 |
+| 安全扫描 | 无 | Cloudflare Workers 定时任务 | Cron Trigger 免费 |
+| 支付 | 无 | Stripe | 佣金/订阅收款，Stripe 有成熟 MCP 集成 |
+
+---
+
+## 4. Cloudflare 免费服务映射（每个新功能）
+
+### 4.1 用户认证
+
+**方案：Cloudflare Access（Zero Trust）+ Workers JWT**
+
+| 组件 | 服务 | 说明 |
 |---|---|---|
-| 框架 | Astro v4.x（静态模式）| v1.0 已选，无需变更 |
-| UI | Tailwind CSS v3 | v1.0 已选，无需变更 |
-| 搜索 | Pagefind | v1.0 已选，无需变更 |
-| 内容存储 | GitHub 仓库（content/）| v1.0 已选，新增 Kit 数据模型 |
-| 部署 | Cloudflare Pages | v1.0 已选，无需变更 |
-| 评测 | GitHub API 自动评分 | 机器评测，无需人工 |
-| 雷达图 | CSS + SVG（零依赖）| UI.md v2.0 确定 |
-| 认证 | frontmatter 字段 | 数据驱动，无需后端 |
+| GitHub OAuth | Workers 自己实现 OAuth 回调 | 免费，GitHub OAuth App 无费用 |
+| JWT Session | Cloudflare KV | Token 存 KV，设置 TTL，过期自动刷新 |
+| 登录保护 | Workers 中间件 | 未登录用户访问 /dashboard/* → 302 重定向 |
+| Spam 保护 | Cloudflare Turnstile | 免费，无隐私问题，替代 Google reCAPTCHA |
+
+**优点**：不需要自己的 Auth 服务（Auth.js/NextAuth），Workers 实现轻量 OAuth + JWT，完全免费。
+**注意**：免费 Turnstile 无 widget 数量限制，但有每月 100 万次验证配额。
 
 ---
 
-## 3. 数据模型
+### 4.2 开发者控制台（认领工具/提交 Kit）
 
-### 3.1 工具 frontmatter（content/tools/*.md）
+**方案：Workers API + D1 + R2**
 
-```yaml
+| 功能 | 实现 |
+|---|---|
+| 认领工具 | 用户提交 GitHub repo → Workers 验证 ownership → D1 更新 tool.owner_id |
+| 提交 Kit 配方 | 前端表单 → Workers API → D1 kit_submissions 表 → pending 状态 → 管理员审核 |
+| Kit 配置预览 | 用户配置 JSON → Workers 存 R2 → 生成 shareable URL |
+| 开发者主页 | Workers 读取 D1 user + tools + kits 数据，SSR 渲染 |
+
+**数据模型扩展（D1）**：
+
+```sql
+-- 工具认领
+ALTER TABLE tools ADD COLUMN owner_id TEXT REFERENCES users(id);
+ALTER TABLE tools ADD COLUMN claimed_at INTEGER;
+
+-- Kit 配方提交
+CREATE TABLE kit_submissions (
+  id TEXT PRIMARY KEY,
+  kit_id TEXT REFERENCES kits(id),  -- null if new
+  submitted_by TEXT REFERENCES users(id),
+  status TEXT DEFAULT 'pending',  -- pending/approved/rejected
+  submitted_at INTEGER,
+  reviewed_at INTEGER,
+  reviewer_id TEXT
+);
+```
+
 ---
-name: github-mcp                    # 唯一标识（slug）
-title: GitHub MCP                  # 显示名称
-description: AI Agent 连接 GitHub 的官方 MCP 服务器
-category: coding-agent             # 工具分类
-tags: [github, pr, issues, ci]    # 搜索标签
-website: https://github.com/modelcontextprotocol/servers
-logo: https://github.com/modelcontextprotocol.png
-# Kit 关联（新增）
-kit: [ai-coding-agent, ship-a-saas, devops-monitoring]  # 关联 Kit slug 列表
-kitRole: "代码管理 + PR review"    # 该工具在此 Kit 中的角色
-# 评测字段（新增）
-evaluation:
-  easeOfUse: 4.2      # 易用性 1-5
-  security: 4.5        # 安全性 1-5
-  activity: 5.0        # 活跃度 1-5
-  scenarioFit: 4.8    # 场景匹配 1-5
-  overall: 4.5        # 综合评分 = 加权计算
-# 认证状态（新增）
-certificationStatus: "certified"  # pending / reviewed / recommended / certified
-# 安装配置（新增）
-installCommand: "npx @anthropic-ai/mcp-server-github"
-envVars:
-  - GITHUB_TOKEN
-configExample: |
-  {
-    "mcpServers": {
-      "github": {
-        "command": "npx",
-        "args": ["-y", "@anthropic-ai/mcp-server-github"]
-      }
+
+### 4.3 Quality Score 体系
+
+**方案：Workers 定时计算 + KV 缓存**
+
+| 指标维度 | 权重 | 数据来源 |
+|---|---|---|
+| 社区活跃度 | 20% | D1 review count, kit集成次数 |
+| 更新频率 | 20% | GitHub API 最后更新时间 |
+| 安全评级 | 30% | 安全扫描结果（0=高危, 50=中危, 100=通过） |
+| 用户评分 | 15% | D1 reviews 表平均分 |
+| 官方认证 | 15% | certified boolean |
+
+计算逻辑：Workers 每日 Cron 触发，计算所有工具的 Quality Score，结果存 KV（TTL 24h），API 读取 KV。
+
+**Workers 伪代码**：
+```javascript
+export default {
+  scheduled(controller, executionCtx) {
+    const tools = await D1.database.prepare("SELECT id FROM tools").all();
+    for (const tool of tools) {
+      const score = await calculateQualityScore(tool.id);
+      await KV.put(`qs:${tool.id}`, JSON.stringify(score), { expirationTtl: 86400 });
     }
   }
----
-
-# 工具详情内容（Markdown）
-```
-
-### 3.2 Kit frontmatter（content/kits/*.md）
-
-```yaml
----
-name: ship-a-saas                  # Kit slug
-title: 🚀 Ship a SaaS             # 显示名称
-description: 从零开始构建并部署一个 SaaS 产品，30分钟跑通
-icon: rocket                       # Lucide icon 名称
-color: "#f97316"                  # Kit 主色（用于雷达图/卡片）
-levels:
-  starter:
-    description: "30分钟跑通基础 SaaS"
-    tools: [github-mcp, supabase-mcp, cloudflare-pages-mcp]
-  pro:
-    description: "完整生产级 SaaS"
-    tools: [github-mcp, supabase-mcp, cloudflare-r2-mcp, slack-mcp, sentry-mcp]
-  enterprise:
-    description: "企业级大规模部署"
-    tools: [github-mcp, supabase-mcp, cloudflare-r2-mcp, slack-mcp, sentry-mcp, aws-mcp, pagerduty-mcp]
-tutorial: |
-  ## Step 1: 配置 GitHub MCP
-  ...
----
-```
-
-### 3.3 目录结构
-
-```
-content/
-├── kits/
-│   ├── ship-a-saas.md
-│   ├── ai-coding-agent.md
-│   ├── rag-research.md
-│   ├── browser-automation.md
-│   └── devops-monitoring.md
-└── tools/
-    ├── github-mcp.md
-    ├── supabase-mcp.md
-    ├── firecrawl-mcp.md
-    └── ...
-```
-
-**v1.0 数据（mcp-servers/ai-tools/deployment）：完全废弃，从 content/tools/ 从零录入。**
-
----
-
-## 4. 页面路由
-
-| 页面 | 路由 | 数据来源 |
-|------|------|---------|
-| 首页 | `/` | 读取所有 kits/ frontmatter |
-| Kit 落地页 | `/kits/[slug]` | 读取对应 kit frontmatter + 关联工具列表 |
-| 工具详情页 | `/tools/[slug]` | 读取工具 frontmatter |
-| 搜索 | `/search` | Pagefind 索引 |
-
-**Kit slug 列表：**
-- `ship-a-saas`
-- `ai-coding-agent`
-- `rag-research`
-- `browser-automation`
-- `devops-monitoring`
-
----
-
-## 5. 评测体系
-
-### 5.1 评测维度与权重
-
-| 轴 | 维度 | 权重 | 数据来源 |
-|----|------|------|---------|
-| 上（0°）| 易用性 | 30% | 文档完整性 + 配置复杂度 |
-| 右下（135°）| 安全性 | 25% | OAuth scopes |
-| 左下（225°）| 活跃度 | 20% | GitHub stars + 最近更新 |
-| 右（270°）| 场景匹配 | 25% | 与 Kit 目的的匹配程度 |
-
-### 5.2 综合评分公式
-
-```
-综合评分 = round((易用性×0.30 + 安全性×0.25 + 活跃度×0.20 + 场景匹配×0.25), 1)
-```
-
-### 5.3 机器自动评测算法
-
-```typescript
-// 通过 GitHub API 获取元数据，自动计算活跃度
-async function calculateActivity(owner: string, repo: string): Promise<number> {
-  const data = await fetchGitHub(`/repos/${owner}/${repo}`);
-  const stars = data.stargazers_count;
-  const lastPush = new Date(data.pushed_at);
-  const daysSinceUpdate = (Date.now() - lastPush.getTime()) / (1000 * 60 * 60 * 24);
-
-  // stars: 0=1, 100=2, 1000=3, 10000=4, 50000+=5
-  const starsScore = stars < 100 ? 1 : stars < 1000 ? 2 : stars < 10000 ? 3 : stars < 50000 ? 4 : 5;
-  // 更新频率: ≤30天=5, ≤90天=4, ≤180天=3, ≤365天=2, >365天=1
-  const updateScore = daysSinceUpdate <= 30 ? 5 : daysSinceUpdate <= 90 ? 4 : daysSinceUpdate <= 180 ? 3 : daysSinceUpdate <= 365 ? 2 : 1;
-
-  return (starsScore + updateScore) / 2;
-}
-```
-
-### 5.4 认证状态
-
-| 状态 | 条件 | 标签 |
-|------|------|------|
-| certified | overall ≥ 4.0 + 人工审核通过 | 🏅 MCPKIT Certified |
-| recommended | overall ≥ 3.5 + 被 Kit 收录 | ✅ Kit Recommended |
-| reviewed | 人工审核通过 | ✓ Reviewed |
-| pending | 默认状态 | ⏳ Pending |
-
----
-
-## 6. RadarChart 组件技术实现
-
-### 6.1 SVG 结构
-
-四轴雷达图，角度：上(0°)、右下(135°)、左下(225°)、右(270°)。
-
-```html
-<svg viewBox="0 0 300 300" width="300" height="300">
-  <!-- 背景网格：5 个同心正方形（旋转45°）-->
-  <g class="grid">
-    <polygon points="150,20 280,150 150,280 20,150" fill="none" stroke="#2a2a3a" stroke-width="1"/>
-    <polygon points="150,60 240,150 150,240 60,150" fill="none" stroke="#2a2a3a" stroke-width="1"/>
-    <polygon points="150,100 200,150 150,200 100,150" fill="none" stroke="#2a2a3a" stroke-width="1"/>
-  </g>
-  <!-- 四轴线 -->
-  <g class="axes">
-    <line x1="150" y1="150" x2="150" y2="20" stroke="#2a2a3a" stroke-width="1"/>
-    <line x1="150" y1="150" x2="280" y2="150" stroke="#2a2a3a" stroke-width="1"/>
-    <line x1="150" y1="150" x2="20" y2="150" stroke="#2a2a3a" stroke-width="1"/>
-    <line x1="150" y1="150" x2="150" y2="280" stroke="#2a2a3a" stroke-width="1"/>
-  </g>
-  <!-- 评分区域（polygon）-->
-  <polygon
-    points="150,42 261,239 60,239 150,261"
-    fill="rgba(249,115,22,0.3)"
-    stroke="#f97316"
-    stroke-width="2"
-    class="radar-area"
-  />
-  <!-- 轴标签 -->
-  <text x="150" y="10" text-anchor="middle" class="axis-label">易用性 30%</text>
-  <text x="295" y="155" text-anchor="start" class="axis-label">安全性 25%</text>
-  <text x="5" y="155" text-anchor="end" class="axis-label">活跃度 20%</text>
-  <text x="150" y="295" text-anchor="middle" class="axis-label">场景匹配 25%</text>
-</svg>
-```
-
-### 6.2 评分到坐标的计算
-
-```typescript
-function valueToPoint(value: number, index: number, total: number, radius: number): {x: number, y: number} {
-  // 四轴：index 0=上, 1=右下, 2=左下, 3=右
-  const angles = [270, 0, 90, 180]; // 度数（SVG y轴向下）
-  const angle = (angles[index] * Math.PI) / 180;
-  const r = (value / 5) * radius;
-  return {
-    x: 150 + r * Math.cos(angle),
-    y: 150 + r * Math.sin(angle)
-  };
-}
-```
-
-### 6.3 radar-expand 动画
-
-```css
-.radar-area {
-  animation: radar-expand 600ms ease-out forwards;
-  transform-origin: center;
-  transform: scale(0);
-  opacity: 0;
-}
-@keyframes radar-expand {
-  from { transform: scale(0); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
 }
 ```
 
 ---
 
-## 7. 难度切换实现
+### 4.4 安全扫描（Phase 2）
 
-### 7.1 URL 参数设计
+**方案：Cloudflare Workers Cron + D1 任务队列表（Phase 2 启用）**
 
-Kit 落地页难度通过 URL 参数切换：
+| 步骤 | 实现 |
+|---|---|
+| 扫描触发 | Workers Cron（每日一次，免费） |
+| 扫描内容 | GitHub repo 安全 Advisory + npm/vuln DB 查询 |
+| 结果存储 | D1 security_reports 表 |
+| 扫描 Worker | 独立 Worker 函数，超时则分片执行 |
+| 告警 | 发现高危 → 更新 tool.risk_level → 详情页显示 ⚠️ 标签 |
 
-```
-/kits/ship-a-saas          → 默认显示 Starter
-/kits/ship-a-saas?level=starter
-/kits/ship-a-saas?level=pro
-/kits/ship-a-saas?level=enterprise
-```
+**MVP（Phase 1）不做自动扫描**，我们手工录入工具时人工检查安全性即可。自动扫描是 Phase 2 社区开放后、工具数量上来后的需求。
 
-### 7.2 Astro 中的读取
-
-```astro
----
-const { level } = Astro.url.searchParams;
-const activeLevel = level || 'starter';
-const kit = await getKit(Astro.params.slug);
-const currentTools = kit.levels[activeLevel].tools;
----
-```
-
----
-
-## 8. 组件清单
-
-| 组件 | 路径 | 说明 |
-|------|------|------|
-| RadarChart.astro | src/components/ | 四维评测雷达图，CSS SVG |
-| KitCard.astro | src/components/ | 首页 Kit 入口大卡片 |
-| DifficultyTab.astro | src/components/ | Starter/Pro/Enterprise 切换 |
-| KitToolList.astro | src/components/ | Kit 落地页工具列表 |
-| CertificationBadge.astro | src/components/ | 认证标签（4状态）|
-| KitTag.astro | src/components/ | Kit 归属标签（可点击）|
-| KitDetailHero.astro | src/components/ | Kit 落地页 Hero |
-| KitConfigExample.astro | src/components/ | .env 配置示例 |
-| KitTutorial.astro | src/components/ | Step by Step 教程 |
-| ToolDetailHero.astro | src/components/ | 工具详情页 Hero（更新）|
-| ToolCard.astro | src/components/ | 工具卡片（更新：新增认证+Kit标签）|
-| Header.astro | src/components/ | v2.0（Kit 导航入口）|
-| Footer.astro | src/components/ | 无变化 |
-| LanguageSwitcher.astro | src/components/ | 无变化 |
-| BaseLayout.astro | src/layouts/ | 全局布局（无变化）|
-
----
-
-## 9. i18n
-
-v1.0 架构完全保留，新增 Kit 相关文本追加到翻译文件：
-
-```typescript
-// src/i18n/en.ts
-export const en = {
-  // v1.0
-  nav: { home: 'Home', tools: 'All Tools', submit: 'Submit Tool' },
-  hero: { title: 'Your AI Agent Toolkit', subtitle: '...' },
-  // v2.0 Kit
-  kit: {
-    starter: 'Starter',
-    pro: 'Pro',
-    enterprise: 'Enterprise',
-    certified: 'MCPKIT Certified',
-    kitRecommended: 'Kit Recommended',
-    reviewed: 'Reviewed',
-    pending: 'Pending',
-    evaluation: 'Evaluation',
-    easeOfUse: 'Ease of Use',
-    security: 'Security',
-    activity: 'Activity',
-    scenarioFit: 'Scenario Fit',
-    install: 'Install',
-    config: 'Config',
-    tutorial: 'Tutorial',
-  },
-  // ...
-};
-```
-
----
-
-## 10. 页面构建
-
-### 10.1 首页构建
-
-```astro
----
-// src/pages/index.astro
-import BaseLayout from '../layouts/BaseLayout.astro';
-import KitCard from '../components/KitCard.astro';
-import { getCollection } from 'astro:content';
-
-const kits = await getCollection('kits');
----
-
-<BaseLayout>
-  <div class="kit-grid">
-    {kits.map(kit => (
-      <KitCard
-        title={kit.data.title}
-        icon={kit.data.icon}
-        color={kit.data.color}
-        level="starter"
-        toolCount={kit.data.levels.starter.tools.length}
-      />
-    ))}
-  </div>
-</BaseLayout>
-```
-
-### 10.2 Kit 落地页构建
-
-```astro
----
-// src/pages/kits/[slug].astro
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import DifficultyTab from '../../components/DifficultyTab.astro';
-import KitToolList from '../../components/KitToolList.astro';
-import RadarChart from '../../components/RadarChart.astro';
-import { getCollection } from 'astro:content';
-
-const { slug } = Astro.params;
-const kit = await getCollection('kits', k => k.slug === slug);
-const [kitData] = kit;
-const { level } = Astro.url.searchParams;
-const activeLevel = level || 'starter';
-
-const toolIds = kitData.data.levels[activeLevel].tools;
-const tools = await Promise.all(
-  toolIds.map(id => getCollection('tools', t => t.slug === id))
+**D1 表结构**：
+```sql
+CREATE TABLE security_reports (
+  id TEXT PRIMARY KEY,
+  tool_id TEXT REFERENCES tools(id),
+  scanned_at INTEGER,
+  risk_level TEXT,  -- high/medium/low/none
+  vulnerabilities TEXT,  -- JSON array
+  report_url TEXT
 );
+```
+
+**风险**：Workers 免费版 CPU 时间限制 10ms/请求，扫描大量 repo 可能超时。
+**应对**：分批扫描（每次最多 10 个工具），使用 KV 队列做进度跟踪。
+
 ---
 
-<BaseLayout>
-  <DifficultyTab levels={['starter', 'pro', 'enterprise']} active={activeLevel} />
-  <div class="kit-layout">
-    <KitToolList tools={tools} kitColor={kitData.data.color} />
-    <RadarChart tools={tools} kitColor={kitData.data.color} />
-  </div>
-</BaseLayout>
+### 4.5 社区评分/评论
+
+**方案：Workers API + D1**
+
+| 功能 | 实现 |
+|---|---|
+| 评论发布 | POST /api/reviews → Turnstile 验证 → D1 insert |
+| 评论列表 | GET /api/tools/[id]/reviews → D1 select，分页 |
+| 评分聚合 | D1 AVG() 查询，存 KV 缓存 1 小时 |
+| Spam 过滤 | Turnstile + 内容关键词过滤（Workers 中间件） |
+| XSS 防护 | Workers 中间件转义 HTML 输出 |
+
+**D1 表**：
+```sql
+CREATE TABLE reviews (
+  id TEXT PRIMARY KEY,
+  tool_id TEXT REFERENCES tools(id),
+  kit_id TEXT,  -- nullable, either tool or kit review
+  user_id TEXT REFERENCES users(id),
+  rating INTEGER CHECK(rating >= 1 AND rating <= 5),
+  content TEXT,
+  created_at INTEGER,
+  updated_at INTEGER
+);
 ```
 
 ---
 
-## 11. 技术风险与应对
+### 4.6 付费推广（CPC/置顶）
 
-| 风险 | 应对 |
-|------|------|
-| 雷达图 polygon 坐标计算错误 | 先做数学验证，单独测试组件 |
-| 5 Kit × 3 难度 = 15 状态管理 | URL 参数驱动，SSR 友好 |
-| 评测数据未填充，雷达图无意义 | 开发时用 mock 数据，CW 后置填充 |
-| GitHub API 限速 | 机器评测结果缓存，提交时触发重新计算 |
+**方案：Workers API + D1 + Stripe**
+
+| 功能 | 实现 |
+|---|---|
+| CPC 广告 | 工具详情页读取 D1 ad_campaigns，满足条件展示竞品广告 |
+| 付费置顶 | D1 tools.promoted_until 字段，Workers 过滤时优先排序 |
+| 关键词竞价 | D1 ad_bids 表存竞价，按出价排序选 top |
+| 计费 | Stripe Checkout，Workers webhook 回调更新 D1 余额 |
+| 免费配额 | 每月每个账户免费 1000 次广告展示 |
+
+**D1 表**：
+```sql
+CREATE TABLE ad_campaigns (
+  id TEXT PRIMARY KEY,
+  tool_id TEXT REFERENCES tools(id),
+  user_id TEXT REFERENCES users(id),
+  type TEXT,  -- cpc/top
+  bid_amount_cents INTEGER,
+  daily_budget_cents INTEGER,
+  status TEXT DEFAULT 'active',
+  started_at INTEGER,
+  ended_at INTEGER
+);
+
+CREATE TABLE ad_impressions (
+  id TEXT PRIMARY KEY,
+  campaign_id TEXT REFERENCES ad_campaigns(id),
+  tool_id TEXT,
+  clicked_at INTEGER,
+  ip_hash TEXT  -- deduplication
+);
+```
+
+**注意**：CPC 精确计费需要服务端确认点击，防作弊。D1 可做基本去重（IP hash），复杂防作弊后续扩展。
 
 ---
 
-## 12. 开发步骤（DEV 参考）
+### 4.7 会员订阅
 
-1. **定义 Kit 数据模型** — 新建 content/kits/ 目录 + 5个 Kit frontmatter
-2. **RadarChart 组件** — CSS SVG 实现，单独验证
-3. **KitCard 组件** — 首页入口卡片
-4. **首页重构** — 5个 Kit 卡片布局
-5. **Kit 落地页** — 难度 Tab + 工具列表
-6. **工具详情页** — 新增雷达图 + Kit 标签 + 认证标签
-7. **i18n 更新** — 新增 Kit 相关翻译
-8. **构建验证** — npm run build 通过
+**方案：Stripe 订阅 + D1 + Cloudflare KV 权限标记**
+
+| 层级 | 功能 | 价格 |
+|---|---|---|
+| Free | 基础搜索/浏览、提交工具、加入社区 | $0 |
+| Pro | 高级筛选、Kit 效果报告、无限 API 访问、免广gao | $9.9/月 |
+| Enterprise | 私有 Kit 托管、定制认证、SLA | 定制 |
+
+**实现**：
+- Stripe Checkout + Subscription Webhook → Workers 处理 → 更新 D1 users.subscription_tier
+- Cloudflare KV 存 `subscription:{user_id}` 快速权限校验（TTL 1h）
+- Pro 用户解锁：高级筛选 API、Kit 报告页面、无广告
+
+**D1 表**：
+```sql
+CREATE TABLE subscriptions (
+  id TEXT PRIMARY KEY,
+  user_id TEXT UNIQUE REFERENCES users(id),
+  stripe_subscription_id TEXT,
+  tier TEXT DEFAULT 'free',  -- free/pro/enterprise
+  status TEXT,  -- active/canceled/past_due
+  current_period_end INTEGER,
+  created_at INTEGER
+);
+```
+
+---
+
+### 4.8 Kit 市场（付费 Kit）
+
+**方案：Stripe Connect + D1 + R2**
+
+| 功能 | 实现 |
+|---|---|
+| 上架付费 Kit | 开发者设置价格 → D1 kit.is_paid=true, price_cents → Stripe Connect 收款 |
+| 购买 Kit | Stripe Checkout → Webhook 回调 → D1 purchases 表 |
+| 佣金结算 | Stripe Connect 自动分账（平台 20%，作者 80%） |
+| Kit 配置下载 | 已购用户 → Workers 验证 ownership → R2 文件签名 URL |
+| 免费 Kit | 保持现有逻辑，仅变更 is_paid 标志 |
+
+**D1 表**：
+```sql
+CREATE TABLE kits (
+  id TEXT PRIMARY KEY,
+  name TEXT,
+  description TEXT,
+  category TEXT,
+  owner_id TEXT REFERENCES users(id),
+  is_paid BOOLEAN DEFAULT FALSE,
+  price_cents INTEGER,
+  status TEXT DEFAULT 'draft',  -- draft/pending/approved/published
+  stripe_connect_account_id TEXT,  -- developer's Stripe account
+  quality_score INTEGER,
+  created_at INTEGER,
+  updated_at INTEGER
+);
+
+CREATE TABLE purchases (
+  id TEXT PRIMARY KEY,
+  kit_id TEXT REFERENCES kits(id),
+  buyer_id TEXT REFERENCES users(id),
+  stripe_payment_intent_id TEXT,
+  amount_cents INTEGER,
+  platform_fee_cents INTEGER,
+  status TEXT,
+  purchased_at INTEGER
+);
+```
+
+---
+
+## 5. 数据模型（完整 E-R）
+
+```mermaid
+erDiagram
+    User ||--o{ Tool : owns
+    User ||--o{ Kit : creates
+    User ||--o{ Review : writes
+    User ||--o{ Subscription : has
+    User ||--o{ AdCampaign : runs
+    User ||--o{ KitSubmission : submits
+    
+    Tool ||--o{ Review : receives
+    Tool ||--o{ SecurityReport : has
+    Tool ||--o{ KitTool : in_kits
+    
+    Kit ||--o{ KitTool : contains
+    Kit ||--o{ Review : receives
+    Kit ||--o{ Purchase : sold_in
+    
+    Subscription }o--|| Stripe : links
+    Purchase }o--|| Stripe : links
+    AdCampaign ||--o{ AdImpression : generates
+```
+
+**核心 D1 表**：
+
+```sql
+CREATE TABLE users (
+  id TEXT PRIMARY KEY,
+  github_id TEXT UNIQUE,
+  email TEXT,
+  name TEXT,
+  avatar_url TEXT,
+  subscription_tier TEXT DEFAULT 'free',
+  stripe_customer_id TEXT,
+  created_at INTEGER
+);
+
+CREATE TABLE tools (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  slug TEXT UNIQUE,
+  category TEXT,
+  subcategory TEXT,
+  tags TEXT,  -- JSON array
+  price TEXT,  -- free/freemium/paid
+  website TEXT,
+  logo_url TEXT,
+  description TEXT,
+  scenarios TEXT,  -- JSON array
+  install_command TEXT,
+  config_example TEXT,
+  quality_score INTEGER DEFAULT 0,
+  risk_level TEXT DEFAULT 'none',
+  owner_id TEXT,
+  promoted_until INTEGER,
+  featured BOOLEAN DEFAULT FALSE,
+  created_at INTEGER,
+  updated_at INTEGER
+);
+
+CREATE TABLE kits (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  slug TEXT UNIQUE,
+  description TEXT,
+  category TEXT,
+  owner_id TEXT REFERENCES users(id),
+  is_paid BOOLEAN DEFAULT FALSE,
+  price_cents INTEGER,
+  quality_score INTEGER DEFAULT 0,
+  certified BOOLEAN DEFAULT FALSE,
+  status TEXT DEFAULT 'pending',
+  created_at INTEGER,
+  updated_at INTEGER
+);
+
+CREATE TABLE kit_tools (
+  kit_id TEXT REFERENCES kits(id),
+  tool_id TEXT REFERENCES tools(id),
+  role TEXT,  -- primary/secondary
+  config_overrides TEXT,  -- JSON
+  PRIMARY KEY (kit_id, tool_id)
+);
+
+CREATE TABLE reviews (
+  id TEXT PRIMARY KEY,
+  tool_id TEXT,
+  kit_id TEXT,
+  user_id TEXT REFERENCES users(id),
+  rating INTEGER CHECK(rating >= 1 AND rating <= 5),
+  content TEXT,
+  created_at INTEGER
+);
+
+CREATE TABLE subscriptions (
+  id TEXT PRIMARY KEY,
+  user_id TEXT UNIQUE REFERENCES users(id),
+  stripe_subscription_id TEXT,
+  tier TEXT DEFAULT 'free',
+  status TEXT,
+  current_period_end INTEGER
+);
+
+CREATE TABLE ad_campaigns (
+  id TEXT PRIMARY KEY,
+  tool_id TEXT REFERENCES tools(id),
+  user_id TEXT REFERENCES users(id),
+  type TEXT,  -- cpc/top
+  bid_amount_cents INTEGER,
+  daily_budget_cents INTEGER,
+  status TEXT DEFAULT 'active'
+);
+
+CREATE TABLE purchases (
+  id TEXT PRIMARY KEY,
+  kit_id TEXT REFERENCES kits(id),
+  buyer_id TEXT REFERENCES users(id),
+  stripe_payment_intent_id TEXT,
+  amount_cents INTEGER,
+  platform_fee_cents INTEGER,
+  status TEXT,
+  purchased_at INTEGER
+);
+
+CREATE TABLE security_reports (
+  id TEXT PRIMARY KEY,
+  tool_id TEXT REFERENCES tools(id),
+  scanned_at INTEGER,
+  risk_level TEXT,
+  vulnerabilities TEXT
+);
+```
+
+---
+
+## 6. API 路由设计（Workers）
+
+| 方法 | 路径 | 认证 | 描述 |
+|---|---|---|---|
+| GET/POST | `/api/auth/github` | ❌ | GitHub OAuth 入口/回调 |
+| POST | `/api/auth/logout` | ✅ | 登出，删除 KV session |
+| GET | `/api/users/me` | ✅ | 当前用户信息 |
+| GET | `/api/tools` | ❌ | 工具列表（支持筛选/分页） |
+| GET | `/api/tools/[slug]` | ❌ | 工具详情（含 Quality Score） |
+| POST | `/api/tools/[slug]/claim` | ✅ | 认领工具（需 GitHub ownership 验证） |
+| GET | `/api/kits` | ❌ | Kit 列表 |
+| GET | `/api/kits/[slug]` | ❌ | Kit 详情 |
+| POST | `/api/kits` | ✅ | 提交 Kit 配方 |
+| PUT | `/api/kits/[slug]` | ✅ | 更新自己的 Kit |
+| GET | `/api/tools/[slug]/reviews` | ❌ | 工具评论列表 |
+| POST | `/api/tools/[slug]/reviews` | ✅ | 发表评论（Turnstile 验证） |
+| POST | `/api/stripe/webhook` | ❌ | Stripe 支付回调 |
+| GET | `/api/dashboard` | ✅ | 开发者仪表板（自己的工具/Kit/收入） |
+| GET | `/api/ads/campaigns` | ✅ | 广告活动管理 |
+| POST | `/api/ads/campaigns` | ✅ | 创建广告活动 |
+| GET | `/api/search` | ❌ | 搜索（降级到 Pagefind + D1 过滤） |
+
+---
+
+## 7. 架构调整清单
+
+### 7.1 前端改动
+
+| 项目 | 改动 |
+|---|---|
+| Astro 模式 | Static → Hybrid（`output: 'hybrid'`） |
+| 动态路由 | `/tools/[slug]`, `/kits/[slug]`, `/dashboard/*` → SSR |
+| 认证状态 | 前端存 `HttpOnly` Cookie（Session ID），Workers 中间件校验 |
+| 国际化 | Astro i18n 插件，支持 `en/` 和 `zh/` 路径 |
+| 暗色/亮色 | Tailwind CSS `dark:` class + `localStorage` 主题切换 |
+| 静态页面 | 首页、博客、帮助文档 → 保持静态（Pages 边缘缓存） |
+
+### 7.2 后端改动（Workers）
+
+| 项目 | 改动 |
+|---|---|
+| 入口 | `functions/_worker.js` 或 `_routes.json` 拦截动态路径 |
+| 中间件 | Auth 校验中间件、Turnstile 验证中间件、Error 处理 |
+| Cron 任务 | Quality Score 每日更新（Phase 1）；安全扫描 Cron（Phase 2） |
+| Stripe Webhook | 独立的 `/api/stripe/webhook` Worker，验签处理 |
+
+### 7.3 Cloudflare 资源清单
+
+| 资源 | 免费额度 | 用途 |
+|---|---|---|
+| Cloudflare Workers | 100k 请求/天，10ms CPU/请求 | API + SSR |
+| Cloudflare D1 | 5GB 存储，250M 行读/天 | 主数据库 |
+| Cloudflare KV | 1GB 存储，1M 读+写/天 | Session + Quality Score 缓存 |
+| Cloudflare R2 | 10GB 存储/月 | Kit 配置、Logo、报告文件 |
+| Cloudflare Turnstile | 1M 验证/月 | 反垃圾 |
+| Cloudflare Pages | 无限带宽 | 前端部署 |
+| Cloudflare AI Search | 10k vectors | 搜索（备选） |
+| Stripe | 免费接入，收佣 2.9%+30¢ | 支付 |
+
+---
+
+## 8. 性能指标
+
+| 指标 | 目标 |
+|---|---|
+| 首页 LCP | < 1.5s（静态页面 + Cloudflare 边缘缓存） |
+| 工具详情页 TTFB | < 200ms（Workers SSR + D1 边缘查询） |
+| 搜索响应 | < 300ms（KV 缓存 Quality Score） |
+| Workers CPU 时间 | < 8ms/请求（留 20% 余量） |
+| D1 查询延迟 | < 50ms（P95，全球边缘读副本） |
+
+---
+
+## 9. 风险与应对
+
+| 风险 | 级别 | 应对方案 |
+|---|---|---|
+| **Workers CPU 超时**（安全扫描大量工具） | 高 | 分批扫描（每次 10 个），KV 队列跟踪进度，扫描 Worker 独立部署 |
+| **D1 写入瓶颈**（高并发评论/提交） | 中 | D1 目前免费版无限写入（生产版有限），批量 insert + Indexed 优化 |
+| **Session 存在 KV 但免费额度过低** | 中 | 压缩 session 数据，JWT 只存 user_id，权限查 D1 |
+| **Stripe 佣金结算复杂** | 中 | MVP 先不做分账，平台统一收款；Stripe Connect 后续接 |
+| **Quality Score 计算慢** | 低 | KV 缓存 24h，每日一次 Workers Cron 即可 |
+| **R2 存储费用超免费额** | 低 | MVP 上限 10GB 够用（Logo + Kit 配置），监控告警 |
+| **GitHub OAuth 用户量大** | 低 | GitHub OAuth 免费无限制，Auth.js 方案成熟 |
+| **SEO 需求与 SSR 性能冲突** | 中 | 关键工具/Kit 页面 SSR + Cloudflare Cache（TTL 5min），静态页面保持不变 |
+
+---
+
+## 10. 实施路线图（技术侧）
+
+| 阶段 | 技术任务 | 对应功能 |
+|---|---|---|
+| **Phase 1** | Workers + D1 初始化；GitHub OAuth 完成；工具/Kit CRUD API | 用户登录、目录展示 |
+| **Phase 1** | Astro Hybrid 模式改造；SSR 路由接入 | 工具/Kit 详情页 SSR |
+| **Phase 1** | 开发者控制台（认领/提交）UI + API | 认领工具、Kit 配方提交 |
+| **Phase 2** | Quality Score Workers Cron + KV | 分数展示 |
+| **Phase 2** | 安全扫描 Workers Cron | 风险标签 |
+| **Phase 2** | 评论/评分 API | 社区功能 |
+| **Phase 2** | Stripe 订阅接入（Checkout + Webhook） | Pro 会员 |
+| **Phase 3** | Stripe Connect（Kit 市场） | 付费 Kit |
+| **Phase 3** | CPC/置顶广告系统 | 付费推广 |
+
+---
+
+## 11. v1.0 → v3.0 架构对比
+
+| 维度 | v1.0 | v3.0 |
+|---|---|---|
+| 架构类型 | 纯静态 | 混合（静态 + SSR + Workers API） |
+| 数据库 | Git Markdown | Cloudflare D1 + Markdown |
+| 搜索 | Pagefind | D1 过滤 + Pagefind（降级） |
+| 认证 | 无 | GitHub OAuth + JWT/KV |
+| 支付 | 无 | Stripe |
+| 存储 | Git | D1 + R2 + Git |
+| 部署 | Cloudflare Pages | Cloudflare Pages + Workers |
+| 维护成本 | 极低 | 中等（Workers 需监控） |
+
+**最大变化**：从"零后端内容站"升级为"Cloudflare Workers 驱动的全栈平台"，但仍然不需要购买独立服务器。
+
+---
+
+*文档版本：v3.0 | 状态：[REVIEW] 待 PM 确认架构方向后，UI 和开发可并行启动*
