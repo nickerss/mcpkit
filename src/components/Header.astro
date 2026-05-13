@@ -39,11 +39,30 @@ const navLinks = [
     <div class="right-area">
       <ThemeSwitcher />
       <LanguageSwitcher />
-      <a href="https://api.mcpkit.run/api/auth/github" class="btn-login">{locale === 'zh' ? '登录' : 'Login'}</a>
+      <span id="user-info" style="display:none">
+        <a href="/dashboard/" id="user-name" class="user-link"></a>
+        <a href="https://api.mcpkit.run/api/auth/logout" class="btn-logout">{locale === 'zh' ? '退出' : 'Logout'}</a>
+      </span>
+      <a id="login-btn" href="https://api.mcpkit.run/api/auth/github" class="btn-login">{locale === 'zh' ? '登录' : 'Login'}</a>
       <a href={`/submit/${langParam}`} class="cta-btn">{locale === 'zh' ? '提交工具' : 'Submit Tool'}</a>
     </div>
   </div>
 </header>
+
+<script>
+  async function checkAuth() {
+    try {
+      const res = await fetch('https://api.mcpkit.run/api/users/me', { credentials: 'include' });
+      if (res.ok) {
+        const user = await res.json();
+        document.getElementById('login-btn').style.display = 'none';
+        document.getElementById('user-info').style.display = 'flex';
+        document.getElementById('user-name').textContent = user.username || user.name || 'User';
+      }
+    } catch (e) {}
+  }
+  checkAuth();
+</script>
 
 <style>
   .header {
@@ -128,4 +147,32 @@ const navLinks = [
     white-space: nowrap;
   }
   .cta-btn:hover { background: var(--accent-hover); }
+
+  #user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .user-link {
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .user-link:hover { color: var(--accent); }
+  .btn-logout {
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 150ms ease;
+  }
+  .btn-logout:hover {
+    color: var(--danger);
+    border-color: var(--danger);
+  }
 </style>

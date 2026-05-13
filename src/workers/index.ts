@@ -97,6 +97,19 @@ async function handleAuth(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
   const path = url.pathname;
 
+  // Handle CORS preflight
+  if (request.method === 'OPTIONS') {
+    return new Response(null, {
+      headers: {
+        'Access-Control-Allow-Origin': env.SITE_URL,
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Credentials': 'true',
+        'Access-Control-Max-Age': '86400'
+      }
+    });
+  }
+
   if (path === '/api/auth/github') {
     const state = crypto.randomUUID();
     const redirectUri = `${env.API_URL}/api/auth/callback`;
@@ -174,7 +187,7 @@ async function handleAuth(request: Request, env: Env): Promise<Response> {
       status: 302,
       headers: {
         Location: `${env.SITE_URL}/dashboard/`,
-        'Set-Cookie': `session=${sessionToken}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${60 * 60 * 24 * 7}; Domain=.mcpkit.run`,
+        'Set-Cookie': `session=${sessionToken}; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=${60 * 60 * 24 * 7}; Domain=.mcpkit.run`,
       },
     });
     } catch (err) {
@@ -202,7 +215,13 @@ async function handleAuth(request: Request, env: Env): Promise<Response> {
     if (!userId) return json({ error: 'Session expired' }, 401);
     const user = await env.DB.prepare('SELECT id, username, name, email, avatar_url, subscription_tier FROM users WHERE id = ?').bind(userId).first();
     if (!user) return json({ error: 'User not found' }, 404);
-    return json(user);
+    return new Response(JSON.stringify(user), {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': env.SITE_URL,
+        'Access-Control-Allow-Credentials': 'true'
+      }
+    });
   }
 
   return json({ error: 'Not found' }, 404);
