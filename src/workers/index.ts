@@ -194,6 +194,17 @@ async function handleAuth(request: Request, env: Env): Promise<Response> {
     });
   }
 
+  // GET /api/users/me
+  if (path === '/api/users/me') {
+    const token = getSessionToken(request);
+    if (!token) return json({ error: 'Not authenticated' }, 401);
+    const userId = await env.CACHE.get(`session:${token}`);
+    if (!userId) return json({ error: 'Session expired' }, 401);
+    const user = await env.DB.prepare('SELECT id, username, name, email, avatar_url, subscription_tier FROM users WHERE id = ?').bind(userId).first();
+    if (!user) return json({ error: 'User not found' }, 404);
+    return json(user);
+  }
+
   return json({ error: 'Not found' }, 404);
 }
 
