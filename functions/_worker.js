@@ -352,7 +352,13 @@ async function handleKitsList(url, env) {
   query += ` ORDER BY ${sortCol} DESC LIMIT ? OFFSET ?`;
   bindings.push(limit, offset);
 
-  const result = await env.DB.prepare(query).bind(...bindings).all();
+  let result;
+  try {
+    result = await env.DB.prepare(query).bind(...bindings).all();
+  } catch (e) {
+    // Return empty data if DB not available (MVP: no DB yet)
+    result = { results: [] };
+  }
   return json({ data: result.results, pagination: { page, limit, offset } });
 }
 
