@@ -117,7 +117,11 @@ async function handleAuth(request: Request, env: Env): Promise<Response> {
 
     const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json', 
+        Accept: 'application/json',
+        'User-Agent': 'mcpkit-run-oauth'
+      },
       body: JSON.stringify({ 
         client_id: env.GITHUB_CLIENT_ID, 
         client_secret: env.GITHUB_CLIENT_SECRET, 
@@ -139,7 +143,11 @@ async function handleAuth(request: Request, env: Env): Promise<Response> {
     if (!accessToken) return json({ error: 'Failed to get access token: ' + JSON.stringify(tokenData) }, 400);
 
     const userRes = await fetch('https://api.github.com/user', {
-      headers: { Authorization: `Bearer ${accessToken}`, Accept: 'application/json' },
+      headers: { 
+        Authorization: `Bearer ${accessToken}`, 
+        Accept: 'application/json',
+        'User-Agent': 'mcpkit-run-oauth'
+      },
     });
     const userText = await userRes.text();
     let githubUser;
@@ -154,10 +162,10 @@ async function handleAuth(request: Request, env: Env): Promise<Response> {
     const userId = crypto.randomUUID();
     const now = Math.floor(Date.now() / 1000);
     await env.DB.prepare(`
-      INSERT INTO users (id, github_id, name, avatar_url, email, created_at)
-      VALUES (?, ?, ?, ?, ?, ?)
-      ON CONFLICT(github_id) DO UPDATE SET name = excluded.name, avatar_url = excluded.avatar_url, email = excluded.email
-    `).bind(userId, String(githubUser.id), githubUser.login, githubUser.avatar_url, githubUser.email || '', now).run();
+      INSERT INTO users (id, github_id, username, email, avatar_url, created_at, updated_at, name, subscription_tier)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'free')
+      ON CONFLICT(github_id) DO UPDATE SET username = excluded.username, email = excluded.email, avatar_url = excluded.avatar_url, name = excluded.name, updated_at = excluded.updated_at
+    `).bind(userId, String(githubUser.id), githubUser.login, githubUser.email || '', githubUser.avatar_url, now, now, githubUser.login).run();
 
     const sessionToken = crypto.randomUUID();
     await env.CACHE.put(`session:${sessionToken}`, userId, { expirationTtl: 60 * 60 * 24 * 7 });
