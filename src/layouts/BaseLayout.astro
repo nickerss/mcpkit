@@ -53,7 +53,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
             sectionFeatured: 'Featured',
             sectionLatest: 'Latest Added',
             footerCopy: '© 2026 MCPKIT — AI Agent Tools for Independent Developers',
-            footerLinks: ['Search', 'Submit Tool']
+            footerLinks: ['Search', 'Submit Tool'],
+            pageTitle: 'MCPKIT — AI Agent Tools for Independent Developers'
           },
           zh: {
             nav: ['Kits', '所有工具', '搜索'],
@@ -65,11 +66,15 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
             sectionFeatured: '编辑精选',
             sectionLatest: '最新收录',
             footerCopy: '© 2026 MCPKIT — 独立开发者的 AI Agent 工具箱',
-            footerLinks: ['搜索', '提交工具']
+            footerLinks: ['搜索', '提交工具'],
+            pageTitle: 'MCPKIT — AI Agent 开发者工具目录'
           }
         };
 
         var t = texts[lang] || texts.en;
+
+        // Update document title
+        if (t.pageTitle) document.title = t.pageTitle;
 
         // Nav links
         var navLinks = document.querySelectorAll('.nav-link');
