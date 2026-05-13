@@ -23,6 +23,7 @@ export interface Env {
   DB: D1Database;
   CACHE: KVNamespace;
   SITE_URL: string;
+  API_URL: string;
   GITHUB_CLIENT_ID: string;
   GITHUB_CLIENT_SECRET: string;
   JWT_SECRET: string;
@@ -98,7 +99,7 @@ async function handleAuth(request: Request, env: Env): Promise<Response> {
 
   if (path === '/api/auth/github') {
     const state = crypto.randomUUID();
-    const redirectUri = `${env.SITE_URL}/api/auth/callback`;
+    const redirectUri = `${env.API_URL}/api/auth/callback`;
     const authUrl = `https://github.com/login/oauth/authorize?client_id=${env.GITHUB_CLIENT_ID}&redirect_uri=${redirectUri}&state=${state}&scope=read:user,user:email`;
     await env.CACHE.put(`oauth_state:${state}`, 'pending', { expirationTtl: 600 });
     return Response.redirect(authUrl, 302);

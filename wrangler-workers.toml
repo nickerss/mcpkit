@@ -18,6 +18,7 @@ id = "3f2da378368042e484a5a8cfc40c5874"
 [vars]
 ENV = "production"
 SITE_URL = "https://mcpkit.run"
+API_URL = "https://api.mcpkit.run"
 
 # Cron trigger: runs Quality Score calculation daily at 00:00 UTC
 [triggers]
