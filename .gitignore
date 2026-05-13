@@ -12,3 +12,4 @@ dist/
 wrangler.toml
 .dev.vars
 .dev.vars.example
+.wrangler
