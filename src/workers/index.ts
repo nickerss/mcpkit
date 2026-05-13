@@ -217,19 +217,18 @@ async function handleAuth(request: Request, env: Env): Promise<Response> {
 
 // ─── Users Me ──────────────────────────────────────────────────────────
 async function handleUsersMe(request: Request, env: Env): Promise<Response> {
+  const headers = {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': env.SITE_URL,
+    'Access-Control-Allow-Credentials': 'true'
+  };
   const token = getSessionToken(request);
-  if (!token) return json({ error: 'Not authenticated' }, 401);
+  if (!token) return new Response(JSON.stringify({ error: 'Not authenticated' }), { status: 401, headers });
   const userId = await env.CACHE.get(`session:${token}`);
-  if (!userId) return json({ error: 'Session expired' }, 401);
+  if (!userId) return new Response(JSON.stringify({ error: 'Session expired' }), { status: 401, headers });
   const user = await env.DB.prepare('SELECT id, username, name, email, avatar_url, subscription_tier FROM users WHERE id = ?').bind(userId).first();
-  if (!user) return json({ error: 'User not found' }, 404);
-  return new Response(JSON.stringify(user), {
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': env.SITE_URL,
-      'Access-Control-Allow-Credentials': 'true'
-    }
-  });
+  if (!user) return new Response(JSON.stringify({ error: 'User not found' }), { status: 404, headers });
+  return new Response(JSON.stringify(user), { headers });
 }
 
 // ─── Stripe Webhook ──────────────────────────────────────────────────────────
