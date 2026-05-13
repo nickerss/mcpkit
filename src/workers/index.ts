@@ -141,7 +141,15 @@ async function handleAuth(request: Request, env: Env): Promise<Response> {
     const userRes = await fetch('https://api.github.com/user', {
       headers: { Authorization: `Bearer ${accessToken}`, Accept: 'application/json' },
     });
-    const githubUser = await userRes.json();
+    const userText = await userRes.text();
+    let githubUser;
+    try { githubUser = JSON.parse(userText); } catch {
+      return json({
+        error: 'GitHub user response not JSON',
+        response: userText.substring(0, 500),
+        status: userRes.status
+      }, 500);
+    }
 
     const userId = crypto.randomUUID();
     const now = Math.floor(Date.now() / 1000);
