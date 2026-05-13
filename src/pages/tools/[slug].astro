@@ -18,7 +18,7 @@ export async function getStaticPaths() {
 
   const allTools = [...mcpServers, ...aiTools, ...deployment];
   return allTools.map(entry => ({
-    params: { slug: entry.slug },
+    params: { slug: entry.id.replace(/\.(md|mdx)$/, '') },
     props: { entry, allTools },
   }));
 }
@@ -26,7 +26,7 @@ export async function getStaticPaths() {
 const { entry, allTools } = Astro.props;
 
 const related = allTools
-  .filter(t => t.slug !== entry.slug && t.data.category === entry.data.category)
+  .filter(t => t.id.replace(/\.(md|mdx)$/, '') !== entry.id.replace(/\.(md|mdx)$/, '') && t.data.category === entry.data.category)
   .slice(0, 2);
 
 const categoryMap: Record<string, string> = {
@@ -101,7 +101,7 @@ const category = entry.data.category || 'mcp-servers';
           <h3>{i18n.detail.relatedTools}</h3>
           <div class="related-grid">
             {related.map(t => (
-              <ToolCard {...t.data} slug={t.slug} />
+              <ToolCard {...t.data} slug={t.id.replace(/\.(md|mdx)$/, '')} />
             ))}
           </div>
         </div>

@@ -13,7 +13,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
-<html lang={locale} data-lang={locale}>
+<html lang={locale} data-lang={locale} data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -25,6 +25,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="/src/styles/global.css" />
+    <script is:inline>
+      (function() {
+        var saved = localStorage.getItem('mcpkit-theme');
+        var preferred = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', saved || preferred);
+      })();
+    </script>
   </head>
   <body>
     <slot />

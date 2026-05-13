@@ -22,7 +22,7 @@ const defaultTitle = isZh ? '编辑精选' : 'Featured';
     <div class="cards-scroll">
       {tools.map(tool => (
         <div class="card-item">
-          <ToolCard {...tool.data} slug={tool.slug} />
+          <ToolCard {...tool.data} slug={tool.id?.replace(/\.(md|mdx)$/, '') || tool.slug} />
         </div>
       ))}
     </div>

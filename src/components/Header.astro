@@ -1,15 +1,16 @@
 ---
 import { getLocaleFromUrl } from '../i18n/index';
 import LanguageSwitcher from './LanguageSwitcher.astro';
+import ThemeSwitcher from './ThemeSwitcher.astro';
 
 const locale = getLocaleFromUrl(Astro.url);
 const langParam = locale === 'zh' ? '?lang=zh' : '';
-const base = (path: string) => `${path}/${langParam}`;
 
 const navLinks = [
-  { href: '/', label: 'Kits', zhLabel: 'Kits' },
-  { href: '/mcp-servers/', label: 'All Tools', zhLabel: '所有工具' },
-  { href: '/search/', label: 'Search', zhLabel: '搜索' },
+  { href: '/mcp-servers/', label: '探索工具', zhLabel: '探索工具' },
+  { href: '/', label: 'Kit专区', zhLabel: 'Kit专区' },
+  { href: '/developer/', label: '开发者', zhLabel: '开发者' },
+  { href: '/pricing/', label: '定价', zhLabel: '定价' },
 ];
 ---
 
@@ -18,12 +19,12 @@ const navLinks = [
     <a href={`/${langParam}`} class="logo">
       <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <linearGradient id="logo-g" x1="0%" y1="0%" x2="100%" y2="100%">
+          <linearGradient id="logo-g-h" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stop-color="#6366f1"/>
             <stop offset="100%" stop-color="#8b5cf6"/>
           </linearGradient>
         </defs>
-        <rect width="32" height="32" rx="6" fill="url(#logo-g)"/>
+        <rect width="32" height="32" rx="6" fill="url(#logo-g-h)"/>
         <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="14" font-weight="bold" fill="white">M</text>
       </svg>
       <span>MCPKIT</span>
@@ -36,7 +37,9 @@ const navLinks = [
     </nav>
 
     <div class="right-area">
+      <ThemeSwitcher />
       <LanguageSwitcher />
+      <a href={`/login/${langParam}`} class="btn-login">{locale === 'zh' ? '登录' : 'Login'}</a>
       <a href={`/submit/${langParam}`} class="cta-btn">{locale === 'zh' ? '提交工具' : 'Submit Tool'}</a>
     </div>
   </div>
@@ -47,10 +50,9 @@ const navLinks = [
     position: sticky;
     top: 0;
     z-index: 100;
-    height: 60px;
-    background: rgba(10, 10, 15, 0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border-color);
+    height: 64px;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-subtle);
   }
   .header-inner {
     max-width: 1280px;
@@ -81,7 +83,7 @@ const navLinks = [
     overflow-x: auto;
   }
   .nav-link {
-    padding: 6px 10px;
+    padding: 6px 12px;
     font-size: 14px;
     font-weight: 500;
     color: var(--text-secondary);
@@ -100,8 +102,22 @@ const navLinks = [
     gap: 8px;
     flex-shrink: 0;
   }
+  .btn-login {
+    padding: 7px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border-radius: 8px;
+    text-decoration: none;
+    transition: color 150ms ease, background-color 150ms ease;
+    border: 1px solid transparent;
+  }
+  .btn-login:hover {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+  }
   .cta-btn {
-    padding: 8px 16px;
+    padding: 7px 14px;
     font-size: 14px;
     font-weight: 600;
     color: white;

@@ -1,0 +1,57 @@
+---
+---
+
+<button class="theme-switcher" id="theme-switcher" aria-label="Toggle theme" title="Toggle theme">
+  <span class="theme-icon" id="theme-icon">🌙</span>
+</button>
+
+<script>
+  const btn = document.getElementById('theme-switcher');
+  const icon = document.getElementById('theme-icon');
+
+  function applyTheme(theme: string) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('mcpkit-theme', theme);
+    if (icon) icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+  }
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  }
+
+  // Init
+  const saved = localStorage.getItem('mcpkit-theme');
+  const preferred = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  applyTheme(saved || preferred);
+
+  btn?.addEventListener('click', toggleTheme);
+</script>
+
+<style>
+  .theme-switcher {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: background-color 150ms ease, transform 150ms ease;
+    flex-shrink: 0;
+  }
+  .theme-switcher:hover {
+    background: var(--bg-tertiary);
+    transform: scale(1.05);
+  }
+  .theme-switcher:active {
+    transform: scale(0.95);
+  }
+  .theme-icon {
+    line-height: 1;
+    user-select: none;
+  }
+</style>

@@ -1,5 +1,52 @@
 ---
+export const prerender = true;
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import ToolCard from '../../components/ToolCard.astro';
+import { getCollection } from 'astro:content';
 import { getLocaleFromUrl } from '../../i18n/index';
+
 const locale = getLocaleFromUrl(Astro.url);
-return Astro.redirect(`/kits/ship-a-saas/?lang=${locale}`, 301);
+const isZh = locale === 'zh';
+const tools = await getCollection('mcp-servers');
 ---
+
+<BaseLayout title={isZh ? 'MCP 服务器 — MCPKIT' : 'MCP Servers — MCPKIT'}>
+  <Header />
+
+  <main class="main">
+    <div class="page-header">
+      <div class="container">
+        <h1 class="page-title">{isZh ? 'MCP 服务器' : 'MCP Servers'}</h1>
+        <p class="page-desc">
+          {isZh ? '精选 MCP Servers，让 AI Agent 连接到真实世界的数据和服务。' : 'Curated MCP Servers that connect AI Agents to real-world data and services.'}
+        </p>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="tools-grid">
+        {tools.map(tool => (
+          <ToolCard {...tool.data} slug={tool.id.replace(/\.(md|mdx)$/, '')} />
+        ))}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .main { min-height: calc(100vh - 60px); }
+  .page-header { border-bottom: 1px solid var(--border-color); padding: 40px 0 32px; }
+  .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+  .page-title { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+  .page-desc { color: var(--text-secondary); font-size: 16px; }
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    padding: 40px 0 80px;
+  }
+</style>

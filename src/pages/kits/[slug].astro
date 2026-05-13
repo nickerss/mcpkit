@@ -15,7 +15,7 @@ const isZh = locale === 'zh';
 export async function getStaticPaths() {
   const kits = await getCollection('kits');
   return kits.map(entry => ({
-    params: { slug: entry.slug },
+    params: { slug: entry.id.replace(/\.(md|mdx)$/, '') },
     props: { entry },
   }));
 }
@@ -31,7 +31,7 @@ const currentLevel = level === 'pro' || level === 'enterprise' ? level : 'starte
 const levelData = kit.levels[currentLevel];
 
 // Build baseUrl from page URL
-const baseUrl = `/kits/${entry.slug}/`;
+const baseUrl = `/kits/${entry.id.replace(/\.(md|mdx)$/, '')}/`;
 
 // Fetch all tool entries from all 3 collections
 const [mcpServers, aiTools, deploymentTools] = await Promise.all([
