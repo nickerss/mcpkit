@@ -142,8 +142,8 @@ async function handleAuth(request: Request, env: Env): Promise<Response> {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: '/dashboard/',
-        'Set-Cookie': `session=${sessionToken}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${60 * 60 * 24 * 7}`,
+        Location: `${env.SITE_URL}/dashboard/`,
+        'Set-Cookie': `session=${sessionToken}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${60 * 60 * 24 * 7}; Domain=.mcpkit.run`,
       },
     });
   }
@@ -154,8 +154,8 @@ async function handleAuth(request: Request, env: Env): Promise<Response> {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: '/',
-        'Set-Cookie': 'session=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0',
+        Location: `${env.SITE_URL}/`,
+        'Set-Cookie': 'session=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0; Domain=.mcpkit.run',
       },
     });
   }
