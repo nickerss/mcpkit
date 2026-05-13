@@ -28,7 +28,7 @@ const url = new URL(Astro.request.url);
 const level = (url.searchParams.get('level') || 'starter') as 'starter' | 'pro' | 'enterprise';
 const currentLevel = level === 'pro' || level === 'enterprise' ? level : 'starter';
 
-const levelData = kit.levels[currentLevel];
+const levelData = kit.levels?.[currentLevel] ?? { tools: [], description: isZh ? '暂无配置' : 'No configuration yet' };
 
 // Build baseUrl from page URL
 const baseUrl = `/kits/${entry.id.replace(/\.(md|mdx)$/, '')}/`;
@@ -426,9 +426,6 @@ const levelLabels = { starter: 'Starter', pro: 'Pro', enterprise: 'Enterprise' }
     color: var(--text-muted);
     margin-top: 8px;
   }
-
-  .en-hide { display: none; }
-  .zh-hide { }
 
   .en-hide { display: none; }
   .zh-hide { }

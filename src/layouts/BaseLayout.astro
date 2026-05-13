@@ -54,7 +54,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
             sectionLatest: 'Latest Added',
             footerCopy: '© 2026 MCPKIT — AI Agent Tools for Independent Developers',
             footerLinks: ['Search', 'Submit Tool'],
-            pageTitle: 'MCPKIT — AI Agent Tools for Independent Developers'
+            pageTitle: 'MCPKIT — AI Agent Tools for Independent Developers',
+            langSwitchLabel: 'EN'
           },
           zh: {
             nav: ['探索工具', 'Kit专区', '开发者', '定价'],
@@ -67,7 +68,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
             sectionLatest: '最新收录',
             footerCopy: '© 2026 MCPKIT — 独立开发者的 AI Agent 工具箱',
             footerLinks: ['搜索', '提交工具'],
-            pageTitle: 'MCPKIT — AI Agent 开发者工具目录'
+            pageTitle: 'MCPKIT — AI Agent 开发者工具目录',
+            langSwitchLabel: '中文'
           }
         };
 
@@ -75,6 +77,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
         // Update document title
         if (t.pageTitle) document.title = t.pageTitle;
+
+        // Update language switcher label
+        var langSwitchBtn = document.querySelector('.lang-switcher .lang-btn .lang-label');
+        if (langSwitchBtn && t.langSwitchLabel) langSwitchBtn.textContent = t.langSwitchLabel;
 
         // Nav links
         var navLinks = document.querySelectorAll('.nav-link');
