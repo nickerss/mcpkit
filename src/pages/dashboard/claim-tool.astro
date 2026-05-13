@@ -1,0 +1,192 @@
+---
+export const prerender = true;
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getLocaleFromUrl } from '../../i18n/index';
+
+const locale = getLocaleFromUrl(Astro.url);
+const isZh = locale === 'zh';
+---
+
+<BaseLayout title={isZh ? '认领工具 — MCPKIT' : 'Claim Tool — MCPKIT'}>
+  <Header />
+
+  <main class="main">
+    <div class="page-header">
+      <div class="container">
+        <nav class="breadcrumb">
+          <a href="/dashboard/">{isZh ? '仪表盘' : 'Dashboard'}</a>
+          <span>/</span>
+          <span>{isZh ? '认领工具' : 'Claim Tool'}</span>
+        </nav>
+        <h1 class="page-title">{isZh ? '认领工具' : 'Claim a Tool'}</h1>
+        <p class="page-desc">
+          {isZh ? '如果你拥有或维护某个 MCP 工具，可以申请认领以便更新其信息。' : 'If you own or maintain an MCP tool, claim it to update its information and manage its listing.'}
+        </p>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="form-card">
+        <form id="claim-form" class="claim-form">
+          <div class="form-group">
+            <label for="tool-id">{isZh ? '工具 Slug 或 ID *' : 'Tool Slug or ID *'}</label>
+            <div class="search-row">
+              <input type="text" id="tool-id" name="tool_id" required placeholder={isZh ? '输入工具 slug 或 ID，如 mcp-github' : 'Enter tool slug or ID, e.g. mcp-github'} />
+              <button type="button" class="btn-search" id="lookup-btn">{isZh ? '查询' : 'Look Up'}</button>
+            </div>
+          </div>
+
+          <!-- Tool Preview (populated by JS) -->
+          <div class="tool-preview" id="tool-preview" style="display:none">
+            <div class="preview-header">
+              <div class="preview-icon" id="preview-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <div class="preview-info">
+                <h3 id="preview-name">—</h3>
+                <p id="preview-category">—</p>
+              </div>
+              <div class="preview-status" id="preview-status">
+                <span class="status-badge unclaimed">{isZh ? '待认领' : 'Unclaimed'}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h2 class="form-section-title">{isZh ? '验证所有权' : 'Verify Ownership'}</h2>
+            <div class="form-group">
+              <label for="github-url">{isZh ? 'GitHub 仓库 URL *' : 'GitHub Repository URL *'}</label>
+              <input type="url" id="github-url" name="github_url" required placeholder="https://github.com/owner/repo" />
+              <p class="field-hint">{isZh ? '提供你拥有管理权限的 GitHub 仓库地址。' : 'Provide a GitHub repository you have admin access to.'}</p>
+            </div>
+            <div class="form-group">
+              <label for="npm-owner">{isZh ? 'npm 组织名称' : 'npm Organization Name'}</label>
+              <input type="text" id="npm-owner" name="npm_org" placeholder={isZh ? '例如：@anthropic' : 'e.g. @anthropic'} />
+            </div>
+            <div class="form-group">
+              <label for="website">{isZh ? '官方工具网站' : 'Official Tool Website'}</label>
+              <input type="url" id="website" name="website" placeholder="https://..." />
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h2 class="form-section-title">{isZh ? '联系方式' : 'Contact Information'}</h2>
+            <div class="form-group">
+              <label for="contact-email">{isZh ? '联系邮箱 *' : 'Contact Email *'}</label>
+              <input type="email" id="contact-email" name="contact_email" required placeholder="you@example.com" />
+            </div>
+            <div class="form-group">
+              <label for="twitter">{isZh ? 'Twitter / X Handle' : 'Twitter / X Handle'}</label>
+              <input type="text" id="twitter" name="twitter_handle" placeholder="@yourhandle" />
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <a href="/dashboard/" class="btn-ghost">{isZh ? '取消' : 'Cancel'}</a>
+            <button type="submit" class="btn-primary">{isZh ? '申请认领' : 'Request Claim'}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  // Lookup button
+  document.getElementById('lookup-btn')?.addEventListener('click', () => {
+    const id = (document.getElementById('tool-id') as HTMLInputElement)?.value;
+    if (!id) return;
+    const preview = document.getElementById('tool-preview');
+    const name = document.getElementById('preview-name');
+    const cat = document.getElementById('preview-category');
+    if (name) name.textContent = id;
+    if (cat) cat.textContent = 'MCP Server';
+    if (preview) preview.style.display = 'block';
+  });
+</script>
+
+<style>
+  .main { min-height: calc(100vh - 60px); padding-bottom: 80px; }
+  .page-header { border-bottom: 1px solid var(--border-color); padding: 32px 0 28px; }
+  .container { max-width: 640px; margin: 0 auto; padding: 0 24px; }
+  .breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 13px; color: var(--text-tertiary); }
+  .breadcrumb a { color: var(--text-secondary); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--accent); }
+  .page-title { font-size: 26px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+  .page-desc { color: var(--text-secondary); font-size: 15px; }
+  .form-card { padding: 32px 0; display: flex; flex-direction: column; gap: 24px; }
+  .claim-form { display: flex; flex-direction: column; gap: 28px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .field-hint { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
+  .search-row { display: flex; gap: 8px; }
+  .search-row input { flex: 1; }
+  .form-group input, .form-group textarea, .form-group select {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-default, #3f3f46);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--text-primary);
+    font-family: inherit;
+    outline: none;
+    transition: border-color 150ms ease;
+  }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--accent); }
+  .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-tertiary); }
+  .btn-search {
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-muted);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 150ms ease;
+  }
+  .btn-search:hover { background: var(--accent); color: white; }
+  .tool-preview {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .preview-header { display: flex; align-items: center; gap: 12px; padding: 16px; }
+  .preview-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+  }
+  .preview-info { flex: 1; }
+  .preview-info h3 { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+  .preview-info p { font-size: 12px; color: var(--text-secondary); }
+  .status-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .status-badge.unclaimed { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+  .status-badge.claimed { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+  .form-section { display: flex; flex-direction: column; gap: 16px; }
+  .form-section-title { font-size: 15px; font-weight: 700; color: var(--text-primary); padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
+  .form-actions { display: flex; gap: 12px; justify-content: flex-end; padding-top: 8px; }
+  .btn-primary { padding: 10px 28px; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-ghost { padding: 10px 28px; background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; display: flex; align-items: center; }
+  .btn-ghost:hover { border-color: var(--text-secondary); }
+</style>

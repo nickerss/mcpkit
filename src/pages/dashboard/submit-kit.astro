@@ -1,0 +1,312 @@
+---
+export const prerender = true;
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getLocaleFromUrl } from '../../i18n/index';
+
+const locale = getLocaleFromUrl(Astro.url);
+const isZh = locale === 'zh';
+---
+
+<BaseLayout title={isZh ? '提交 Kit 配方 — MCPKIT' : 'Submit Kit Recipe — MCPKIT'}>
+  <Header />
+
+  <main class="main">
+    <div class="page-header">
+      <div class="container">
+        <nav class="breadcrumb">
+          <a href="/dashboard/">{isZh ? '仪表盘' : 'Dashboard'}</a>
+          <span>/</span>
+          <span>{isZh ? '提交 Kit 配方' : 'Submit Kit Recipe'}</span>
+        </nav>
+        <h1 class="page-title">{isZh ? '提交 Kit 配方' : 'Submit Kit Recipe'}</h1>
+        <p class="page-desc">
+          {isZh ? '创建一个 Kit 配方，将多个 MCP 工具组合成可复用的场景化解决方案。' : 'Create a Kit recipe combining multiple MCP tools into a reusable, scenario-based solution.'}
+        </p>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="form-card">
+        <form id="kit-form" class="kit-form">
+          <div class="form-section">
+            <h2 class="form-section-title">{isZh ? '基本信息' : 'Basic Information'}</h2>
+            <div class="form-group">
+              <label for="kit-name">{isZh ? 'Kit 名称 *' : 'Kit Name *'}</label>
+              <input type="text" id="kit-name" name="name" required placeholder={isZh ? '例如：SaaS 快速启动套件' : 'e.g. SaaS Fast Start Kit'} />
+            </div>
+            <div class="form-group">
+              <label for="kit-tagline">{isZh ? '一句话简介 *' : 'Tagline *'}</label>
+              <input type="text" id="kit-tagline" name="tagline" required placeholder={isZh ? '用一句话描述 Kit 的核心价值' : 'Describe the core value in one sentence'} />
+            </div>
+            <div class="form-group">
+              <label for="kit-description">{isZh ? '详细描述 *' : 'Description *'}</label>
+              <textarea id="kit-description" name="description" rows="5" required placeholder={isZh ? '详细描述 Kit 的功能、适用场景、解决的问题' : 'Describe Kit features, use cases, and problems it solves'}></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="kit-category">{isZh ? '分类 *' : 'Category *'}</label>
+                <select id="kit-category" name="category" required>
+                  <option value="">{isZh ? '选择分类' : 'Select category'}</option>
+                  <option value="saas">{isZh ? 'SaaS 开发' : 'SaaS Development'}</option>
+                  <option value="ai-coding">{isZh ? 'AI 编码' : 'AI Coding'}</option>
+                  <option value="devops">{isZh ? 'DevOps 监控' : 'DevOps & Monitoring'}</option>
+                  <option value="research">{isZh ? '研究分析' : 'Research & Analysis'}</option>
+                  <option value="browser">{isZh ? '浏览器自动化' : 'Browser Automation'}</option>
+                  <option value="ecommerce">{isZh ? '电商运营' : 'E-commerce'}</option>
+                  <option value="data">{isZh ? '数据处理' : 'Data Processing'}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="kit-level">{isZh ? '难度级别' : 'Difficulty Level'}</label>
+                <select id="kit-level" name="level">
+                  <option value="starter">{isZh ? '入门' : 'Starter'}</option>
+                  <option value="intermediate">{isZh ? '进阶' : 'Intermediate'}</option>
+                  <option value="advanced">{isZh ? '高级' : 'Advanced'}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h2 class="form-section-title">{isZh ? '工具配置' : 'Tool Configuration'}</h2>
+            <p class="form-hint">{isZh ? '添加 Kit 包含的所有 MCP 工具，以及它们之间的数据流关系。' : 'Add all MCP tools included in this Kit and their data flow relationships.'}</p>
+            <div class="tools-config" id="tools-config">
+              <div class="tool-item" data-index="0">
+                <div class="tool-item-header">
+                  <span class="tool-number">{isZh ? '工具 1' : 'Tool 1'}</span>
+                  <button type="button" class="btn-remove-tool" style="display:none">{isZh ? '删除' : 'Remove'}</button>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>{isZh ? '工具名称 *' : 'Tool Name *'}</label>
+                    <input type="text" name="tools[0][name]" required placeholder="e.g. github-mcp" />
+                  </div>
+                  <div class="form-group">
+                    <label>{isZh ? '工具角色 *' : 'Tool Role *'}</label>
+                    <select name="tools[0][role]" required>
+                      <option value="">{isZh ? '选择角色' : 'Select role'}</option>
+                      <option value="code">{isZh ? '代码管理' : 'Code Management'}</option>
+                      <option value="search">{isZh ? '搜索/爬取' : 'Search / Crawl'}</option>
+                      <option value="db">{isZh ? '数据库' : 'Database'}</option>
+                      <option value="deploy">{isZh ? '部署/云服务' : 'Deploy / Cloud'}</option>
+                      <option value="notification">{isZh ? '通知/消息' : 'Notification'}</option>
+                      <option value="file">{isZh ? '文件处理' : 'File Handling'}</option>
+                      <option value="browser">{isZh ? '浏览器控制' : 'Browser Control'}</option>
+                      <option value="api">{isZh ? 'API 调用' : 'API Call'}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>{isZh ? '数据流配置（如何接收数据、如何输出）' : 'Data Flow (input → output)'}</label>
+                  <input type="text" name="tools[0][flow]" placeholder={isZh ? '例如：从 GitHub 获取代码 → 写入文件系统' : 'e.g. Fetch code from GitHub → Write to filesystem'} />
+                </div>
+              </div>
+            </div>
+            <button type="button" class="btn-add-tool" id="add-tool-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+              {isZh ? '添加工具' : 'Add Tool'}
+            </button>
+          </div>
+
+          <div class="form-section">
+            <h2 class="form-section-title">{isZh ? '配置代码' : 'Configuration'}</h2>
+            <div class="config-tabs">
+              <button type="button" class="config-tab active" data-tab="json">JSON</button>
+              <button type="button" class="config-tab" data-tab="yaml">YAML</button>
+            </div>
+            <div class="config-preview" id="config-preview">
+              <pre id="config-code">{`{
+  "name": "ship-a-saas",
+  "tagline": "30 minutes from zero to deployment",
+  "tools": [
+    {
+      "name": "github-mcp",
+      "role": "code",
+      "flow": "Receive task → Fetch repo → Return code"
+    },
+    {
+      "name": "supabase-mcp",
+      "role": "db",
+      "flow": "Store data → Query analytics"
+    }
+  ],
+  "category": "saas",
+  "level": "starter"
+}`}</pre>
+              <button type="button" class="btn-copy" id="copy-config">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                {isZh ? '复制' : 'Copy'}
+              </button>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h2 class="form-section-title">{isZh ? '审核信息' : 'Review Information'}</h2>
+            <div class="form-group">
+              <label for="kit-github">{isZh ? 'GitHub 仓库 URL' : 'GitHub Repository URL'}</label>
+              <input type="url" id="kit-github" name="github_url" placeholder="https://github.com/owner/repo" />
+            </div>
+            <div class="form-group">
+              <label for="kit-demo">{isZh ? '在线演示 URL' : 'Live Demo URL'}</label>
+              <input type="url" id="kit-demo" name="demo_url" placeholder="https://..." />
+            </div>
+            <div class="form-group">
+              <label for="kit-contact">{isZh ? '联系邮箱 *' : 'Contact Email *'}</label>
+              <input type="email" id="kit-contact" name="contact_email" required placeholder="you@example.com" />
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <a href="/dashboard/" class="btn-ghost">{isZh ? '取消' : 'Cancel'}</a>
+            <button type="submit" class="btn-primary">{isZh ? '提交审核' : 'Submit for Review'}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  // Config tab switching
+  document.querySelectorAll('.config-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.config-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  // Copy button
+  document.getElementById('copy-config')?.addEventListener('click', () => {
+    const code = document.getElementById('config-code')?.textContent || '';
+    navigator.clipboard.writeText(code).then(() => {
+      const btn = document.getElementById('copy-config');
+      if (btn) {
+        const orig = btn.innerHTML;
+        btn.innerHTML = '✓ Copied';
+        setTimeout(() => { btn.innerHTML = orig; }, 2000);
+      }
+    });
+  });
+
+  // Add tool button
+  let toolCount = 1;
+  document.getElementById('add-tool-btn')?.addEventListener('click', () => {
+    const container = document.getElementById('tools-config');
+    if (!container) return;
+    const n = toolCount++;
+    const div = document.createElement('div');
+    div.className = 'tool-item';
+    div.dataset.index = String(n);
+    div.innerHTML = `
+      <div class="tool-item-header">
+        <span class="tool-number">Tool ${n + 1}</span>
+        <button type="button" class="btn-remove-tool">Remove</button>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Tool Name *</label>
+          <input type="text" name="tools[${n}][name]" required placeholder="e.g. github-mcp" />
+        </div>
+        <div class="form-group">
+          <label>Tool Role *</label>
+          <select name="tools[${n}][role]" required>
+            <option value="">Select role</option>
+            <option value="code">Code Management</option>
+            <option value="search">Search / Crawl</option>
+            <option value="db">Database</option>
+            <option value="deploy">Deploy / Cloud</option>
+            <option value="notification">Notification</option>
+            <option value="file">File Handling</option>
+            <option value="browser">Browser Control</option>
+            <option value="api">API Call</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Data Flow</label>
+        <input type="text" name="tools[${n}][flow]" placeholder="e.g. Fetch code from GitHub → Write to filesystem" />
+      </div>
+    `;
+    div.querySelector('.btn-remove-tool')?.addEventListener('click', () => div.remove());
+    container.appendChild(div);
+  });
+</script>
+
+<style>
+  .main { min-height: calc(100vh - 60px); padding-bottom: 80px; }
+  .page-header { border-bottom: 1px solid var(--border-color); padding: 32px 0 28px; }
+  .container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+  .breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 13px; color: var(--text-tertiary); }
+  .breadcrumb a { color: var(--text-secondary); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--accent); }
+  .page-title { font-size: 26px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+  .page-desc { color: var(--text-secondary); font-size: 15px; }
+  .form-card { padding: 32px 0; }
+  .kit-form { display: flex; flex-direction: column; gap: 32px; }
+  .form-section { display: flex; flex-direction: column; gap: 20px; }
+  .form-section-title { font-size: 16px; font-weight: 700; color: var(--text-primary); padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
+  .form-hint { font-size: 13px; color: var(--text-secondary); margin-top: -8px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group input, .form-group textarea, .form-group select {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-default, #3f3f46);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--text-primary);
+    font-family: inherit;
+    outline: none;
+    transition: border-color 150ms ease;
+  }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--accent); }
+  .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-tertiary); }
+  .tools-config { display: flex; flex-direction: column; gap: 16px; }
+  .tool-item {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .tool-item-header { display: flex; align-items: center; justify-content: space-between; }
+  .tool-number { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+  .btn-remove-tool { font-size: 12px; color: var(--danger); background: none; border: none; cursor: pointer; padding: 2px 6px; }
+  .btn-remove-tool:hover { text-decoration: underline; }
+  .btn-add-tool {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-muted);
+    border: 1px dashed var(--accent);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 150ms ease;
+    align-self: flex-start;
+  }
+  .btn-add-tool:hover { background: var(--accent); color: white; }
+  .config-tabs { display: flex; gap: 4px; }
+  .config-tab { padding: 6px 16px; font-size: 13px; font-weight: 600; color: var(--text-secondary); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; }
+  .config-tab.active { color: var(--accent); border-color: var(--accent); }
+  .config-preview { position: relative; }
+  #config-code { background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; font-size: 13px; font-family: 'JetBrains Mono', monospace; color: var(--text-primary); overflow-x: auto; white-space: pre; margin: 0; line-height: 1.6; }
+  .btn-copy { position: absolute; top: 12px; right: 12px; display: flex; align-items: center; gap: 4px; padding: 5px 10px; font-size: 12px; font-weight: 600; color: var(--text-secondary); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; }
+  .btn-copy:hover { color: var(--accent); border-color: var(--accent); }
+  .form-actions { display: flex; gap: 12px; justify-content: flex-end; padding-top: 8px; border-top: 1px solid var(--border-color); padding-top: 24px; }
+  .btn-primary { padding: 10px 28px; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-ghost { padding: 10px 28px; background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; display: flex; align-items: center; }
+  .btn-ghost:hover { border-color: var(--text-secondary); }
+  @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+</style>

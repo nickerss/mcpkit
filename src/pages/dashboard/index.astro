@@ -1,0 +1,159 @@
+---
+export const prerender = true;
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getLocaleFromUrl } from '../../i18n/index';
+
+const locale = getLocaleFromUrl(Astro.url);
+const isZh = locale === 'zh';
+---
+
+<BaseLayout title={isZh ? '开发者仪表盘 — MCPKIT' : 'Developer Dashboard — MCPKIT'}>
+  <Header />
+
+  <main class="main">
+    <div class="page-header">
+      <div class="container">
+        <h1 class="page-title">{isZh ? '开发者仪表盘' : 'Developer Dashboard'}</h1>
+        <p class="page-desc">
+          {isZh ? '管理你的工具、配方提交和收益分析。' : 'Manage your tools, recipe submissions, and analytics.'}
+        </p>
+      </div>
+    </div>
+
+    <div class="container dashboard-grid">
+      <!-- Stats Cards -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <span class="stat-value">0</span>
+          <span class="stat-label">{isZh ? '已提交工具' : 'Submitted Tools'}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">0</span>
+          <span class="stat-label">{isZh ? '已认领工具' : 'Claimed Tools'}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">0</span>
+          <span class="stat-label">{isZh ? 'Kit 配方' : 'Kit Recipes'}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">$0</span>
+          <span class="stat-label">{isZh ? '本月收益' : 'Revenue This Month'}</span>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="dashboard-section">
+        <h2 class="section-title">{isZh ? '快捷操作' : 'Quick Actions'}</h2>
+        <div class="action-cards">
+          <a href="/dashboard/submit-kit/" class="action-card">
+            <div class="action-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            </div>
+            <div class="action-text">
+              <h3>{isZh ? '提交工具' : 'Submit Tool'}</h3>
+              <p>{isZh ? '提交新的 MCP 工具到目录' : 'Submit a new MCP tool to the directory'}</p>
+            </div>
+          </a>
+          <a href="/dashboard/claim-tool/" class="action-card">
+            <div class="action-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9S3 16.97 3 12 7.03 3 12 3s9 4.03 9 9z"/></svg>
+            </div>
+            <div class="action-text">
+              <h3>{isZh ? '认领工具' : 'Claim Tool'}</h3>
+              <p>{isZh ? '申请认领你维护的工具' : 'Request to claim a tool you maintain'}</p>
+            </div>
+          </a>
+          <a href="/developer/" class="action-card">
+            <div class="action-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            </div>
+            <div class="action-text">
+              <h3>{isZh ? '创建 Kit 配方' : 'Create Kit Recipe'}</h3>
+              <p>{isZh ? '将多个工具组合成可复用的场景化套件' : 'Combine tools into reusable scenario-based kits'}</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="dashboard-section">
+        <h2 class="section-title">{isZh ? '最近活动' : 'Recent Activity'}</h2>
+        <div class="activity-list">
+          <div class="empty-state">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+            <p>{isZh ? '暂无活动记录' : 'No activity yet'}</p>
+            <p class="hint">{isZh ? '提交或认领工具后，这里会显示你的活动' : 'Your activity will appear here after you submit or claim tools'}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .main { min-height: calc(100vh - 60px); padding-bottom: 80px; }
+  .page-header { border-bottom: 1px solid var(--border-color); padding: 40px 0 32px; }
+  .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+  .page-title { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+  .page-desc { color: var(--text-secondary); font-size: 16px; }
+  .dashboard-grid { padding-top: 32px; display: flex; flex-direction: column; gap: 32px; }
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
+  .stat-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .stat-value { font-size: 28px; font-weight: 700; color: var(--text-primary); }
+  .stat-label { font-size: 13px; color: var(--text-secondary); }
+  .dashboard-section { display: flex; flex-direction: column; gap: 16px; }
+  .section-title { font-size: 18px; font-weight: 700; color: var(--text-primary); }
+  .action-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .action-card {
+    display: flex;
+    gap: 16px;
+    padding: 20px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    text-decoration: none;
+    transition: border-color 150ms ease, transform 150ms ease;
+  }
+  .action-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .action-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--accent-muted);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .action-text h3 { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+  .action-text p { font-size: 13px; color: var(--text-secondary); }
+  .activity-list {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 48px 24px;
+    color: var(--text-tertiary);
+    text-align: center;
+  }
+  .hint { font-size: 13px; color: var(--text-tertiary); }
+</style>
