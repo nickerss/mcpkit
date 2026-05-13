@@ -4,4 +4,11 @@ dist/
 .DS_Store
 *.log
 .env
+
+# Local development
+*.db
+*.db-shm
+*.db-wal
+wrangler.toml
 .dev.vars
+.dev.vars.example
