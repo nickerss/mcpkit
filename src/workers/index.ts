@@ -106,6 +106,7 @@ async function handleAuth(request: Request, env: Env): Promise<Response> {
   }
 
   if (path === '/api/auth/callback') {
+    try {
     const code = url.searchParams.get('code');
     const state = url.searchParams.get('state');
     if (!code || !state) return json({ error: 'Missing code or state' }, 400);
@@ -117,11 +118,25 @@ async function handleAuth(request: Request, env: Env): Promise<Response> {
     const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({ client_id: env.GITHUB_CLIENT_ID, client_secret: env.GITHUB_CLIENT_SECRET, code }),
+      body: JSON.stringify({ 
+        client_id: env.GITHUB_CLIENT_ID, 
+        client_secret: env.GITHUB_CLIENT_SECRET, 
+        code,
+        redirect_uri: `${env.API_URL}/api/auth/callback`
+      }),
     });
-    const tokenData = await tokenRes.json();
+    const tokenText = await tokenRes.text();
+    let tokenData;
+    try { tokenData = JSON.parse(tokenText); } catch { 
+      return json({ 
+        error: 'GitHub token response not JSON', 
+        response: tokenText.substring(0, 500),
+        status: tokenRes.status,
+        clientId: env.GITHUB_CLIENT_ID ? 'set' : 'missing'
+      }, 500); 
+    }
     const accessToken = tokenData.access_token;
-    if (!accessToken) return json({ error: 'Failed to get access token' }, 400);
+    if (!accessToken) return json({ error: 'Failed to get access token: ' + JSON.stringify(tokenData) }, 400);
 
     const userRes = await fetch('https://api.github.com/user', {
       headers: { Authorization: `Bearer ${accessToken}`, Accept: 'application/json' },
@@ -146,6 +161,9 @@ async function handleAuth(request: Request, env: Env): Promise<Response> {
         'Set-Cookie': `session=${sessionToken}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${60 * 60 * 24 * 7}; Domain=.mcpkit.run`,
       },
     });
+    } catch (err) {
+      return json({ error: String(err) }, 500);
+    }
   }
 
   if (path === '/api/auth/logout') {
