@@ -3,6 +3,7 @@ import tailwind from '@astrojs/tailwind';
 
 export default defineConfig({
   site: 'https://mcpkit.run',
+  output: 'static',
   integrations: [
     tailwind(),
   ],

@@ -1,0 +1,12 @@
+name = "mcpkit-api"
+main = "src/workers/index.ts"
+compatibility_date = "2025-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "mcpkit-db"
+database_id = "1114ca36-bdc1-4908-a678-3a7161ecd4ab"
+
+[[kv_namespaces]]
+binding = "SESSION_CACHE"
+id = "3f2da378368042e484a5a8cfc40c5874"
