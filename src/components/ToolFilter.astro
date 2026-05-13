@@ -1,0 +1,101 @@
+---
+interface Props {
+  categories: string[];
+  prices: string[];
+  selectedCategory?: string;
+  selectedPrice?: string;
+  baseUrl: string;
+}
+
+const { categories, prices, selectedCategory, selectedPrice, baseUrl } = Astro.props;
+---
+
+<div class="tool-filter">
+  <div class="filter-group">
+    <label class="filter-label">Category</label>
+    <select class="filter-select" id="category-filter" data-base-url={baseUrl}>
+      <option value="" selected={!selectedCategory}>All</option>
+      {categories.map(cat => (
+        <option value={cat} selected={selectedCategory === cat}>{cat}</option>
+      ))}
+    </select>
+  </div>
+  <div class="filter-group">
+    <label class="filter-label">Price</label>
+    <select class="filter-select" id="price-filter" data-base-url={baseUrl}>
+      <option value="" selected={!selectedPrice}>All</option>
+      {prices.map(p => (
+        <option value={p} selected={selectedPrice === p}>{p}</option>
+      ))}
+    </select>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var catFilter = document.getElementById('category-filter');
+    var priceFilter = document.getElementById('price-filter');
+    
+    function applyFilters() {
+      var baseUrl = catFilter?.getAttribute('data-base-url') || '';
+      var cat = catFilter?.value || '';
+      var price = priceFilter?.value || '';
+      var params = new URLSearchParams(window.location.search);
+      
+      if (cat) params.set('category', cat);
+      else params.delete('category');
+      
+      if (price) params.set('price', price);
+      else params.delete('price');
+      
+      var newUrl = baseUrl + (params.toString() ? '?' + params.toString() : '');
+      window.location.href = newUrl;
+    }
+    
+    catFilter?.addEventListener('change', applyFilters);
+    priceFilter?.addEventListener('change', applyFilters);
+  });
+</script>
+
+<style>
+  .tool-filter {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .filter-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .filter-select {
+    padding: 8px 32px 8px 12px;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    min-width: 140px;
+  }
+  .filter-select:hover {
+    border-color: var(--accent);
+  }
+  .filter-select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+</style>

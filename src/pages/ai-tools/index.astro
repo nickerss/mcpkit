@@ -4,30 +4,56 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import ToolCard from '../../components/ToolCard.astro';
+import ToolFilter from '../../components/ToolFilter.astro';
 import { getCollection } from 'astro:content';
 import { getLocaleFromUrl } from '../../i18n/index';
 
 const locale = getLocaleFromUrl(Astro.url);
 const isZh = locale === 'zh';
 const tools = await getCollection('ai-tools');
+
+// Get unique categories and prices
+const categories = [...new Set(tools.map(t => t.data.category).filter(Boolean))].sort();
+const prices = ['free', 'freemium', 'paid'];
+
+// Filter by query params
+const url = new URL(Astro.request.url);
+const selectedCategory = url.searchParams.get('category') || '';
+const selectedPrice = url.searchParams.get('price') || '';
+
+let filteredTools = tools;
+if (selectedCategory) {
+  filteredTools = filteredTools.filter(t => t.data.category === selectedCategory);
+}
+if (selectedPrice) {
+  filteredTools = filteredTools.filter(t => t.data.price === selectedPrice);
+}
 ---
 
-<BaseLayout title={isZh ? 'AI 编码工具 — MCPKIT' : 'AI Coding Tools — MCPKIT'}>
+<BaseLayout title={isZh ? 'AI 工具 — MCPKIT' : 'AI Tools — MCPKIT'}>
   <Header />
 
   <main class="main">
     <div class="page-header">
       <div class="container">
-        <h1 class="page-title">{isZh ? 'AI 编码工具' : 'AI Coding Tools'}</h1>
+        <h1 class="page-title">{isZh ? 'AI 工具' : 'AI Tools'}</h1>
         <p class="page-desc">
-          {isZh ? 'AI 驱动的代码编辑器、CLI 工具和开发环境，加速你的开发工作流。' : 'AI-powered code editors, CLI tools, and dev environments to accelerate your development workflow.'}
+          {isZh ? 'AI 代码编辑器、Cursor Rules、AI CLI 工具等。' : 'AI code editors, Cursor Rules, AI CLI tools, and more.'}
         </p>
+        <p class="tool-count">{filteredTools.length} {isZh ? '个工具' : 'tools'}</p>
       </div>
     </div>
 
     <div class="container">
+      <ToolFilter 
+        categories={categories} 
+        prices={prices} 
+        selectedCategory={selectedCategory}
+        selectedPrice={selectedPrice}
+        baseUrl="/ai-tools/"
+      />
       <div class="tools-grid">
-        {tools.map(tool => (
+        {filteredTools.map(tool => (
           <ToolCard {...tool.data} slug={tool.id.replace(/\.(md|mdx)$/, '')} />
         ))}
       </div>
@@ -42,11 +68,12 @@ const tools = await getCollection('ai-tools');
   .page-header { border-bottom: 1px solid var(--border-color); padding: 40px 0 32px; }
   .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
   .page-title { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
-  .page-desc { color: var(--text-secondary); font-size: 16px; }
+  .page-desc { color: var(--text-secondary); font-size: 16px; margin-bottom: 8px; }
+  .tool-count { color: var(--text-muted); font-size: 14px; }
   .tools-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 16px;
-    padding: 40px 0 80px;
+    padding: 0 0 80px;
   }
 </style>
