@@ -34,11 +34,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     </script>
     <style>
       /* i18n: bilingual content toggle (Approach A) */
-      [data-lang="zh"] .en-hide { display: none; }
-      [data-lang="zh"] .zh-show { display: inline; }
-      .zh-show { display: none; }
-      [data-lang="en"] .zh-show { display: none; }
-      [data-lang="en"] .en-show { display: inline; }
+      html[data-lang="zh"] .en-hide { display: none !important; }
+      html[data-lang="zh"] .zh-show { display: inline !important; }
+      html .zh-show { display: none; }
+      html[data-lang="en"] .zh-show { display: none !important; }
+      html[data-lang="en"] .en-show { display: inline !important; }
     </style>
   </head>
   <body>
