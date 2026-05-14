@@ -33,8 +33,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       })();
     </script>
     <style>
-      /* i18n: bilingual content toggle */
-      .en-hide { display: none; }
+      /* i18n: bilingual content toggle (Approach A) */
       [data-lang="zh"] .en-hide { display: none; }
       [data-lang="zh"] .zh-show { display: inline; }
       .zh-show { display: none; }
