@@ -4,6 +4,7 @@ import ToolCard from '../../components/ToolCard.astro';
 import PriceBadge from '../../components/PriceBadge.astro';
 import InstallCommand from '../../components/InstallCommand.astro';
 import TagList from '../../components/TagList.astro';
+import RadarChart from '../../components/RadarChart.astro';
 import { getCollection } from 'astro:content';
 import { getLocaleFromUrl, t } from '../../i18n/index';
 
@@ -76,6 +77,11 @@ const category = entry.data.category || 'mcp-servers';
     </div>
 
     <p class="tool-desc">{entry.data.description}</p>
+
+    <div class="section radar-section">
+      <h3>{isZh ? '四维评测' : 'Quality Score'}</h3>
+      <RadarChart toolSlug={entry.id.replace(/\.(md|mdx)$/, '')} />
+    </div>
 
     <div class="two-col">
       <div class="left-col">
@@ -169,6 +175,8 @@ const category = entry.data.category || 'mcp-servers';
   .right-col h3 { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; }
   .related-grid { display: flex; flex-direction: column; gap: 12px; }
   .tool-actions { margin-top: 40px; }
+  .radar-section { margin-bottom: 32px; }
+  .radar-section h3 { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; }
   .btn-primary {
     display: inline-block;
     padding: 14px 24px;

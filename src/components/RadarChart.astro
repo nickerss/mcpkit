@@ -1,201 +1,220 @@
 ---
 interface Props {
-  easeOfUse: number;
-  security: number;
-  activity: number;
-  scenarioFit: number;
-  overall?: number;
-  size?: number;
-  kitColor?: string;
-}
-
-const {
-  easeOfUse,
-  security,
-  activity,
-  scenarioFit,
-  overall,
-  size = 300,
-  kitColor = '#6366f1',
-} = Astro.props;
-
-const cx = size / 2;
-const cy = size / 2;
-const maxRadius = (size / 2) * 0.75;
-const labelRadius = (size / 2) * 0.92;
-
-// 4 axes at 90° intervals, starting from top (easeOfUse)
-// Top (90°): easeOfUse
-// Right (0°): security
-// Bottom-right (270°): activity
-// Bottom-left (180°): scenarioFit
-
-function pointOnCircle(angleDeg: number, radius: number) {
-  const rad = (angleDeg - 90) * Math.PI / 180;
-  return {
-    x: cx + radius * Math.cos(rad),
-    y: cy + radius * Math.sin(rad),
+  scores?: {
+    community: number;
+    security: number;
+    rating: number;
+    certified: number;
+    overall: number;
   };
+  toolSlug?: string;
 }
 
-const angles = {
-  easeOfUse: 90,
-  security: 0,
-  activity: 270,
-  scenarioFit: 180,
+const { scores, toolSlug } = Astro.props;
+const defaultScores = {
+  community: 50,
+  security: 75,
+  rating: 60,
+  certified: 50,
+  overall: 50
 };
-
-const values = { easeOfUse, security, activity, scenarioFit };
-
-function getPoint(key: keyof typeof angles, value: number) {
-  return pointOnCircle(angles[key], (value / 5) * maxRadius);
-}
-
-const easePoint = getPoint('easeOfUse', easeOfUse);
-const secPoint = getPoint('security', security);
-const actPoint = getPoint('activity', activity);
-const fitPoint = getPoint('scenarioFit', scenarioFit);
-
-const polygonPoints = `${easePoint.x},${easePoint.y} ${secPoint.x},${secPoint.y} ${actPoint.x},${actPoint.y} ${fitPoint.x},${fitPoint.y}`;
-
-// Grid levels at 1, 2, 3, 4, 5
-const gridLevels = [1, 2, 3, 4, 5].map(v => {
-  return {
-    radius: (v / 5) * maxRadius,
-    points: Object.entries(angles).map(([key, angle]) => {
-      const p = pointOnCircle(angle as number, (v / 5) * maxRadius);
-      return `${p.x},${p.y}`;
-    }).join(' '),
-  };
-});
-
-// Axis lines from center
-const axisLines = Object.entries(angles).map(([_, angle]) => {
-  const end = pointOnCircle(angle as number, maxRadius);
-  return { x1: cx, y1: cy, x2: end.x, y2: end.y };
-});
-
-// Axis labels
-const labels = {
-  easeOfUse: { text: '易用性', angle: 90, weight: '30%' },
-  security: { text: '安全性', angle: 0, weight: '25%' },
-  activity: { text: '活跃度', angle: 270, weight: '20%' },
-  scenarioFit: { text: '场景匹配', angle: 180, weight: '25%' },
-};
-
-function getLabelPos(angle: number) {
-  return pointOnCircle(angle, labelRadius);
-}
-
-const displayOverall = overall ?? parseFloat(((easeOfUse * 0.3 + security * 0.25 + activity * 0.2 + scenarioFit * 0.25))).toFixed(1);
+const data = scores || defaultScores;
 ---
 
-<div class="radar-chart" data-size={size} style={`width:${size}px;height:${size}px`}>
-  <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size}>
-    <defs>
-      <linearGradient id={`radar-grad-${kitColor.replace('#','')}`} x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color={kitColor} stop-opacity="0.4"/>
-        <stop offset="100%" stop-color={kitColor} stop-opacity="0.15"/>
-      </linearGradient>
-    </defs>
-
-    <!-- Grid rings -->
-    {gridLevels.map(g => (
-      <polygon
-        points={g.points}
-        fill="none"
-        stroke="var(--border)"
-        stroke-width="1"
-        opacity="0.5"
-      />
-    ))}
-
-    <!-- Axis lines -->
-    {axisLines.map(a => (
-      <line x1={a.x1} y1={a.y1} x2={a.x2} y2={a.y2} stroke="var(--border)" stroke-width="1" opacity="0.4"/>
-    ))}
-
-    <!-- Score polygon -->
-    <polygon
-      points={polygonPoints}
-      fill={`url(#radar-grad-${kitColor.replace('#','')})`}
-      stroke={kitColor}
-      stroke-width="2"
-      class="radar-polygon"
-    />
-
-    <!-- Score dots -->
-    <circle cx={easePoint.x} cy={easePoint.y} r="5" fill={kitColor} class="radar-dot"/>
-    <circle cx={secPoint.x} cy={secPoint.y} r="5" fill={kitColor} class="radar-dot"/>
-    <circle cx={actPoint.x} cy={actPoint.y} r="5" fill={kitColor} class="radar-dot"/>
-    <circle cx={fitPoint.x} cy={fitPoint.y} r="5" fill={kitColor} class="radar-dot"/>
-
-    <!-- Axis labels -->
-    {Object.entries(labels).map(([key, label]) => {
-      const pos = getLabelPos(label.angle);
-      return (
-        <text
-          x={pos.x}
-          y={pos.y}
-          text-anchor="middle"
-          dominant-baseline="middle"
-          fill="var(--text-secondary)"
-          font-size="12"
-          font-weight="500"
-        >
-          {label.text}
-          <tspan font-size="10" fill="var(--text-muted)"> ({label.weight})</tspan>
-        </text>
-      );
-    })}
-
-    <!-- Score values near dots -->
-    <text x={easePoint.x} y={easePoint.y - 14} text-anchor="middle" fill={kitColor} font-size="13" font-weight="700">{easeOfUse.toFixed(1)}</text>
-    <text x={secPoint.x + 16} y={secPoint.y} text-anchor="start" dominant-baseline="middle" fill={kitColor} font-size="13" font-weight="700">{security.toFixed(1)}</text>
-    <text x={actPoint.x} y={actPoint.y + 22} text-anchor="middle" fill={kitColor} font-size="13" font-weight="700">{activity.toFixed(1)}</text>
-    <text x={fitPoint.x - 16} y={fitPoint.y} text-anchor="end" dominant-baseline="middle" fill={kitColor} font-size="13" font-weight="700">{scenarioFit.toFixed(1)}</text>
-
-    <!-- Center dot -->
-    <circle cx={cx} cy={cy} r="4" fill="var(--bg-tertiary)" stroke={kitColor} stroke-width="1.5"/>
-  </svg>
-
-  {overall !== undefined && (
-    <div class="radar-overall">
-      <span class="overall-label">综合</span>
-      <span class="overall-score">⭐ {displayOverall}</span>
+<div class="radar-container" id="radar-container">
+  <div class="radar-chart" id="radar-chart"></div>
+  <div class="score-legend">
+    <div class="legend-item">
+      <span class="legend-dot" style="background: #6366f1"></span>
+      <span class="legend-label">Community</span>
+      <span class="legend-value">{data.community}</span>
     </div>
-  )}
+    <div class="legend-item">
+      <span class="legend-dot" style="background: #22c55e"></span>
+      <span class="legend-label">Security</span>
+      <span class="legend-value">{data.security}</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot" style="background: #f59e0b"></span>
+      <span class="legend-label">Rating</span>
+      <span class="legend-value">{data.rating}</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot" style="background: #8b5cf6"></span>
+      <span class="legend-label">Certified</span>
+      <span class="legend-value">{data.certified}</span>
+    </div>
+    <div class="legend-item overall">
+      <span class="legend-dot" style="background: #ef4444"></span>
+      <span class="legend-label">Overall</span>
+      <span class="legend-value">{data.overall}</span>
+    </div>
+  </div>
 </div>
 
+<script define:vars={{ data, toolSlug }}>
+  function createRadarChart() {
+    const container = document.getElementById('radar-chart');
+    if (!container) return;
+
+    const size = 200;
+    const center = size / 2;
+    const radius = 70;
+    const labels = ['Community', 'Security', 'Rating', 'Certified', 'Overall'];
+    const values = [data.community, data.security, data.rating, data.certified, data.overall];
+    const colors = ['#6366f1', '#22c55e', '#f59e0b', '#8b5cf6', '#ef4444'];
+
+    const angleStep = (2 * Math.PI) / labels.length;
+    const startAngle = -Math.PI / 2;
+
+    // Create SVG
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('width', String(size));
+    svg.setAttribute('height', String(size));
+    svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+
+    // Draw grid circles
+    [25, 50, 75, 100].forEach(level => {
+      const r = (level / 100) * radius;
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', String(center));
+      circle.setAttribute('cy', String(center));
+      circle.setAttribute('r', String(r));
+      circle.setAttribute('fill', 'none');
+      circle.setAttribute('stroke', '#3f3f46');
+      circle.setAttribute('stroke-width', '1');
+      svg.appendChild(circle);
+    });
+
+    // Draw axis lines and labels
+    labels.forEach((label, i) => {
+      const angle = startAngle + i * angleStep;
+      const x2 = center + radius * Math.cos(angle);
+      const y2 = center + radius * Math.sin(angle);
+
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', String(center));
+      line.setAttribute('y1', String(center));
+      line.setAttribute('x2', String(x2));
+      line.setAttribute('y2', String(y2));
+      line.setAttribute('stroke', '#3f3f46');
+      line.setAttribute('stroke-width', '1');
+      svg.appendChild(line);
+
+      // Label
+      const labelX = center + (radius + 20) * Math.cos(angle);
+      const labelY = center + (radius + 20) * Math.sin(angle);
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', String(labelX));
+      text.setAttribute('y', String(labelY));
+      text.setAttribute('text-anchor', 'middle');
+      text.setAttribute('dominant-baseline', 'middle');
+      text.setAttribute('fill', '#9ca3af');
+      text.setAttribute('font-size', '10');
+      text.textContent = label;
+      svg.appendChild(text);
+    });
+
+    // Draw data polygon
+    const points = values.map((val, i) => {
+      const angle = startAngle + i * angleStep;
+      const r = (val / 100) * radius;
+      return `${center + r * Math.cos(angle)},${center + r * Math.sin(angle)}`;
+    }).join(' ');
+
+    const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    polygon.setAttribute('points', points);
+    polygon.setAttribute('fill', 'rgba(99, 102, 241, 0.3)');
+    polygon.setAttribute('stroke', '#6366f1');
+    polygon.setAttribute('stroke-width', '2');
+    svg.appendChild(polygon);
+
+    // Draw data points
+    values.forEach((val, i) => {
+      const angle = startAngle + i * angleStep;
+      const r = (val / 100) * radius;
+      const x = center + r * Math.cos(angle);
+      const y = center + r * Math.sin(angle);
+
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', String(x));
+      circle.setAttribute('cy', String(y));
+      circle.setAttribute('r', '4');
+      circle.setAttribute('fill', colors[i]);
+      svg.appendChild(circle);
+    });
+
+    container.innerHTML = '';
+    container.appendChild(svg);
+  }
+
+  // Fetch live quality score if toolSlug provided
+  async function fetchQualityScore() {
+    if (!toolSlug) {
+      createRadarChart();
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/tools/${toolSlug}`);
+      if (res.ok) {
+        const tool = await res.json();
+        if (tool.quality_score !== undefined) {
+          // Update legend values with live data
+          document.querySelectorAll('.legend-value').forEach((el, i) => {
+            const keys = ['community', 'security', 'rating', 'certified', 'overall'];
+            if (tool.quality_score && tool.quality_score[keys[i]]) {
+              el.textContent = String(tool.quality_score[keys[i]]);
+            }
+          });
+        }
+      }
+    } catch (e) {
+      console.log('Could not fetch quality score');
+    }
+    createRadarChart();
+  }
+
+  fetchQualityScore();
+</script>
+
 <style>
+  .radar-container {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+  }
   .radar-chart {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .score-legend {
+    display: flex;
+    flex-wrap: wrap;
     gap: 12px;
+    justify-content: center;
   }
-  .radar-polygon {
-    transform-origin: center;
-    animation: radar-expand 600ms ease-out forwards;
-  }
-  .radar-dot {
-    animation: radar-expand 600ms ease-out forwards;
-  }
-  .radar-overall {
+  .legend-item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 16px;
+    gap: 6px;
+    font-size: 13px;
   }
-  .overall-label {
+  .legend-item.overall {
+    font-weight: 600;
+  }
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .legend-label {
     color: var(--text-secondary);
   }
-  .overall-score {
-    font-weight: 700;
+  .legend-value {
     color: var(--text-primary);
-  }
-  @keyframes radar-expand {
-    from { transform: scale(0); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+    font-weight: 600;
   }
 </style>

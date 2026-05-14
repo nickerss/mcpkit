@@ -41,15 +41,43 @@ const navLinks = [
       <LanguageSwitcher />
       <span id="user-info" style="display:none">
         <a href="/dashboard/" id="user-name" class="user-link"></a>
-        <a href="https://api.mcpkit.run/api/auth/logout" class="btn-logout">{locale === 'zh' ? '退出' : 'Logout'}</a>
+        <a href="https://api.mcpkit.run/api/auth/logout" class="btn-logout" data-i18n="logout">Logout</a>
       </span>
-      <a id="login-btn" href="https://api.mcpkit.run/api/auth/github" class="btn-login">{locale === 'zh' ? '登录' : 'Login'}</a>
-      <a href={`/submit/${langParam}`} class="cta-btn">{locale === 'zh' ? '提交工具' : 'Submit Tool'}</a>
+      <a id="login-btn" href="https://api.mcpkit.run/api/auth/github" class="btn-login" data-i18n="login">Login</a>
+      <a href={`/submit/`} class="cta-btn" data-i18n="submit">Submit Tool</a>
     </div>
   </div>
 </header>
 
 <script>
+  function updateHeaderLang(lang: string) {
+    const isZh = lang === 'zh';
+    const labels: Record<string, Record<string, string>> = {
+      en: { login: 'Login', logout: 'Logout', submit: 'Submit Tool' },
+      zh: { login: '登录', logout: '退出', submit: '提交工具' }
+    };
+    const texts = labels[lang] || labels.en;
+    
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (key && texts[key]) {
+        el.textContent = texts[key];
+      }
+    });
+    
+    const loginBtn = document.getElementById('login-btn');
+    const submitBtn = document.querySelector('.cta-btn');
+    if (submitBtn) submitBtn.setAttribute('href', isZh ? '/submit/?lang=zh' : '/submit/');
+  }
+  
+  function getLang() {
+    const urlLang = new URLSearchParams(window.location.search).get('lang');
+    const storedLang = localStorage.getItem('mcpkit-lang');
+    return urlLang || storedLang || 'en';
+  }
+  
+  updateHeaderLang(getLang());
+
   async function checkAuth() {
     try {
       const res = await fetch('https://api.mcpkit.run/api/users/me', { credentials: 'include' });
