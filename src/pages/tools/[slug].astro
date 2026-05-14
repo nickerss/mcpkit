@@ -86,7 +86,7 @@ const category = entry.data.category || 'mcp-servers';
       <RadarChart toolSlug={entry.id.replace(/\.(md|mdx)$/, '')} />
     </div>
 
-    <div class="two-col">
+    <div class="two-col" data-has-left={entry.data.scenarios?.length || entry.data.config ? 'true' : 'false'}>
       <div class="left-col">
         {entry.data.scenarios?.length && (
           <div class="section">
@@ -172,9 +172,7 @@ const category = entry.data.category || 'mcp-servers';
   .meta-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
   .tool-desc { font-size: 16px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 40px; }
   .two-col { display: grid; grid-template-columns: 1fr; gap: 40px; margin-bottom: 40px; }
-  @media (min-width: 768px) { .two-col { grid-template-columns: 1fr 1fr; } }
-  .two-col .left-col:empty { display: none; }
-  @media (min-width: 768px) { .two-col .left-col:empty ~ .right-col { grid-column: 1 / -1; } }
+  .two-col[data-has-left="true"] { grid-template-columns: 1fr 1fr; }
   .section { margin-bottom: 32px; }
   .section h3 { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; }
   .scenario-list { list-style: disc; list-style-position: inside; color: var(--text-secondary); font-size: 14px; line-height: 2; }

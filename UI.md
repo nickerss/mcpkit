@@ -13,13 +13,13 @@
 | Token | 色值 | 用途 |
 |-------|------|------|
 | `--bg-primary` | `#0A0A0B` | 主背景 |
-| `--bg-secondary` | `#111113` | 次级背景（卡片/面板） |
+| `--bg-secondary` | `#16161A` | 次级背景（卡片/面板） |
 | `--bg-tertiary` | `#18181B` | 悬浮/输入框背景 |
 | `--bg-elevated` | `#1F1F23` | 浮层/下拉菜单背景 |
 | `--border-subtle` | `#27272A` | 细分隔线 |
 | `--border-default` | `#3F3F46` | 默认边框 |
 | `--text-primary` | `#FAFAFA` | 主要文字 |
-| `--text-secondary` | `#A1A1AA` | 次要文字 |
+| `--text-secondary` | `#B8B8C0` | 次要文字 |
 | `--text-tertiary` | `#71717A` | 辅助/占位文字 |
 | `--accent` | `#8B5CF6` | 主强调色（紫色） |
 | `--accent-hover` | `#A78BFA` | 悬浮态 accent |
@@ -369,22 +369,71 @@
 - 每行：组件图标（32px）+ 组件名 + 认证状态徽章 + 质量分（进度条）+ 展开箭头
 - 展开行：显示组件描述、参数列表、使用示例
 
-### 5.5 配置指南
+### 5.5 难度等级切换（Level Card）
+
+三个横向排列的卡片按钮，切换 Kit 的难度等级（Starter / Pro / Enterprise）：
+
+```
+┌─────────────┐  ┌─────────────┐  ┌─────────────┐
+│  Starter    │  │     Pro     │  │  Enterprise │
+└─────────────┘  └─────────────┘  └─────────────┘
+```
+
+- **布局**：三个卡片横向排列，`gap: 8px`，每个卡片 `minmax(120px, 1fr)`
+- **非选中态**：
+  - 背景 `bg-[--bg-secondary]`，边框 `1px solid --border-default`
+  - 文字颜色 `--text-secondary`，`font-weight: 400`
+- **选中态**：
+  - 背景 `bg-[--accent]/10`（10% opacity accent）
+  - 边框 `1px solid --accent`
+  - 文字颜色 `--accent`，`font-weight: 600`
+- **Hover**：边框微微变亮为 `--accent-muted`，背景微亮
+- **圆角**：`--radius-md`
+- **过渡**：`border-color 200ms ease, background-color 200ms ease`
+- **URL 参数**：`?level=starter|pro|enterprise`，页面加载时读取并高亮对应卡片
+- **图标**（可选）：每个 Level 可带图标（🔰 / ⭐ / 🏢），图标在文字左侧，16px
+
+### 5.6 配置指南
 
 - Tab 切换：JSON / YAML，active tab 带 accent 下划线
 - 代码块：背景 `--bg-primary`，圆角 `--radius-md`，`JetBrains Mono`，语法高亮
 - 复制按钮：右上角绝对定位，`--text-secondary`，hover 时变为 accent 色，点击后变为 `✓ 已复制`
 
-### 5.6 安全声明
+### 5.7 安全声明
 
 - 卡片样式，浅色背景（`--bg-secondary`），左侧图标列表
 - 每项带绿色勾选图标（`--success`）
 
-### 5.7 用户评价
+### 5.8 用户评价
 
 - 评分分布：5星/4星/3星/2星/1星 横向进度条
 - 评价列表：卡片样式，带头像（40px圆形）+ 昵称 + 时间 + 评分 + 评价内容
 - 底部：分页导航
+
+### 5.9 工具详情页（Tool Detail）
+
+工具详情页采用双栏布局，左侧内容（使用场景/配置），右侧相关工具：
+
+```
+┌─────────────────────────┬───────────────────────┐
+│                         │                       │
+│  使用场景 / 配置指南     │   相关工具（Related）  │
+│                         │                       │
+└─────────────────────────┴───────────────────────┘
+```
+
+**双栏布局响应规则：**
+- 桌面（≥768px）：`grid-template-columns: 1fr 1fr`，双栏
+- 左栏内容为空时：整个布局切换为单列 `grid-template-columns: 1fr`，右侧 Related Tools 占满宽度
+- 移动端（<768px）：始终单列布局
+
+**关键元素：**
+- 顶部：面包屑导航 + 工具 Logo（64px）+ 标题 + 元信息（价格标签/分类标签）
+- 主介绍文字：`--text-secondary`，行高 1.7
+- 四维评测雷达图（RadarChart 组件）
+- 双栏区：左侧使用场景列表 / 安装配置，右侧相关工具（ToolCard 列表）
+- 底部操作按钮：访问官网（Primary CTA）
+- Header + Footer：全站统一导航栏和底部
 
 ---
 
