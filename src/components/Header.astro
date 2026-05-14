@@ -32,7 +32,7 @@ const navLinks = [
 
     <nav class="nav">
       {navLinks.map(link => (
-        <a href={link.href} class="nav-link">{locale === 'zh' ? link.zhLabel : link.label}</a>
+        <a href={link.href} class="nav-link" data-i18n-nav>{locale === 'zh' ? link.zhLabel : link.label}</a>
       ))}
     </nav>
 
