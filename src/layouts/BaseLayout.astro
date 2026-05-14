@@ -32,6 +32,15 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         document.documentElement.setAttribute('data-theme', saved || preferred);
       })();
     </script>
+    <style>
+      /* i18n: bilingual content toggle */
+      .en-hide { display: none; }
+      [data-lang="zh"] .en-hide { display: none; }
+      [data-lang="zh"] .zh-show { display: inline; }
+      .zh-show { display: none; }
+      [data-lang="en"] .zh-show { display: none; }
+      [data-lang="en"] .en-show { display: inline; }
+    </style>
   </head>
   <body>
     <slot />
@@ -44,83 +53,15 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         var stored = localStorage.getItem('mcpkit-lang');
         if (stored === 'zh' || stored === 'en') lang = stored;
 
-        var texts = {
-          en: {
-            'nav.explore': 'Explore Tools',
-            'nav.kits': 'Kit Zone',
-            'nav.developers': 'Developers',
-            'nav.pricing': 'Pricing',
-            'nav.login': 'Login',
-            'nav.logout': 'Logout',
-            'nav.submit': 'Submit Tool',
-            'hero.title': 'Trusted Lego-style Toolkit',
-            'hero.accent': 'for Your AI Agent',
-            'hero.subtitle': 'Discover · Verify · Combine — all in one place.',
-            'hero.badge': 'AI Agent Toolkit Discovery & Verification Platform',
-            'hero.search': 'Search tools...',
-            'home.featured': 'Featured',
-            'home.latest': 'Latest Added',
-            'page.title': 'MCPKIT — AI Agent Tools for Independent Developers',
-            'lang.en': 'EN',
-            'lang.zh': '中文'
-          },
-          zh: {
-            'nav.explore': '探索工具',
-            'nav.kits': 'Kit专区',
-            'nav.developers': '开发者',
-            'nav.pricing': '定价',
-            'nav.login': '登录',
-            'nav.logout': '退出',
-            'nav.submit': '提交工具',
-            'hero.title': '为你的 AI Agent',
-            'hero.accent': '装上可信的乐高式工具包',
-            'hero.subtitle': '发现 · 认证 · 组合，一站搞定。',
-            'hero.badge': 'AI Agent 工具包发现与认证平台',
-            'hero.search': '搜索工具...',
-            'home.featured': '编辑精选',
-            'home.latest': '最新收录',
-            'page.title': 'MCPKIT — AI Agent 开发者工具目录',
-            'lang.en': 'EN',
-            'lang.zh': '中文'
-          }
-        };
+        // Set lang attribute on <html> for CSS selectors
+        document.documentElement.setAttribute('data-lang', lang);
+        // Also set body class for flexibility
+        document.body.classList.add('lang-' + lang);
 
-        var t = texts[lang] || texts.en;
-
-        function applyI18n(root) {
-          root.querySelectorAll('[data-i18n]').forEach(function(el) {
-            var key = el.getAttribute('data-i18n');
-            if (t[key]) {
-              if (el.tagName === 'INPUT' && el.getAttribute('placeholder') !== null) {
-                el.setAttribute('placeholder', t[key]);
-              } else {
-                el.textContent = t[key];
-              }
-            }
-          });
+        // Update page title
+        if (lang === 'zh') {
+          document.title = 'MCPKIT — AI Agent 开发者工具目录';
         }
-
-        // Apply to full document
-        applyI18n(document);
-
-        // Apply to dynamically added content
-        new MutationObserver(function(mutations) {
-          mutations.forEach(function(m) {
-            if (m.addedNodes.length) {
-              m.addedNodes.forEach(function(node) {
-                if (node.nodeType === 1) {
-                  applyI18n(node);
-                }
-              });
-            }
-          });
-        }).observe(document.body, { childList: true, subtree: true });
-
-        // Update document title
-        document.title = t['page.title'] || document.title;
-
-        // Update lang attribute
-        document.documentElement.lang = lang;
       })();
     </script>
   </body>

@@ -5,13 +5,6 @@ import ThemeSwitcher from './ThemeSwitcher.astro';
 
 const locale = getLocaleFromUrl(Astro.url);
 const langParam = locale === 'zh' ? '?lang=zh' : '';
-
-const navLinks = [
-  { id: 'explore', href: '/ai-tools/', label: 'Explore Tools', zhLabel: '探索工具' },
-  { id: 'kits', href: '/kits/', label: 'Kit Zone', zhLabel: 'Kit专区' },
-  { id: 'developers', href: '/developer/', label: 'Developers', zhLabel: '开发者' },
-  { id: 'pricing', href: '/pricing/', label: 'Pricing', zhLabel: '定价' },
-];
 ---
 
 <header class="header">
@@ -31,9 +24,10 @@ const navLinks = [
     </a>
 
     <nav class="nav">
-      {navLinks.map(link => (
-        <a href={link.href} class="nav-link" data-i18n={`nav.${link.id}`}>{locale === 'zh' ? link.zhLabel : link.label}</a>
-      ))}
+      <a href="/ai-tools/" class="nav-link"><span class="en-hide">Explore Tools</span><span class="zh-show">探索工具</span></a>
+      <a href="/kits/" class="nav-link"><span class="en-hide">Kit Zone</span><span class="zh-show">Kit专区</span></a>
+      <a href="/developer/" class="nav-link"><span class="en-hide">Developers</span><span class="zh-show">开发者</span></a>
+      <a href="/pricing/" class="nav-link"><span class="en-hide">Pricing</span><span class="zh-show">定价</span></a>
     </nav>
 
     <div class="right-area">
@@ -41,10 +35,10 @@ const navLinks = [
       <LanguageSwitcher />
       <span id="user-info" style="display:none">
         <a href="/dashboard/" id="user-name" class="user-link"></a>
-        <a href="https://api.mcpkit.run/api/auth/logout" class="btn-logout" data-i18n="nav.logout">Logout</a>
+        <a href="https://api.mcpkit.run/api/auth/logout" class="btn-logout"><span class="en-hide">Logout</span><span class="zh-show">退出</span></a>
       </span>
-      <a id="login-btn" href="https://api.mcpkit.run/api/auth/github" class="btn-login" data-i18n="nav.login">Login</a>
-      <a href={`/submit/`} class="cta-btn" data-i18n="nav.submit">Submit Tool</a>
+      <a id="login-btn" href="https://api.mcpkit.run/api/auth/github" class="btn-login"><span class="en-hide">Login</span><span class="zh-show">登录</span></a>
+      <a href="/submit/" class="cta-btn"><span class="en-hide">Submit Tool</span><span class="zh-show">提交工具</span></a>
     </div>
   </div>
 </header>

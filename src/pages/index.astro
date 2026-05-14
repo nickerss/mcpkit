@@ -141,16 +141,20 @@ const testimonials = [
       <div class="hero-content">
         <div class="hero-badge">
           <span class="badge-dot"></span>
-          <span data-i18n="hero.badge">{isZh ? 'AI Agent 工具包发现与认证平台' : 'AI Agent Toolkit Discovery & Verification Platform'}</span>
+          <span class="en-hide">AI Agent Toolkit Discovery & Verification Platform</span>
+          <span class="zh-show">AI Agent 工具包发现与认证平台</span>
         </div>
         <h1 class="hero-title">
-          <span data-i18n="hero.title">{isZh ? '为你的 AI Agent' : 'Trusted Lego-style Toolkit'}</span><br/>
-          <span class="gradient-text" data-i18n="hero.accent">{isZh ? '装上可信的乐高式工具包' : 'for Your AI Agent'}</span>
+          <span class="en-hide">Trusted Lego-style Toolkit</span>
+          <span class="zh-show">为你的 AI Agent</span><br/>
+          <span class="gradient-text">
+            <span class="en-hide">for Your AI Agent</span>
+            <span class="zh-show">装上可信的乐高式工具包</span>
+          </span>
         </h1>
-        <p class="hero-subtitle" data-i18n="hero.subtitle">
-          {isZh
-            ? '发现 · 认证 · 组合，一站搞定。'
-            : 'Discover · Verify · Combine — all in one place.'}
+        <p class="hero-subtitle">
+          <span class="en-hide">Discover · Verify · Combine — all in one place.</span>
+          <span class="zh-show">发现 · 认证 · 组合，一站搞定。</span>
         </p>
 
         <!-- Search -->
