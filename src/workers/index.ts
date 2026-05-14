@@ -241,16 +241,38 @@ async function handleStripeWebhook(request: Request, env: Env): Promise<Response
 
   const now = Math.floor(Date.now() / 1000);
 
+  // Kit purchase
   if (event.type === 'checkout.session.completed') {
-    const { user_id: userId, tier } = event.data.object.metadata || {};
-    if (userId && tier) {
-      await env.DB.prepare(`
-        INSERT INTO subscriptions (id, user_id, tier, status, current_period_end, created_at, updated_at)
-        VALUES (?, ?, ?, 'active', ?, ?, ?)
-        ON CONFLICT(user_id) DO UPDATE SET tier = excluded.tier, status = 'active', current_period_end = excluded.current_period_end, updated_at = ?
-      `).bind(crypto.randomUUID(), userId, tier, event.data.object.expires_at || (now + 2592000), now, now, now).run();
+    const session = event.data.object;
+    const kitId = session.metadata?.kit_id;
+    const buyerId = session.metadata?.buyer_id;
+    
+    if (kitId && buyerId) {
+      // Kit purchase
+      const kit = await env.DB.prepare(`SELECT price_cents FROM kits WHERE id = ?`).bind(kitId).first();
+      if (kit) {
+        const platformFee = Math.round(kit.price_cents * 0.20);
+        await env.DB.prepare(`
+          INSERT INTO purchases (id, kit_id, buyer_id, stripe_payment_intent_id, amount_cents, platform_fee_cents, status, purchased_at)
+          VALUES (?, ?, ?, ?, ?, ?, 'completed', ?)
+        `).bind(crypto.randomUUID(), kitId, buyerId, session.payment_intent || '', kit.price_cents, platformFee, now).run();
+      }
+    } else if (session.metadata?.tier) {
+      // Subscription
+      const tier = session.metadata.tier;
+      const userId = session.metadata.user_id;
+      if (userId && tier) {
+        await env.DB.prepare(`
+          INSERT INTO subscriptions (id, user_id, tier, status, current_period_end, created_at, updated_at)
+          VALUES (?, ?, ?, 'active', ?, ?, ?)
+          ON CONFLICT(user_id) DO UPDATE SET tier = excluded.tier, status = 'active', current_period_end = excluded.current_period_end, updated_at = ?
+        `).bind(crypto.randomUUID(), userId, tier, session.expires_at || (now + 2592000), now, now, now).run();
+      }
     }
-  } else if (event.type === 'customer.subscription.deleted') {
+  }
+  
+  // Subscription deleted
+  if (event.type === 'customer.subscription.deleted') {
     await env.DB.prepare(`UPDATE subscriptions SET status = 'canceled', updated_at = ? WHERE stripe_subscription_id = ?`)
       .bind(now, event.data.object.id).run();
   }
@@ -320,6 +342,60 @@ async function handleDashboard(request: Request, env: Env): Promise<Response> {
     return json({ id, slug, message: 'Kit submitted for review' }, 201);
   }
 
+  // GET /api/dashboard/campaigns - list user's ad campaigns
+  if (path === '/api/dashboard/campaigns' && request.method === 'GET') {
+    const auth = await requireAuth(request, env);
+    if (auth instanceof Response) return auth;
+    const campaigns = await env.DB.prepare(
+      `SELECT c.*, t.name as tool_name, t.slug as tool_slug FROM ad_campaigns c JOIN tools t ON c.tool_id = t.id WHERE c.user_id = ? ORDER BY c.created_at DESC`
+    ).bind(auth.userId).all();
+    return json({ data: campaigns.results });
+  }
+
+  // POST /api/dashboard/campaigns - create ad campaign
+  if (path === '/api/dashboard/campaigns' && request.method === 'POST') {
+    const auth = await requireAuth(request, env);
+    if (auth instanceof Response) return auth;
+    const body = await request.json().catch(() => ({}));
+    const { toolId, type, bidAmountCents, dailyBudgetCents } = body;
+    if (!toolId || !type || !bidAmountCents) return json({ error: 'toolId, type, bidAmountCents required' }, 400);
+    if (!['cpc', 'top'].includes(type)) return json({ error: 'type must be cpc or top' }, 400);
+    
+    const id = crypto.randomUUID();
+    const now = Math.floor(Date.now() / 1000);
+    await env.DB.prepare(`
+      INSERT INTO ad_campaigns (id, tool_id, user_id, type, bid_amount_cents, daily_budget_cents, status, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, 'active', ?)
+    `).bind(id, toolId, auth.userId, type, bidAmountCents, dailyBudgetCents || bidAmountCents * 10, now).run();
+    
+    return json({ id, message: 'Campaign created' }, 201);
+  }
+
+  // POST /api/ads/click - track ad click
+  if (path === '/api/ads/click' && request.method === 'POST') {
+    const body = await request.json().catch(() => ({}));
+    const { campaignId, toolId } = body;
+    if (!campaignId || !toolId) return json({ error: 'campaignId and toolId required' }, 400);
+    
+    const ip = request.headers.get('CF-Connecting-IP') || '';
+    const ipHash = await hashString(ip);
+    const now = Math.floor(Date.now() / 1000);
+    
+    // Check for duplicate click (simple deduplication)
+    const existing = await env.CACHE.get(`click:${campaignId}:${ipHash}:${new Date().toISOString().slice(0, 10)}`);
+    if (existing) return json({ message: 'Click recorded' });
+    
+    await env.CACHE.put(`click:${campaignId}:${ipHash}:${new Date().toISOString().slice(0, 10)}`, '1', { expirationTtl: 86400 });
+    
+    // Record click in DB
+    await env.DB.prepare(`
+      INSERT INTO ad_impressions (id, campaign_id, tool_id, clicked_at, ip_hash)
+      VALUES (?, ?, ?, ?, ?)
+    `).bind(crypto.randomUUID(), campaignId, toolId, now, ipHash).run();
+    
+    return json({ message: 'Click recorded' });
+  }
+
   return json({ error: 'Not found' }, 404);
 }
 
@@ -358,6 +434,33 @@ async function handleKits(request: Request, env: Env): Promise<Response> {
     if (!kit) return json({ error: 'Kit not found' }, 404);
     const tools = await env.DB.prepare(`SELECT t.*, kt.role, kt.config_overrides, kt.display_order FROM kit_tools kt JOIN tools t ON kt.tool_id = t.id WHERE kt.kit_id = ? ORDER BY kt.display_order`).bind(kit.id).all();
     return json({ ...kit, tools: tools.results });
+  }
+
+  // POST /api/kits/:slug/purchase - Buy a paid Kit
+  const purchaseMatch = path.match(/^\/api\/kits\/([^/]+)\/purchase\/?$/);
+  if (request.method === 'POST' && purchaseMatch) {
+    const slug = purchaseMatch[1];
+    const auth = await requireAuth(request, env);
+    if (auth instanceof Response) return auth;
+    
+    const kit = await env.DB.prepare(`SELECT k.*, u.stripe_customer_id as owner_stripe FROM kits k JOIN users u ON k.owner_id = u.id WHERE k.slug = ? AND k.status = 'published'`).bind(slug).first();
+    if (!kit) return json({ error: 'Kit not found' }, 404);
+    if (!kit.is_paid) return json({ error: 'This kit is free' }, 400);
+    
+    // Check if already purchased
+    const existing = await env.DB.prepare(`SELECT id FROM purchases WHERE kit_id = ? AND buyer_id = ?`).bind(kit.id, auth.userId).first();
+    if (existing) return json({ error: 'Already purchased' }, 400);
+    
+    // Create Stripe Checkout session
+    const session = await createStripeCheckoutSession(env, {
+      kitId: kit.id,
+      kitName: kit.name,
+      priceCents: kit.price_cents,
+      buyerId: auth.userId,
+      successUrl: `${env.SITE_URL}/kits/${slug}?purchased=true`,
+      cancelUrl: `${env.SITE_URL}/kits/${slug}?canceled=true`,
+    });
+    return json({ checkoutUrl: session.url, sessionId: session.id });
   }
 
   return json({ error: 'Method not allowed' }, 405);
@@ -500,6 +603,53 @@ async function calculateAllQualityScores(env: Env): Promise<void> {
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
+
+async function hashString(str: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(str);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
+}
+
+async function createStripeCheckoutSession(env: Env, opts: {
+  kitId: string;
+  kitName: string;
+  priceCents: number;
+  buyerId: string;
+  successUrl: string;
+  cancelUrl: string;
+}): Promise<{ url: string; id: string }> {
+  const platformFee = Math.round(opts.priceCents * 0.20); // 20% platform fee
+  
+  const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${env.STRIPE_SECRET_KEY}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({
+      'mode': 'payment',
+      'line_items[0][price_data][currency]': 'usd',
+      'line_items[0][price_data][unit_amount]': String(opts.priceCents),
+      'line_items[0][price_data][product_data][name]': opts.kitName,
+      'success_url': opts.successUrl,
+      'cancel_url': opts.cancelUrl,
+      'metadata[kit_id]': opts.kitId,
+      'metadata[buyer_id]': opts.buyerId,
+      'payment_intent_data[metadata][kit_id]': opts.kitId,
+      'payment_intent_data[metadata][buyer_id]': opts.buyerId,
+    }),
+  });
+  
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`Stripe error: ${err}`);
+  }
+  
+  const session = await response.json();
+  return { url: session.url, id: session.id };
+}
 
 function json(data: unknown, status = 200): Response {
   return new Response(JSON.stringify(data), {

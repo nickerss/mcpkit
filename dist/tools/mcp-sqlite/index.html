@@ -18,8 +18,8 @@
 
         var texts = {
           en: {
-            nav: ['Kits', 'All Tools', 'Search'],
-            navHrefs: ['/', '/kits/ship-a-saas/', '/search/'],
+            nav: ['Explore Tools', 'Kit Zone', 'Developers', 'Pricing'],
+            navHrefs: ['/ai-tools/', '/kits/', '/developer/', '/pricing/'],
             heroTitle: 'Your AI Agent',
             heroAccent: 'Toolkit',
             heroSubtitle: 'Kit-based tool combos · Verified · Rated',
@@ -27,11 +27,13 @@
             sectionFeatured: 'Featured',
             sectionLatest: 'Latest Added',
             footerCopy: '© 2026 MCPKIT — AI Agent Tools for Independent Developers',
-            footerLinks: ['Search', 'Submit Tool']
+            footerLinks: ['Search', 'Submit Tool'],
+            pageTitle: 'MCPKIT — AI Agent Tools for Independent Developers',
+            langSwitchLabel: 'EN'
           },
           zh: {
-            nav: ['Kits', '所有工具', '搜索'],
-            navHrefs: ['/?lang=zh', '/kits/ship-a-saas/?lang=zh', '/search/?lang=zh'],
+            nav: ['探索工具', 'Kit专区', '开发者', '定价'],
+            navHrefs: ['/ai-tools/?lang=zh', '/kits/?lang=zh', '/developer/?lang=zh', '/pricing/?lang=zh'],
             heroTitle: '独立开发者的',
             heroAccent: 'AI Agent 工具箱',
             heroSubtitle: 'Kit 化工具套件 · 精选认证 · 四维评测',
@@ -39,11 +41,20 @@
             sectionFeatured: '编辑精选',
             sectionLatest: '最新收录',
             footerCopy: '© 2026 MCPKIT — 独立开发者的 AI Agent 工具箱',
-            footerLinks: ['搜索', '提交工具']
+            footerLinks: ['搜索', '提交工具'],
+            pageTitle: 'MCPKIT — AI Agent 开发者工具目录',
+            langSwitchLabel: '中文'
           }
         };
 
         var t = texts[lang] || texts.en;
+
+        // Update document title
+        if (t.pageTitle) document.title = t.pageTitle;
+
+        // Update language switcher label
+        var langSwitchBtn = document.querySelector('.lang-switcher .lang-btn .lang-label');
+        if (langSwitchBtn && t.langSwitchLabel) langSwitchBtn.textContent = t.langSwitchLabel;
 
         // Nav links
         var navLinks = document.querySelectorAll('.nav-link');
