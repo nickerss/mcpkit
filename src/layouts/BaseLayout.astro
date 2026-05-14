@@ -32,14 +32,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         document.documentElement.setAttribute('data-theme', saved || preferred);
       })();
     </script>
-    <style>
-      /* i18n: bilingual content toggle (Approach A) */
-      html[data-lang="zh"] .en-hide { display: none !important; }
-      html[data-lang="zh"] .zh-show { display: inline !important; }
-      html .zh-show { display: none; }
-      html[data-lang="en"] .zh-show { display: none !important; }
-      html[data-lang="en"] .en-show { display: inline !important; }
-    </style>
   </head>
   <body>
     <slot />
