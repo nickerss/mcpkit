@@ -50,7 +50,7 @@ const isZh = locale === 'zh';
 
 <style>
   .install-command {
-    background: #0d0d14;
+    background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     overflow: hidden;
@@ -60,7 +60,7 @@ const isZh = locale === 'zh';
     align-items: center;
     justify-content: space-between;
     padding: 8px 12px;
-    background: var(--bg-tertiary);
+    background: var(--bg-secondary);
     border-bottom: 1px solid var(--border-color);
   }
   .code-lang {
@@ -83,7 +83,7 @@ const isZh = locale === 'zh';
   }
   .copy-btn:hover {
     color: var(--text-primary);
-    background: var(--bg-secondary);
+    background: var(--bg-tertiary);
   }
   .code-body {
     padding: 16px;
@@ -91,7 +91,12 @@ const isZh = locale === 'zh';
     font-family: 'JetBrains Mono', monospace;
     font-size: 14px;
     color: var(--text-primary);
+    background: var(--bg-secondary);
     overflow-x: auto;
     line-height: 1.6;
+  }
+  [data-theme="light"] .code-body {
+    background: #f5f5f7;
+    color: #1a1a1a;
   }
 </style>

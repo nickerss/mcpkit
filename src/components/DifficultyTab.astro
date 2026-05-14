@@ -13,6 +13,12 @@ const labels = {
   enterprise: 'Enterprise',
 };
 
+const desc = {
+  starter: 'Basic setup, ready to use',
+  pro: 'Advanced configuration',
+  enterprise: 'Full-featured, unlimited',
+};
+
 const colors = {
   starter: 'var(--free)',
   pro: 'var(--paid)',
@@ -20,58 +26,75 @@ const colors = {
 };
 ---
 
-<div class="difficulty-tabs">
+<div class="level-cards">
   {levels.map(level => (
     <a
       href={`${baseUrl}?level=${level}`}
-      class={`tab ${current === level ? 'active' : ''}`}
-      style={`--tab-color: ${colors[level]}`}
+      class={`level-card ${current === level ? 'active' : ''}`}
+      style={`--card-color: ${colors[level]}`}
       data-level={level}
     >
-      {labels[level]}
+      <span class="card-label">{labels[level]}</span>
+      <span class="card-desc en-hide">{desc[level]}</span>
     </a>
   ))}
 </div>
 
-<script>
-  // Read URL param on load to activate correct tab (for static pages)
-  const params = new URLSearchParams(window.location.search);
-  const level = params.get('level') || 'starter';
-  const tabs = document.querySelectorAll('.difficulty-tabs .tab');
-  tabs.forEach(tab => {
-    if (tab.getAttribute('data-level') === level) {
-      tab.classList.add('active');
-    } else {
-      tab.classList.remove('active');
-    }
-    tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-    });
-  });
-</script>
-
 <style>
-  .difficulty-tabs {
+  .level-cards {
     display: flex;
-    gap: 4px;
-    border-bottom: 1px solid var(--border);
+    gap: 12px;
+    margin-bottom: 24px;
   }
-  .tab {
-    padding: 8px 20px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-muted);
+  .level-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 16px 12px;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border);
+    border-radius: 12px;
     text-decoration: none;
-    border-bottom: 2px solid transparent;
-    transition: color 200ms ease, border-color 200ms ease;
+    transition: all 200ms ease;
     cursor: pointer;
   }
-  .tab:hover {
-    color: var(--text-secondary);
+  .level-card:hover {
+    border-color: var(--card-color);
+    transform: translateY(-2px);
   }
-  .tab.active {
-    color: var(--tab-color);
-    border-bottom-color: var(--tab-color);
+  .level-card.active {
+    border-color: var(--card-color);
+    background: color-mix(in srgb, var(--card-color) 10%, transparent);
+  }
+  .card-label {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .level-card.active .card-label {
+    color: var(--card-color);
+  }
+  .card-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .level-card .card-desc.zh-show {
+    display: none;
   }
 </style>
+
+<script>
+  // Sync active state with URL param (for static pages)
+  const params = new URLSearchParams(window.location.search);
+  const level = params.get('level') || 'starter';
+  const cards = document.querySelectorAll('.level-card');
+  cards.forEach(card => {
+    if (card.getAttribute('data-level') === level) {
+      card.classList.add('active');
+    } else {
+      card.classList.remove('active');
+    }
+  });
+</script>
