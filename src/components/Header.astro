@@ -7,10 +7,10 @@ const locale = getLocaleFromUrl(Astro.url);
 const langParam = locale === 'zh' ? '?lang=zh' : '';
 
 const navLinks = [
-  { href: '/ai-tools/', label: 'Explore Tools', zhLabel: '探索工具' },
-  { href: '/kits/', label: 'Kit Zone', zhLabel: 'Kit专区' },
-  { href: '/developer/', label: 'Developers', zhLabel: '开发者' },
-  { href: '/pricing/', label: 'Pricing', zhLabel: '定价' },
+  { id: 'explore', href: '/ai-tools/', label: 'Explore Tools', zhLabel: '探索工具' },
+  { id: 'kits', href: '/kits/', label: 'Kit Zone', zhLabel: 'Kit专区' },
+  { id: 'developers', href: '/developer/', label: 'Developers', zhLabel: '开发者' },
+  { id: 'pricing', href: '/pricing/', label: 'Pricing', zhLabel: '定价' },
 ];
 ---
 
@@ -32,7 +32,7 @@ const navLinks = [
 
     <nav class="nav">
       {navLinks.map(link => (
-        <a href={link.href} class="nav-link" data-i18n-nav>{locale === 'zh' ? link.zhLabel : link.label}</a>
+        <a href={link.href} class="nav-link" data-i18n={`nav.${link.id}`}>{locale === 'zh' ? link.zhLabel : link.label}</a>
       ))}
     </nav>
 
@@ -41,10 +41,10 @@ const navLinks = [
       <LanguageSwitcher />
       <span id="user-info" style="display:none">
         <a href="/dashboard/" id="user-name" class="user-link"></a>
-        <a href="https://api.mcpkit.run/api/auth/logout" class="btn-logout" data-i18n="logout">Logout</a>
+        <a href="https://api.mcpkit.run/api/auth/logout" class="btn-logout" data-i18n="nav.logout">Logout</a>
       </span>
-      <a id="login-btn" href="https://api.mcpkit.run/api/auth/github" class="btn-login" data-i18n="login">Login</a>
-      <a href={`/submit/`} class="cta-btn" data-i18n="submit">Submit Tool</a>
+      <a id="login-btn" href="https://api.mcpkit.run/api/auth/github" class="btn-login" data-i18n="nav.login">Login</a>
+      <a href={`/submit/`} class="cta-btn" data-i18n="nav.submit">Submit Tool</a>
     </div>
   </div>
 </header>

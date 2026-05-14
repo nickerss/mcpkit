@@ -141,16 +141,16 @@ const testimonials = [
       <div class="hero-content">
         <div class="hero-badge">
           <span class="badge-dot"></span>
-          {isZh ? 'AI Agent 工具包发现与认证平台' : 'AI Agent Toolkit Discovery & Verification Platform'}
+          <span data-i18n="hero.badge">{isZh ? 'AI Agent 工具包发现与认证平台' : 'AI Agent Toolkit Discovery & Verification Platform'}</span>
         </div>
         <h1 class="hero-title">
-          {isZh ? '为你的 AI Agent' : 'Trusted Lego-style Toolkit'}<br/>
-          <span class="gradient-text">{isZh ? '装上可信的乐高式工具包' : 'for Your AI Agent'}</span>
+          <span data-i18n="hero.title">{isZh ? '为你的 AI Agent' : 'Trusted Lego-style Toolkit'}</span><br/>
+          <span class="gradient-text" data-i18n="hero.accent">{isZh ? '装上可信的乐高式工具包' : 'for Your AI Agent'}</span>
         </h1>
-        <p class="hero-subtitle">
+        <p class="hero-subtitle" data-i18n="hero.subtitle">
           {isZh
-            ? '发现 · 认证 · 组合，一站搞定。不再需要在海量选项里大海捞针。'
-            : 'Discover · Verify · Combine — all in one place. No more drowning in endless options.'}
+            ? '发现 · 认证 · 组合，一站搞定。'
+            : 'Discover · Verify · Combine — all in one place.'}
         </p>
 
         <!-- Search -->
@@ -191,7 +191,7 @@ const testimonials = [
         <div class="section-header">
           <div class="section-heading-wrap">
             <span class="heading-accent"></span>
-            <h2 class="section-heading">{isZh ? '热门场景 Kits' : 'Featured Kits'}</h2>
+            <h2 class="section-heading" data-i18n="home.featured">{isZh ? '热门场景 Kits' : 'Featured Kits'}</h2>
           </div>
           <a href="/kits/" class="view-all-link">{isZh ? '查看全部 Kits →' : 'View all Kits →'}</a>
         </div>
