@@ -10,72 +10,193 @@ interface Props {
 const { categories, prices, selectedCategory, selectedPrice, baseUrl } = Astro.props;
 ---
 
-<div class="tool-filter">
-  <div class="filter-group">
-    <label class="filter-label">Category</label>
-    <select class="filter-select" id="category-filter" data-base-url={baseUrl}>
-      <option value="" selected={!selectedCategory}>All</option>
-      {categories.map(cat => (
-        <option value={cat} selected={selectedCategory === cat}>{cat}</option>
-      ))}
-    </select>
+<div class="filter-sidebar">
+  <!-- Search -->
+  <div class="filter-section">
+    <div class="search-box">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/>
+        <path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input type="text" class="search-input" placeholder="Search tools..." id="search-input" />
+    </div>
   </div>
-  <div class="filter-group">
-    <label class="filter-label">Price</label>
-    <select class="filter-select" id="price-filter" data-base-url={baseUrl}>
-      <option value="" selected={!selectedPrice}>All</option>
-      {prices.map(p => (
-        <option value={p} selected={selectedPrice === p}>{p}</option>
+
+  <!-- Category Filter -->
+  <div class="filter-section">
+    <h4 class="filter-title">Category</h4>
+    <div class="filter-list">
+      <label class="filter-item">
+        <input type="radio" name="category" value="" class="filter-radio" data-base-url={baseUrl} checked={!selectedCategory} />
+        <span class="filter-text">All</span>
+      </label>
+      {categories.map(cat => (
+        <label class="filter-item">
+          <input type="radio" name="category" value={cat} class="filter-radio" data-base-url={baseUrl} checked={selectedCategory === cat} />
+          <span class="filter-text">{cat}</span>
+        </label>
       ))}
+    </div>
+  </div>
+
+  <!-- Price Filter -->
+  <div class="filter-section">
+    <h4 class="filter-title">Price</h4>
+    <div class="filter-list">
+      <label class="filter-item">
+        <input type="radio" name="price" value="" class="filter-radio" data-base-url={baseUrl} checked={!selectedPrice} />
+        <span class="filter-text">All</span>
+      </label>
+      {prices.map(p => (
+        <label class="filter-item">
+          <input type="radio" name="price" value={p} class="filter-radio" data-base-url={baseUrl} checked={selectedPrice === p} />
+          <span class="filter-text">{p.charAt(0).toUpperCase() + p.slice(1)}</span>
+        </label>
+      ))}
+    </div>
+  </div>
+
+  <!-- Sort -->
+  <div class="filter-section">
+    <h4 class="filter-title">Sort</h4>
+    <select class="filter-select" id="sort-select" data-base-url={baseUrl}>
+      <option value="rating">Rating</option>
+      <option value="name">Name</option>
     </select>
   </div>
 </div>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    var catFilter = document.getElementById('category-filter');
-    var priceFilter = document.getElementById('price-filter');
-    
+    // Get all radio inputs
+    var categoryRadios = document.querySelectorAll('input[name="category"]');
+    var priceRadios = document.querySelectorAll('input[name="price"]');
+    var sortSelect = document.getElementById('sort-select');
+
+    function getBaseUrl() {
+      return categoryRadios[0]?.getAttribute('data-base-url') || '/ai-tools/';
+    }
+
     function applyFilters() {
-      var baseUrl = catFilter?.getAttribute('data-base-url') || '';
-      var cat = catFilter?.value || '';
-      var price = priceFilter?.value || '';
       var params = new URLSearchParams(window.location.search);
-      
+      var cat = document.querySelector('input[name="category"]:checked')?.value || '';
+      var price = document.querySelector('input[name="price"]:checked')?.value || '';
+      var sort = (document.getElementById('sort-select') as HTMLSelectElement)?.value || 'rating';
+
       if (cat) params.set('category', cat);
       else params.delete('category');
-      
+
       if (price) params.set('price', price);
       else params.delete('price');
-      
-      var newUrl = baseUrl + (params.toString() ? '?' + params.toString() : '');
+
+      if (sort !== 'rating') params.set('sort', sort);
+      else params.delete('sort');
+
+      var newUrl = getBaseUrl() + (params.toString() ? '?' + params.toString() : '');
       window.location.href = newUrl;
     }
-    
-    catFilter?.addEventListener('change', applyFilters);
-    priceFilter?.addEventListener('change', applyFilters);
+
+    categoryRadios.forEach(r => r.addEventListener('change', applyFilters));
+    priceRadios.forEach(r => r.addEventListener('change', applyFilters));
+    sortSelect?.addEventListener('change', applyFilters);
   });
 </script>
 
 <style>
-  .tool-filter {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-  }
-  .filter-group {
+  .filter-sidebar {
+    width: 240px;
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 24px;
   }
-  .filter-label {
+
+  .filter-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .filter-title {
     font-size: 12px;
     font-weight: 600;
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    margin: 0;
   }
+
+  .search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 10px 12px 10px 36px;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-sizing: border-box;
+  }
+
+  .search-input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+
+  .filter-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .filter-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 150ms ease;
+  }
+
+  .filter-item:hover {
+    background: var(--bg-secondary);
+  }
+
+  .filter-radio {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .filter-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .filter-item:has(.filter-radio:checked) .filter-text {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
   .filter-select {
     padding: 8px 32px 8px 12px;
     font-size: 14px;
@@ -90,12 +211,21 @@ const { categories, prices, selectedCategory, selectedPrice, baseUrl } = Astro.p
     background-position: right 10px center;
     min-width: 140px;
   }
+
   .filter-select:hover {
     border-color: var(--accent);
   }
+
   .filter-select:focus {
     outline: none;
     border-color: var(--accent);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+
+  /* Mobile: hide sidebar */
+  @media (max-width: 767px) {
+    .filter-sidebar {
+      display: none;
+    }
   }
 </style>

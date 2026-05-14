@@ -44,18 +44,22 @@ if (selectedPrice) {
       </div>
     </div>
 
-    <div class="container">
-      <ToolFilter 
-        categories={categories} 
-        prices={prices} 
-        selectedCategory={selectedCategory}
-        selectedPrice={selectedPrice}
-        baseUrl="/ai-tools/"
-      />
-      <div class="tools-grid">
-        {filteredTools.map(tool => (
-          <ToolCard {...tool.data} slug={tool.id.replace(/\.(md|mdx)$/, '')} />
-        ))}
+    <div class="container explore-layout">
+      <aside class="filter-aside">
+        <ToolFilter 
+          categories={categories} 
+          prices={prices} 
+          selectedCategory={selectedCategory}
+          selectedPrice={selectedPrice}
+          baseUrl="/ai-tools/"
+        />
+      </aside>
+      <div class="tools-main">
+        <div class="tools-grid">
+          {filteredTools.map(tool => (
+            <ToolCard {...tool.data} slug={tool.id.replace(/\.(md|mdx)$/, '')} />
+          ))}
+        </div>
       </div>
     </div>
   </main>
@@ -70,10 +74,30 @@ if (selectedPrice) {
   .page-title { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
   .page-desc { color: var(--text-secondary); font-size: 16px; margin-bottom: 8px; }
   .tool-count { color: var(--text-muted); font-size: 14px; }
+  .explore-layout {
+    display: flex;
+    gap: 40px;
+    padding-top: 32px;
+  }
+  .filter-aside {
+    flex-shrink: 0;
+  }
+  .tools-main {
+    flex: 1;
+    min-width: 0;
+  }
   .tools-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 16px;
     padding: 0 0 80px;
+  }
+  @media (max-width: 767px) {
+    .explore-layout {
+      flex-direction: column;
+    }
+    .filter-aside {
+      width: 100%;
+    }
   }
 </style>

@@ -7,11 +7,13 @@ import { getLocaleFromUrl } from '../../i18n/index';
 const locale = getLocaleFromUrl(Astro.url);
 const isZh = locale === 'zh';
 
+const currentPath = Astro.url.pathname;
 const tabs = [
   { id: 'claim', label: isZh ? '认领工具' : 'Claim Tool', href: '/dashboard/' },
   { id: 'submit-kit', label: isZh ? '提交 Kit' : 'Submit Kit', href: '/dashboard/submit-kit/' },
   { id: 'my-tools', label: isZh ? '我的工具' : 'My Tools', href: '/dashboard/my-tools/' },
 ];
+const isActive = (href: string) => currentPath === href || currentPath === href + '/';
 
 const success = Astro.url.searchParams.get('success') === '1';
 const error = Astro.url.searchParams.get('error');
@@ -36,7 +38,7 @@ const error = Astro.url.searchParams.get('error');
         {tabs.map(tab => (
           <a
             href={tab.href}
-            class:list={['tab-btn', { active: tab.id === 'claim' }]}
+            class:list={['tab-btn', { active: isActive(tab.href) }]}
           >
             {tab.label}
           </a>
