@@ -5,6 +5,7 @@ category: "mcp-servers"
 tags: ["shopify", "recommendations", "ai", "product-discovery", "ecommerce"]
 price: "freemium"
 website: "https://shopify.dev"
+logo: null
 descriptionEn: "AI-powered product recommendation engine for Shopify — surface relevant products based on customer behavior and preferences."
 description: "Shopify AI 智能选品推荐引擎，基于顾客行为和偏好推荐相关商品，提升客单价和转化率。"
 evaluation:

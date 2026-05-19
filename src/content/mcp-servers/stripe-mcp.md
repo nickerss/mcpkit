@@ -5,8 +5,10 @@ category: "mcp-servers"
 tags: ["stripe", "payments", "billing", "subscriptions", "refunds"]
 price: "freemium"
 website: "https://docs.stripe.com/mcp"
+logo: null
 descriptionEn: "Official Stripe MCP server — let AI agents process payments, manage subscriptions, handle refunds, and query the Stripe knowledge base."
 description: "官方 Stripe MCP 服务器，让 AI Agent 处理支付、管理订阅、处理退款，并查询 Stripe 知识库。"
+descriptionEn: "Official Stripe MCP server — let AI agents process payments, manage subscriptions, handle refunds, and query the Stripe knowledge base."
 evaluation:
   easeOfUse: 4
   security: 5

@@ -5,6 +5,7 @@ category: "mcp-servers"
 tags: ["shopify", "analytics", "data", "reporting", "business-intelligence"]
 price: "freemium"
 website: "https://shopify.dev"
+logo: null
 descriptionEn: "AI agents query Shopify analytics and business intelligence data — revenue, conversion rates, customer LTV, and custom reports."
 description: "AI Agent 查询 Shopify 分析和商业智能数据——营收、转化率、客户 LTV 及自定义报表。"
 evaluation:

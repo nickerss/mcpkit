@@ -5,8 +5,10 @@ category: "mcp-servers"
 tags: ["shopify", "storefront", "ecommerce", "cart", "product-search"]
 price: "freemium"
 website: "https://shopify.dev/docs/apps/build/storefront-mcp"
+logo: null
 descriptionEn: "Connect AI agents to Shopify store catalogs, shopping carts, and policies for conversational commerce."
 description: "将 AI Agent 连接到 Shopify 商品目录、购物车和店铺政策，实现对话式购物体验。"
+descriptionEn: "Connect AI agents to Shopify store catalogs, shopping carts, and policies for conversational commerce."
 evaluation:
   easeOfUse: 5
   security: 5

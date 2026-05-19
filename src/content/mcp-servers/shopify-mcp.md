@@ -5,8 +5,10 @@ category: "mcp-servers"
 tags: ["shopify", "ecommerce", "graphQL", "products", "orders", "customers"]
 price: "freemium"
 website: "https://github.com/geli2001/shopify-mcp"
+logo: null
 descriptionEn: "Connect your AI agent to Shopify stores via GraphQL Admin API — manage products, customers, orders, and more."
 description: "通过 GraphQL Admin API 将 AI Agent 连接到 Shopify 店铺，管理商品、顾客、订单等核心数据。"
+descriptionEn: "Connect your AI agent to Shopify stores via GraphQL Admin API — manage products, customers, orders, and more."
 evaluation:
   easeOfUse: 4
   security: 4

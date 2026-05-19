@@ -5,6 +5,7 @@ category: "mcp-servers"
 tags: ["onestock", "oms", "inventory", "order-management", "fulfillment"]
 price: "paid"
 website: "https://www.onestock-retail.com"
+logo: null
 descriptionEn: "AI agents access real-time inventory, delivery promises, and order management through OneStock unified OMS."
 description: "AI Agent 通过 OneStock 统一 OMS 访问实时库存、履约承诺和订单管理，打造无缝购物体验。"
 evaluation:

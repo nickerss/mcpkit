@@ -5,6 +5,7 @@ category: "mcp-servers"
 tags: ["adyen", "payments", "enterprise", "multicurrency", "pos"]
 price: "paid"
 website: "https://www.adyen.com"
+logo: null
 descriptionEn: "Enterprise payment processing via Adyen — AI agents can handle complex multi-currency transactions, POS payments, and risk management."
 description: "Adyen 企业级支付处理 MCP，支持多货币、POS 支付和 AI 风险管理，适合规模化电商。"
 evaluation:

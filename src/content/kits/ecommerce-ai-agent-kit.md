@@ -1,9 +1,11 @@
 ---
 title: "AI 智能电商运营套件"
+titleEn: "AI E-Commerce Agent Kit"
 name: "ecommerce-ai-agent-kit"
 icon: "cart"
 color: "#10B981"
 description: "让 AI Agent 自动管理你的电商店铺——从商品上架、订单处理、支付对账到营销自动化，一套工具全搞定。"
+descriptionEn: "Let AI agents automatically manage your e-commerce store — from product listings and order processing to payment reconciliation and marketing automation."
 levels:
   starter:
     description: "基础电商运营：Shopify 商品管理 + Stripe 收款，AI 自动回复买家咨询，适合刚起步的独立站。"

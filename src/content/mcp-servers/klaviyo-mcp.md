@@ -5,8 +5,10 @@ category: "mcp-servers"
 tags: ["klaviyo", "email-marketing", "marketing-automation", "sms", "ecommerce"]
 price: "freemium"
 website: "https://www.klaviyo.com"
+logo: null
 descriptionEn: "Connect AI agents to Klaviyo — automate email and SMS marketing flows, access customer profiles, segments, and campaign analytics."
 description: "将 AI Agent 连接到 Klaviyo，自动化邮件和 SMS 营销流程，访问客户档案、分群和活动数据。"
+descriptionEn: "Connect AI agents to Klaviyo — automate email and SMS marketing flows, access customer profiles, segments, and campaign analytics."
 evaluation:
   easeOfUse: 4
   security: 4

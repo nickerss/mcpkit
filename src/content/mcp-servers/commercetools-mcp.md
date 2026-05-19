@@ -5,6 +5,7 @@ category: "mcp-servers"
 tags: ["commercetools", "enterprise", "ecommerce", "product-catalog", "orders"]
 price: "paid"
 website: "https://commercetools.com/commerce-mcp"
+logo: null
 descriptionEn: "Enterprise commerce platform MCP — AI agents access product catalogs, carts, pricing, promotions, and orders through the commercetools platform."
 description: "企业级商务平台 MCP，AI Agent 通过 commercetools 访问商品目录、购物车、定价、促销和订单。"
 evaluation:
